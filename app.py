@@ -4,7 +4,7 @@ import json
 
 st.title('Hello JobITS')
 
-st.image('https://cdn-icons-png.flaticon.com/512/6134/6134346.png')  # Replace with your robot emoticon URL
+st.image('https://cdn-icons-png.flaticon.com/512/6134/6134346.png', width=200)  # Replace with your robot emoticon URL
 
 # 로그인 세션 관리를 위한 세션 상태 설정
 if 'auth_token' not in st.session_state:
