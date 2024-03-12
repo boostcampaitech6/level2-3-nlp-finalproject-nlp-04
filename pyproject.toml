@@ -18,6 +18,14 @@ torch = "^2.2.1"
 transformers = "^4.38.2"
 langchain = "^0.1.11"
 langchain-community = "^0.0.27"
+chromadb = "^0.4.24"
+passlib = "^1.7.4"
+python-multipart = "^0.0.9"
+sqlalchemy = "^2.0.28"
+async-exit-stack = "^1.0.1"
+async-generator = "^1.10"
+pyjwt = "^2.8.0"
+pycryptodome = "^3.20.0"
 
 
 [build-system]
