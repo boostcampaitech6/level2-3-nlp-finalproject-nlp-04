@@ -26,7 +26,8 @@ st.title('File Upload Tutorial')
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
     file_details = {"filename": uploaded_file.name, "filebytes": uploaded_file.getbuffer()}
-    response = requests.post("http://localhost:8000/create_upload_file", data=file_details)
+    response = requests.post("http://localhost:8000/uploadfile", data=file_details)
+    #response = requests.post("http://localhost:8000/uploadfile", files={"file": uploaded_file})
     if response.status_code == 200:
         st.success("Saved File:{} to data".format(uploaded_file.name))
     else:
