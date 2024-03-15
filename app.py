@@ -1,81 +1,43 @@
 import streamlit as st
+import os
 import requests
-import json
 
-st.title('Hello JobITS')
-
-st.image('https://cdn-icons-png.flaticon.com/512/6134/6134346.png', width=200)  # Replace with your robot emoticon URL
-
-# 로그인 세션 관리를 위한 세션 상태 설정
-if 'auth_token' not in st.session_state:
-    st.session_state['auth_token'] = None
-
-# 로그인 폼
-def login_form():
-    with st.form(key='login_form'):
-        username = st.text_input(label='Username')
-        password = st.text_input(label='Password', type='password')
-        submit_button = st.form_submit_button(label='Login')
-
-        if submit_button:
-            # FastAPI 백엔드로 로그인 요청 보내기
-            response = requests.post(
-                'http://127.0.0.1:8000/token',
-                data={
-                    'username': username,
-                    'password': password
-                }
-            )
+def list_files(startpath):
+    for root, dirs, files in os.walk(startpath):
+        for file in files:
+            file_path = os.path.join(root, file)
+            response = requests.get(f"http://localhost:8000/fileinfo/{file}")
             if response.status_code == 200:
-                auth_token = response.json().get('access_token')
-                st.session_state['auth_token'] = auth_token
-                st.success('Logged in successfully!')
+                file_info = response.json()
+                st.write(f"File: {file_path}, Size: {file_info['size']} bytes, Uploaded at: {file_info['uploaded_at']}")
             else:
-                st.error('Login failed!')
+                error_message = response.json().get('error', 'Unknown error')
+                st.write(f"File: {file_path}, Error: {error_message}")
 
-# 회원가입 폼
-def signup_form():
-    with st.form(key='signup_form'):
-        new_username = st.text_input(label='New Username')
-        new_password = st.text_input(label='New Password', type='password')
-        submit_button = st.form_submit_button(label='Sign up')
+def items():
+    response = requests.get("http://localhost:8000/items/")
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return []
 
-        if submit_button:
-            # FastAPI 백엔드로 회원가입 요청 보내기
-            response = requests.post(
-                'http://127.0.0.1:8000/signup',
-                data={
-                    'username': new_username,
-                    'password': new_password
-                }
-            )
-            if response.status_code == 200:
-                st.success('Signed up successfully!')
-            else:
-                st.error('Signup failed!')
+st.title('File Upload Tutorial')
 
-# 로그인 상태 확인 및 개인 페이지 구성
-def personal_page():
-    st.write('Welcome to your personal page!')
-    file = st.file_uploader('Upload a file')
-    if file is not None:
-        files = {'file': (file.name, file, 'multipart/form-data')}
-        # FastAPI 백엔드로 파일 업로드 요청 보내기
-        response = requests.post(
-            'http://127.0.0.1:8000/uploadfile/',
-            headers={'Authorization': f'Bearer {st.session_state["auth_token"]}'},
-            files=files
-        )
-        if response.status_code == 200:
-            st.success('File uploaded successfully!')
-        else:
-            st.error('File upload failed!')
+uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file is not None:
+    file_details = {"filename": uploaded_file.name, "filebytes": uploaded_file.getbuffer()}
+    response = requests.post("http://localhost:8000/create_upload_file", data=file_details)
+    if response.status_code == 200:
+        st.success("Saved File:{} to data".format(uploaded_file.name))
+    else:
+        st.error("Error saving file: {}".format(response.json()['detail']))
 
-# 메인 앱 로직
-if st.session_state['auth_token']:
-    personal_page()
-else:
-    if st.button('Login'):
-        login_form()
-    if st.button('Sign up'):
-        signup_form()
+if st.button('Show Uploaded Files in data'):
+    list_files('data')
+
+if st.button('뭔지 모르겠는 버튼'):
+    item_list = items()
+    st.write(item_list)
+    st.write(type(item_list[0]))
+    for item in item_list:
+        st.write(f"Item: {item}")

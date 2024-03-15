@@ -26,6 +26,7 @@ async-exit-stack = "^1.0.1"
 async-generator = "^1.10"
 pyjwt = "^2.8.0"
 pycryptodome = "^3.20.0"
+aiofiles = "^23.2.1"
 
 
 [build-system]
