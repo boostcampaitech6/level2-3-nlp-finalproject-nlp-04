@@ -177,7 +177,9 @@ data
 output
 *.txt
 *.csv
+*.pdf
 
+0-hireview
 5-Prompting_test
 6-assignment_2_nlp_serving
 test.db
