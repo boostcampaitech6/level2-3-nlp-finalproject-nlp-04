@@ -24,11 +24,15 @@ sys.path.append("./")
 
 OPENAI_API_KEY_DIR = 'api_key.txt'
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
-st.write(DATA_DIR)
 
-SAVE_JD_FILE_DIR = "./data" # jd 저장 경로
 EXAMPLE_JD = read_prompt_from_txt(os.path.join(DATA_DIR, 'JD_example.txt'))
 
+st.set_page_config(
+     page_title="안녕 자비스", # 브라우저탭에 뜰 제목
+     page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
+     layout="wide",
+     initial_sidebar_state="collapsed"
+)
 st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.
 # .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
 
@@ -37,12 +41,6 @@ NEXT_PAGE = 'gene_question'
 #### style css ####
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
-st.set_page_config(
-     page_title="안녕 자비스", # 브라우저탭에 뜰 제목
-     page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
-     layout="wide",
-     initial_sidebar_state="collapsed"
-)
 local_css("./etc/css/background.css")
 st.markdown(f'''<a class="main-logo" href="/main" target="_self">
                 <img src="data:img\logo_char.jpg;base64,{LOGO_IMG}" width="240px"; height="70px";/>
@@ -368,7 +366,7 @@ with input_form:
                         unsafe_allow_html=True)
      # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
     uploaded_JD = st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD)
-    st.session_state.uploaded_JD = save_uploaded_jd_as_filepath(uploaded_JD,SAVE_JD_FILE_DIR) # 파일 경로가 저장됩니다.
+    st.session_state.uploaded_JD = save_uploaded_jd_as_filepath(uploaded_JD, DATA_DIR) # 파일 경로가 저장됩니다.
     #st.session_state.uploaded_JD = uploaded_JD
     st.session_state.logger.info(f"upload JD -> Sucess")
  
