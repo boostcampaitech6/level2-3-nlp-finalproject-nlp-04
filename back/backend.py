@@ -141,10 +141,6 @@ def run_streamlit_app2():
         ]
     )    
 
-
-def kill_streamlit():
-    subprocess.run(["pkill", "streamlit"])
-
 @app.get("/launch_streamlit_app")
 async def launch_streamlit_app(background_tasks: BackgroundTasks):
 
