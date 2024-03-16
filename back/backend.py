@@ -8,6 +8,11 @@
 import re
 import subprocess
 from typing import Optional
+import sys
+from pathlib import Path
+
+sys.path.append("./front")
+sys.path.append("./back")
 
 import requests
 import uvicorn
@@ -73,26 +78,6 @@ async def add_process_time_header(request: Request, call_next):
     # print("전처리")
     response = await call_next(request)
     return response
-
-
-def check_login():
-    """
-    ID 토큰을 검증하여 로그인 여부를 확인합니다.
-
-    Returns:
-        bool: 로그인 여부를 나타내는 불리언 값입니다.
-
-    Raises:
-        HTTPException: 로그인이 안 된 경우, 카카오 페이지로 리다이렉트합니다.
-    """
-    res, tests = verify_token(ID_TOKEN)
-
-    if res == False:
-        print(tests)
-        raise HTTPException(
-            status_code=status.HTTP_303_SEE_OTHER,
-            headers={"Location": "/kakao"},
-        )
 
 
 # 첫 소개 페이지

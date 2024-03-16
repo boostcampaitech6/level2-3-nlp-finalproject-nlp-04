@@ -13,7 +13,7 @@ OUTSIDE_IP = cfg["IP"]["OUTSIDE_IP"]
 
 REST_API_KEY = cfg["Kakaologin"]["REST_API_KEY"]
 REDIRECT_URI = f"http://{OUTSIDE_IP}:{cfg['PORT']}/auth"
-
+print(REDIRECT_URI)
 PORT = cfg["PORT"]
 STREAMLIT_PORT = cfg["STREAMLIT"]["PORT"]
 
