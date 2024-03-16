@@ -2,6 +2,7 @@ import logging
 import sys
 import streamlit as st
 import webbrowser
+import requests
 
 sys.path.append("./")
 sys.path.append("./back")
@@ -18,10 +19,20 @@ st.markdown('## 언제든 면접 연습을 할 수 있는 인공지능 면접 �
 
 # 시작하기 버튼
 if st.button('시작하기'):
-    url = 'http://' + OUTSIDE_IP + ':' + str(PORT) + '/kakao'
-    webbrowser.open(url)  # url로 이동
+    url = f"http://{OUTSIDE_IP}:{PORT}/kakao"
+    response = requests.get(url)
+    if response.status_code == 200:
+        st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
+        st.stop()  # 현재 페이지 중지
+    else:
+        st.error('리디렉션 실패')
     
 # 비회원 버튼
 if st.button('GUEST'):
-    url = 'http://' + OUTSIDE_IP + ':' + str(PORT) + '/launch_streamlit_app'
-    webbrowser.open(url)  # url로 이동
+    url = f"http://{OUTSIDE_IP}:{PORT}/launch_streamlit_app"
+    response = requests.get(url)
+    if response.status_code == 200:
+        st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
+        st.stop()  # 현재 페이지 중지
+    else:
+        st.error('리디렉션 실패')
