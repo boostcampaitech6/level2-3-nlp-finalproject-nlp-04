@@ -32,7 +32,7 @@ sys.path.append('/dev/shm/level2-3-nlp-finalproject-nlp-04')
 
 from front import question_list  # 질문 생성 페이지
 from back.config import *
-from back.kakao_auth import router as kakao_router  # 카카오 로그인 라우터 불러오기
+from back.kakao_auth import check_login, router as kakao_router  # 카카오 로그인 라우터 불러오기
 from back.user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
 
 # 필요한 값에 접근
