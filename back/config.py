@@ -16,6 +16,7 @@ REDIRECT_URI = f"http://{OUTSIDE_IP}:{cfg['PORT']}/auth"
 print(REDIRECT_URI)
 PORT = cfg["PORT"]
 STREAMLIT_PORT = cfg["STREAMLIT"]["PORT"]
+STREAMLIT_PORT2 = cfg["STREAMLIT"]["PORT2"]
 
 KEY_FILE = cfg["SSL"]["KEY_FILE"]
 CERT_FILE = cfg["SSL"]["CERT_FILE"]

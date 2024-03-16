@@ -46,7 +46,7 @@ ID_TOKEN = None  # ID 토큰 : 로그인 여부 확인용
 
 app = FastAPI(docs_url="/documentation", redoc_url=None)
 app.include_router(kakao_router)
-templates = Jinja2Templates(directory="templates")  # 템플릿 폴더 지정(HTML 파일 저장 폴더)
+templates = Jinja2Templates(directory="front/templates")  # 템플릿 폴더 지정(HTML 파일 저장 폴더)
 
 # CORS
 from fastapi.middleware.cors import CORSMiddleware
@@ -87,35 +87,23 @@ async def add_process_time_header(request: Request, call_next):
 def read_root():
 
     # json 띄우기
+    return RedirectResponse(url='/introduction')
     return {"안녕자비스": "소개페이지 + '시작하기' 버튼 필요"}  # content-type: application/json
 
 
-# 메인 페이지
-@app.get("/mainpage", response_class=HTMLResponse)
-def read_root(request: Request, kakao: Optional[str] = Cookie(None)):
+# # 메인 페이지
+# @app.get("/mainpage", response_class=HTMLResponse)
+# def read_root(request: Request, kakao: Optional[str] = Cookie(None)):
 
-    check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
+#     check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
 
-    # 로그인이 된 경우 메인 페이지를 띄웁니다. -> HTML 띄우기
-    return templates.TemplateResponse("main_page.html", {"request": request, "안녕자비스": "Main화면"})
+#     # 로그인이 된 경우 메인 페이지를 띄웁니다. -> HTML 띄우기
+#     return templates.TemplateResponse("main_page.html", {"request": request, "안녕자비스": "Main화면"})
 
+@app.get("/introduction")
+async def introduction(background_tasks: BackgroundTasks):
 
-def run_streamlit_app():
-    # 여기에 Streamlit 애플리케이션 실행 코드를 작성합니다.
-    # 예를 들어, subprocess 모듈을 사용하여 Streamlit 앱을 실행할 수 있습니다.
-    subprocess.run(
-        [
-            "streamlit",
-            "run",
-            "/dev/shm/level2-3-nlp-finalproject-nlp-04/10-back_front/hireview.py",
-        ]
-    )
-
-
-@app.get("/launch_streamlit_app")
-async def launch_streamlit_app(background_tasks: BackgroundTasks):
-
-    check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
+    #check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
 
     # FastAPI의 백그라운드 작업을 사용하여 Streamlit 애플리케이션을 실행합니다.
     background_tasks.add_task(run_streamlit_app)
@@ -125,8 +113,52 @@ async def launch_streamlit_app(background_tasks: BackgroundTasks):
     return RedirectResponse(url=streamlit_url)
 
 
+#introduction 페이지
+def run_streamlit_app():
+    # 여기에 Streamlit 애플리케이션 실행 코드를 작성합니다.
+    # 예를 들어, subprocess 모듈을 사용하여 Streamlit 앱을 실행할 수 있습니다.
+    subprocess.run(
+        [
+            "streamlit",
+            "run",
+            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/introduction.py",
+            "--server.port",
+            str(STREAMLIT_PORT)
+        ]
+    )
+    
+#서비스 시작 페이지
+def run_streamlit_app2():
+    # 여기에 Streamlit 애플리케이션 실행 코드를 작성합니다.
+    # 예를 들어, subprocess 모듈을 사용하여 Streamlit 앱을 실행할 수 있습니다.
+    subprocess.run(
+        [
+            "streamlit",
+            "run",
+            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/question_list.py",
+            "--server.port",
+            str(STREAMLIT_PORT2)
+        ]
+    )    
+
+
+def kill_streamlit():
+    subprocess.run(["pkill", "streamlit"])
+
+@app.get("/launch_streamlit_app")
+async def launch_streamlit_app(background_tasks: BackgroundTasks):
+
+    #check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
+
+    # FastAPI의 백그라운드 작업을 사용하여 Streamlit 애플리케이션을 실행합니다.
+    background_tasks.add_task(run_streamlit_app2)
+
+    streamlit_url = f"http://{OUTSIDE_IP}:{STREAMLIT_PORT2}"  # streamlit url 실행 시 띄우는 주소
+
+    return RedirectResponse(url=streamlit_url)
+
 if __name__ == "__main__":
     uvicorn.run(app, host=INSIDE_IP, port=PORT)  # 8000은 모두에게 배포로 설정
 
     # # HTTPS 연결용
-    uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)
+    #uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)
