@@ -32,7 +32,7 @@ from jinja2 import Template
 import sys
 sys.path.append('/dev/shm/level2-3-nlp-finalproject-nlp-04')
 
-from front import question_list  # 질문 생성 페이지
+from front.pages import question_list  # 질문 생성 페이지
 from back.config import *
 from back.kakao_auth import check_login, router as kakao_router  # 카카오 로그인 라우터 불러오기
 from back.user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
@@ -121,7 +121,7 @@ def run_streamlit_app():
         [
             "streamlit",
             "run",
-            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/introduction.py",
+            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/0_introduction.py",
             "--server.port",
             str(STREAMLIT_PORT)
         ]
@@ -135,7 +135,8 @@ def run_streamlit_app2():
         [
             "streamlit",
             "run",
-            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/question_list.py",
+            #"/dev/shm/level2-3-nlp-finalproject-nlp-04/front/question_list.py",
+            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/1_home.py",
             "--server.port",
             str(STREAMLIT_PORT2)
         ]
