@@ -21,7 +21,11 @@ from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi.templating import Jinja2Templates
 from jinja2 import Template
 
-import front.question_list as question_list  # 질문 생성 페이지
+
+import sys
+sys.path.append('/dev/shm/level2-3-nlp-finalproject-nlp-04')
+
+from front import question_list  # 질문 생성 페이지
 from back.config import *
 from back.kakao_auth import router as kakao_router  # 카카오 로그인 라우터 불러오기
 from back.user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
@@ -95,8 +99,6 @@ def check_login():
 @app.get("/")
 def read_root():
 
-    question_list.main()
-
     # json 띄우기
     return {"안녕자비스": "소개페이지 + '시작하기' 버튼 필요"}  # content-type: application/json
 
@@ -130,8 +132,6 @@ async def launch_streamlit_app(background_tasks: BackgroundTasks):
 
     # FastAPI의 백그라운드 작업을 사용하여 Streamlit 애플리케이션을 실행합니다.
     background_tasks.add_task(run_streamlit_app)
-
-    # streamlit_url = get_external_url()
 
     streamlit_url = f"http://{OUTSIDE_IP}:{STREAMLIT_PORT}"  # streamlit url 실행 시 띄우는 주소
 
