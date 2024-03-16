@@ -8,9 +8,11 @@
 import re
 import subprocess
 from typing import Optional
+import os
 import sys
 from pathlib import Path
 
+sys.path.append("./")
 sys.path.append("./front")
 sys.path.append("./back")
 
