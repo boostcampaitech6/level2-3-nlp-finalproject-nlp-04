@@ -8,6 +8,11 @@
 import re
 import subprocess
 from typing import Optional
+import sys
+from pathlib import Path
+
+sys.path.append("./front")
+sys.path.append("./back")
 
 import requests
 import uvicorn
@@ -21,17 +26,12 @@ from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi.templating import Jinja2Templates
 from jinja2 import Template
 
-import front.question_list as question_list  # 질문 생성 페이지
-from back.config import *
-from back.kakao_auth import router as kakao_router  # 카카오 로그인 라우터 불러오기
-from back.user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
+import question_list
+from config import *
+from kakao_auth import router as kakao_router  # 카카오 로그인 라우터 불러오기
+from user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
+from kakao_auth import check_login  # 로그인 체크 함수 불러오기
 
-# 필요한 값에 접근
-
-ACCESS_TOKEN = None  # 토큰 저장
-ID_TOKEN = None  # ID 토큰 : 로그인 여부 확인용
-
-# redirect URI 자동 설정
 
 app = FastAPI(docs_url="/documentation", redoc_url=None)
 app.include_router(kakao_router)
@@ -69,26 +69,6 @@ async def add_process_time_header(request: Request, call_next):
     # print("전처리")
     response = await call_next(request)
     return response
-
-
-def check_login():
-    """
-    ID 토큰을 검증하여 로그인 여부를 확인합니다.
-
-    Returns:
-        bool: 로그인 여부를 나타내는 불리언 값입니다.
-
-    Raises:
-        HTTPException: 로그인이 안 된 경우, 카카오 페이지로 리다이렉트합니다.
-    """
-    res, tests = verify_token(ID_TOKEN)
-
-    if res == False:
-        print(tests)
-        raise HTTPException(
-            status_code=status.HTTP_303_SEE_OTHER,
-            headers={"Location": "/kakao"},
-        )
 
 
 # 첫 소개 페이지
