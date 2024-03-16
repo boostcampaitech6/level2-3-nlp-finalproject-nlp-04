@@ -14,13 +14,12 @@ from pathlib import Path
 
 sys.path.append("./")
 sys.path.append("./front")
-sys.path.append("./back")
 
 import requests
 import uvicorn
 import yaml
 from aiohttp import request
-from fastapi import BackgroundTasks, Cookie, Depends, FastAPI, HTTPException, Request, Response, WebSocket, status
+from fastapi import BackgroundTasks, Cookie, Depends, FastAPI, HTTPException, Request, Response, WebSocket, status, UploadFile, File, HTTPException
 from fastapi.openapi.models import OAuthFlowAuthorizationCode
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -29,13 +28,11 @@ from fastapi.templating import Jinja2Templates
 from jinja2 import Template
 
 
-import sys
-sys.path.append('/dev/shm/level2-3-nlp-finalproject-nlp-04')
-
 from front.pages import question_list  # 질문 생성 페이지
-from back.config import *
-from back.kakao_auth import check_login, router as kakao_router  # 카카오 로그인 라우터 불러오기
-from back.user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
+from config import *
+from kakao_auth import check_login, router as kakao_router  # 카카오 로그인 라우터 불러오기
+from user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
+from file_manager import upload_file, download_file
 
 # 필요한 값에 접근
 
@@ -86,6 +83,8 @@ async def add_process_time_header(request: Request, call_next):
 @app.get("/")
 def read_root():
 
+    question_list.main()  # 질문 생성 페이지
+
     # json 띄우기
     return RedirectResponse(url='/introduction')
     return {"안녕자비스": "소개페이지 + '시작하기' 버튼 필요"}  # content-type: application/json
@@ -135,7 +134,6 @@ def run_streamlit_app2():
         [
             "streamlit",
             "run",
-            #"/dev/shm/level2-3-nlp-finalproject-nlp-04/front/question_list.py",
             "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/1_home.py",
             "--server.port",
             str(STREAMLIT_PORT2)
@@ -158,4 +156,4 @@ if __name__ == "__main__":
     uvicorn.run(app, host=INSIDE_IP, port=PORT)  # 8000은 모두에게 배포로 설정
 
     # # HTTPS 연결용
-    #uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)
+    # uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)

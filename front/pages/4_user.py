@@ -1,5 +1,6 @@
 import base64
 import os
+import sys
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 import time
@@ -17,17 +18,16 @@ from etc.utils.util import (
                         read_prompt_from_txt
                         )
 import yaml
+from back.config import *   #IP, PORT 얻어오기 위해 import
 
-# YAML 파일 로드
-with open("secret_key.yaml", "r") as yaml_file:
-    config = yaml.safe_load(yaml_file)
+sys.path.append("./")
 
-OPENAI_API_KEY = config['OPENAI_API_KEY']
 OPENAI_API_KEY_DIR = 'api_key.txt'
-DATA_DIR = config['STREAMLIT']['DATA_DIR']
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
+st.write(DATA_DIR)
 
 SAVE_JD_FILE_DIR = "./data" # jd 저장 경로
-EXAMPLE_JD = read_prompt_from_txt(DATA_DIR + 'JD_example.txt')
+EXAMPLE_JD = read_prompt_from_txt(os.path.join(DATA_DIR, 'JD_example.txt'))
 
 st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.
 # .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
@@ -39,7 +39,6 @@ MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 st.set_page_config(
      page_title="안녕 자비스", # 브라우저탭에 뜰 제목
-     
      page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
      layout="wide",
      initial_sidebar_state="collapsed"
@@ -298,20 +297,20 @@ info_message = "※ 본 테스트 서비스는 사용자 분들의 개인정보�
 main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
 
 ## interviewer pictures
-interviewer_p1 = get_image_base64( DATA_DIR + 'images/interview_p1.png')
-interviewer_p2 = get_image_base64( DATA_DIR + 'images/interview_p2.png')
-interviewer_p3 = get_image_base64( DATA_DIR + 'images/interview_p3.png')
+interviewer_p1 = get_image_base64(os.path.join(DATA_DIR, 'images/interview_p1.png'))
+interviewer_p2 = get_image_base64(os.path.join(DATA_DIR, 'images/interview_p2.png'))
+interviewer_p3 = get_image_base64(os.path.join(DATA_DIR, 'images/interview_p3.png'))
 st.session_state.logger.info("interviewer pic")
 
 ## read sample resume files / rb 바이너리 데이터로 PDF 읽어옴
-resume_sample1 = read_sample_resume( DATA_DIR + 'samples/resume_sample_BE.pdf')
-resume_sample2 = read_sample_resume( DATA_DIR + 'samples/resume_sample_FE.pdf')
-resume_sample3 = read_sample_resume( DATA_DIR + 'samples/resume_sample_MLE.pdf')
-resume_sample4 = read_sample_resume( DATA_DIR + 'samples/resume_sample_NLP.pdf')
+resume_sample1 = read_sample_resume(os.path.join(DATA_DIR, 'samples/resume_sample_BE.pdf'))
+resume_sample2 = read_sample_resume(os.path.join(DATA_DIR, 'samples/resume_sample_FE.pdf'))
+resume_sample3 = read_sample_resume(os.path.join(DATA_DIR, 'samples/resume_sample_MLE.pdf'))
+resume_sample4 = read_sample_resume(os.path.join(DATA_DIR, 'samples/resume_sample_NLP.pdf'))
 st.session_state.logger.info("resume sample")
 
 ## read job info tb
-job_info,JOBS = read_job_info_tb( DATA_DIR + 'samples/job_info_tb.parquet')
+job_info,JOBS = read_job_info_tb(os.path.join(DATA_DIR, 'samples/job_info_tb.parquet'))
 st.session_state.job_info = job_info
 st.session_state.logger.info("read job tb")
 st.session_state.logger.info(f" job info is ... {JOBS}")
