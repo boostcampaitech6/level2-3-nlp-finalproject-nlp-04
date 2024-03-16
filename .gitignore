@@ -186,3 +186,5 @@ output
 test.db
 
 .vscode
+mongod.log
+mongodb
