@@ -7,7 +7,7 @@ from typing import Optional
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client['mydatabase']
-bucket =    (db)
+bucket = GridFSBucket(db)
 
 def upload_file(email: str, file):
     file_id = bucket.upload_from_stream(file.filename, file.file.read())
