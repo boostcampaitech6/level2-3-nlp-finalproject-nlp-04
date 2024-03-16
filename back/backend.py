@@ -152,6 +152,26 @@ async def launch_streamlit_app(background_tasks: BackgroundTasks):
 
     return RedirectResponse(url=streamlit_url)
 
+
+# @app.post("/email")
+# async def receive_email(email: str):
+#     return {"email": email}
+
+
+# @app.post("/uploadfile/")
+# async def upload_file_endpoint(email: str, file: UploadFile = File(...)):
+#     file_id = upload_file(email, file)
+#     return {"file_id": file_id}
+
+
+# @app.get("/downloadfile/")
+# async def download_file_endpoint(email: str):
+#     file_content = download_file(email)
+#     if file_content is None:
+#         raise HTTPException(status_code=404, detail="File not found")
+#     return {"file_content": file_content}
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host=INSIDE_IP, port=PORT)  # 8000은 모두에게 배포로 설정
 
