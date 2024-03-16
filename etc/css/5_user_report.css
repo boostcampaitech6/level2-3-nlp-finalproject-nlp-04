@@ -1,0 +1,180 @@
+body {{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+}}
+.inputtext {{
+    color:#4C4F6D;
+    font-size:24px;
+    line-height:1.5;
+    word-break:keep-all;
+    font-weight:700;
+    text-align:center;
+    padding:2rem;
+}}
+.css-xb8f9c {{
+    position: absolute;
+}}
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.css-1y4p8pa.e1g8pov64 > div:nth-child(1) > div > div:nth-child(3) > div > button{{
+display:none;
+}}
+.centered-area {{
+    display: flex; /* Flexbox 적용 */
+    flex-flow: row nowrap;
+    justify-content: center;
+}}
+.vertical-area {{
+    display: flex;
+    flex-direction: row; /* 수평 방향으로 요소들을 배치합니다. */
+    flex-wrap: nowrap;
+    justify-content: space-between; /* 요소들 사이에 공간을 동일하게 배분합니다. */
+    align-items: center;
+    gap: 4rem;
+    width: 95%;
+}}
+.radar-chart {{
+    background:#ffffff;
+    margin-right:30px;
+    display: flex;
+    width:300px;
+    height:100%;
+}}
+.summary {{
+    font-size: 16px;
+    float: left;
+    padding: 2rem;
+    height: auto;
+    border: 3px solid #2D5AF0;
+    border-radius: 39px;
+    width:90% ;
+
+}}
+.feedback-summary-area {{
+    width : 90%;
+}}
+.feedback-title {{
+    border: 3px solid #2D5AF0;
+    border-radius: 10px;
+    width:200px;
+    text-align: center;
+    justify-content: center;
+    margin-left:5px;
+    margin-bottom:2px;
+    background: #2D5AF0;
+    display: flex;
+    color: #FFFFFF;
+    font-weight: bold;
+}}
+[data-testid="stVerticalBlock"] .element-container:nth-child(1) button {{
+    width: 150px !important;
+    height: 50px;
+    display: flex;
+    background: #2D5AF0;
+    border: 3px solid #2D5AF0;
+    margin-top: -150px;
+    color: #FFFFFF;
+    font-weight: bold;
+}}
+[data-testid="stVerticalBlock"] .element-container:nth-child(1) button:hover {{
+    background: #FFFFFF;
+    color:#2D5AF0;
+}}
+.stButton {{
+    width:150px !important;
+}}
+.stButton:hover {{
+    background: #FFFFFF;
+    color:#2D5AF0;
+}}        
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section.main.css-uf99v8.ea3mdgi5 > div.block-container.css-z5fcl4.ea3mdgi4 > div:nth-child(1) > div > div:nth-child(9) > div > div > div > button {{
+    width: 150px !important;
+    height: 50px;
+    display: flex;
+    background: #2D5AF0;
+    border: 3px solid #2D5AF0;
+    margin-top: -170px;
+    margin-left: calc(69vw) !important;
+    color: #FFFFFF;
+    font-weight: bold;
+}}
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section.main.css-uf99v8.ea3mdgi5 > div.block-container.css-z5fcl4.ea3mdgi4 > div:nth-child(1) > div > div:nth-child(9) > div > div > div > button:hover {{
+    background: #FFFFFF;
+    color:#2D5AF0;
+}}
+.stDownloadButton {{
+    display:flex;
+}}
+.feedback-summary {{
+    height:auto;
+    margin-bottom: 200px !important;
+    border: 3px solid #2D5AF0;
+    border-radius: 39px;
+}}
+.table-container {{
+    display: flex;
+    justify-content: center;
+    margin:20px !important;
+}}
+.table-container th {{
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: center;
+}}
+.table-container th:first-child,
+.table-container td:first-child {{
+    border-left: 0;
+}}
+.table-container th:last-child,
+.table-container td:last-child {{
+    border-right: 0;
+}}
+.table-container tr:first-child {{
+    border-top: 2px solid #CED4DA;
+    border-bottom: 2px solid #CED4DA;
+    background-color: #E9ECEF
+}}
+.table-container tr:not(:first-child) {{
+    border-bottom: 2px solid #CED4DA
+    ;
+}}
+.feedback-summary .extra {{
+    font-size: 22px;
+    font-weight: bold;
+    padding-left: 2rem;
+    padding-top: 1rem;
+}}
+.extra-table-container {{
+    display: flex;
+    justify-content: left;
+    margin:20px !important;
+    margin-top:5px;
+    margin-bottom:5px;
+}}
+.extra-table-container th {{
+    white-space: nowrap;
+    vertical-align: middle;
+    font-size:16px;
+    text-align: center;
+}}
+.extra-table-container td {{
+    font-weight:normal;
+    font-size:16px;
+}}
+.extra-table-container th:first-child,
+.extra-table-container td:first-child {{
+    border-left: 0;
+}}
+.extra-table-container th:last-child,
+.extra-table-container td:last-child {{
+    border-right: 0;
+}}
+.extra-table-container tr:first-child {{
+    border-top: 2px solid #CED4DA;
+    border-bottom: 2px solid #CED4DA;
+    background-color: #E9ECEF
+}}
+.extra-table-container tr:not(:first-child) {{
+    border-bottom: 2px solid #CED4DA
+    ;
+}}
