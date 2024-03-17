@@ -1,7 +1,13 @@
+import sys
 from openai import OpenAI
 import streamlit as st
 from streamlit_chat import message
 import json
+
+sys.path.append("./")
+sys.path.append("./front")
+sys.path.append("./back")
+
 from front.jobits.src.mypath import MY_PATH
 from back.config import OPENAI_API_KEY
 

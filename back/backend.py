@@ -31,6 +31,7 @@ from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi.templating import Jinja2Templates
 from jinja2 import Template
 
+from front.jobits.src.mypath import MY_PATH # MY_PATH 불러오기 - ~/level2-3-nlp-finalproject-nlp-04/front/jobits
 
 import sys
 sys.path.append('./')
@@ -68,7 +69,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # WebSocket
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -77,7 +77,6 @@ async def websocket_endpoint(websocket: WebSocket):
     data = await websocket.receive_text()
     return
 
-
 # 미들웨어 : 모든 Path 에서 동작
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
@@ -85,24 +84,13 @@ async def add_process_time_header(request: Request, call_next):
     response = await call_next(request)
     return response
 
-
 # 첫 소개 페이지
 @app.get("/")
 def read_root():
 
     # json 띄우기
     return RedirectResponse(url='/introduction')
-    return {"안녕자비스": "소개페이지 + '시작하기' 버튼 필요"}  # content-type: application/json
 
-
-# # 메인 페이지
-# @app.get("/mainpage", response_class=HTMLResponse)
-# def read_root(request: Request, kakao: Optional[str] = Cookie(None)):
-
-#     check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
-
-#     # 로그인이 된 경우 메인 페이지를 띄웁니다. -> HTML 띄우기
-#     return templates.TemplateResponse("main_page.html", {"request": request, "안녕자비스": "Main화면"})
 
 @app.get("/introduction")
 async def introduction(background_tasks: BackgroundTasks):
@@ -123,7 +111,7 @@ def run_streamlit_app():
         [
             "streamlit",
             "run",
-            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/jobits/0_introduction.py",
+            MY_PATH + "/start.py",
             "--server.port",
             str(STREAMLIT_PORT)
         ]
@@ -137,8 +125,8 @@ def run_streamlit_app2():
         [
             "streamlit",
             "run",
-            #"/dev/shm/level2-3-nlp-finalproject-nlp-04/front/question_list.py",
-            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/1_home.py",
+            MY_PATH + "/0_introduction.py",
+            #"/dev/shm/level2-3-nlp-finalproject-nlp-04/front/jobits/1_home.py",
             "--server.port",
             str(STREAMLIT_PORT2)
         ]
@@ -148,21 +136,12 @@ def run_streamlit_app2():
 async def launch_streamlit_app(background_tasks: BackgroundTasks):
 
     #check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
-
     # FastAPI의 백그라운드 작업을 사용하여 Streamlit 애플리케이션을 실행합니다.
     background_tasks.add_task(run_streamlit_app2)
 
     streamlit_url = f"http://{OUTSIDE_IP}:{STREAMLIT_PORT2}"  # streamlit url 실행 시 띄우는 주소
 
     return RedirectResponse(url=streamlit_url)
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
