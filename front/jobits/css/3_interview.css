@@ -1,0 +1,82 @@
+@import url(https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css);
+[data-testid="stHeader"] {
+    height: 9rem;
+    z-index : 999;
+}
+/* sidebar 제거 */
+/* 
+[data-testid="stSidebar"] {
+    display : none;
+    max_width : 0;
+}
+[class="row-widget stButton"] > button > div {
+    color : #D9D9D9;
+    position : fixed;
+    z-index : 9999;
+    bottom : 1rem;
+}
+[data-testid="collapsedControl"] {
+    display : none;
+}
+*/
+[data-testid="stToolbar"] {
+    visibility: hidden;
+}
+/*resizable 잉여 컨테이너 */
+.css-qcqlej{
+    flex-grow:1;
+}
+/*메인컨테이너*/
+.css-z5fcl4 {
+padding-left : 10%;
+padding-right : 10%;
+padding-top : 2rem !important;
+display : flex !important;  
+}
+
+.main-logo {
+    position : fixed;
+    z-index : 999;
+}
+/*
+[data-testid="stVerticalBlock"] > div:nth-child(3) > div > div{
+    background-color : #FFFFFF;
+}*/
+
+/* 그만하기 버튼 */
+[data-testid="stVerticalBlock"] > div:nth-child(4) > div > button {
+    position : fixed;
+    z-index : 1000;
+    bottom : 1rem;
+    left : 85%;
+}
+.stProgress{
+    display : flex;
+    width : 80% !important;
+    z-index: 1000;
+    flex-direction : column;
+    position : fixed;
+    background-color : #FFFFFF;
+    top : 9rem;
+    padding-bottom : 1rem;
+}
+.stProgress p{
+    font-family : 'Nanumsquare';
+    font-size : 20px;
+}
+[data-baseweb="progress-bar"] > div > div {
+    height : 20px;
+}
+/* 채팅 글씨 스타일 */
+[data-testid="stChatMessageContent"]>div>div>div>div>div{
+    white-space : normal;
+    font-family : 'Nanumsquare';
+}
+/* 면접관 채팅 배경 */
+[class="stChatMessage css-4oy321 eeusbqq4"] {
+    background-color: rgba(240, 242, 246, 0.5)
+}
+/* 사용자 채팅 배경 */
+[class="stChatMessage css-1c7y2kd eeusbqq4"] {
+    background-color: rgba(67, 139, 245, 0.1)
+}       

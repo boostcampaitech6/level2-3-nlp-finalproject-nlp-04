@@ -1,0 +1,80 @@
+/* 로딩이미지 */
+.loading_space {
+    display : flex;
+    justify-content : center;
+    margin-top : -3rem;
+}
+.loading_space img{
+    max-width : 70%;
+}
+.loading_text {
+/* 광고 들어오면 공간 확보 */
+padding-top : 4rem;
+z-index : 99;
+}
+.loading_text p{
+    color:#4C4F6D;
+    font-size:36px;
+    display:flex;
+    justify-content:center;
+    word-break:keep-all;
+    font-weight:700;
+    text-align:center;
+    font-family : 'Nanumsquare';
+}     
+.dots-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding-top : 2rem;
+    padding-bottom : 5rem;
+    z-index : 99;
+}
+
+.dot {
+    z-index : 99;
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
+    border-radius: 10px;
+    background-color: #b3d4fc;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.dot:last-child {
+margin-right: 0;
+}
+
+.dot:nth-child(1) {
+animation-delay: -0.3s;
+}
+
+.dot:nth-child(2) {
+animation-delay: -0.1s;
+}
+
+.dot:nth-child(3) {
+animation-delay: 0.1s;
+}
+
+@keyframes pulse {
+0% {
+    transform: scale(0.8);
+    background-color: #b3d4fc;
+    box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+}
+
+50% {
+    transform: scale(1.2);
+    background-color: #6793fb;
+    box-shadow: 0 0 0 10px rgba(178, 212, 252, 0);
+}
+
+100% {
+    transform: scale(0.8);
+    background-color: #b3d4fc;
+    box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+}
+}

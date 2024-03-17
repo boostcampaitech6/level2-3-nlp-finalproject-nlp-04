@@ -11,15 +11,19 @@ from typing import Optional
 import os
 import sys
 from pathlib import Path
+import httpx
 
 sys.path.append("./")
 sys.path.append("./front")
+sys.path.append("./back")
 
 import requests
 import uvicorn
 import yaml
 from aiohttp import request
-from fastapi import BackgroundTasks, Cookie, Depends, FastAPI, HTTPException, Request, Response, WebSocket, status, UploadFile, File, HTTPException
+
+import httpx
+from fastapi import BackgroundTasks, Cookie, Depends, FastAPI, HTTPException, Request, Response, WebSocket, status, Header, Query
 from fastapi.openapi.models import OAuthFlowAuthorizationCode
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -28,11 +32,14 @@ from fastapi.templating import Jinja2Templates
 from jinja2 import Template
 
 
-from front.pages import question_list  # 질문 생성 페이지
-from config import *
-from kakao_auth import check_login, router as kakao_router  # 카카오 로그인 라우터 불러오기
-from user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
-from file_manager import upload_file, download_file
+import sys
+sys.path.append('./')
+sys.path.append('./front')
+sys.path.append('./back')
+
+from back.config import *
+from back.kakao_auth import check_login, router as kakao_router  # 카카오 로그인 라우터 불러오기
+from back.user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
 
 # 필요한 값에 접근
 
@@ -83,8 +90,6 @@ async def add_process_time_header(request: Request, call_next):
 @app.get("/")
 def read_root():
 
-    question_list.main()  # 질문 생성 페이지
-
     # json 띄우기
     return RedirectResponse(url='/introduction')
     return {"안녕자비스": "소개페이지 + '시작하기' 버튼 필요"}  # content-type: application/json
@@ -102,8 +107,6 @@ def read_root():
 @app.get("/introduction")
 async def introduction(background_tasks: BackgroundTasks):
 
-    #check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
-
     # FastAPI의 백그라운드 작업을 사용하여 Streamlit 애플리케이션을 실행합니다.
     background_tasks.add_task(run_streamlit_app)
 
@@ -120,7 +123,7 @@ def run_streamlit_app():
         [
             "streamlit",
             "run",
-            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/0_introduction.py",
+            "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/jobits/0_introduction.py",
             "--server.port",
             str(STREAMLIT_PORT)
         ]
@@ -134,6 +137,7 @@ def run_streamlit_app2():
         [
             "streamlit",
             "run",
+            #"/dev/shm/level2-3-nlp-finalproject-nlp-04/front/question_list.py",
             "/dev/shm/level2-3-nlp-finalproject-nlp-04/front/1_home.py",
             "--server.port",
             str(STREAMLIT_PORT2)
@@ -153,27 +157,16 @@ async def launch_streamlit_app(background_tasks: BackgroundTasks):
     return RedirectResponse(url=streamlit_url)
 
 
-# @app.post("/email")
-# async def receive_email(email: str):
-#     return {"email": email}
 
 
-# @app.post("/uploadfile/")
-# async def upload_file_endpoint(email: str, file: UploadFile = File(...)):
-#     file_id = upload_file(email, file)
-#     return {"file_id": file_id}
 
 
-# @app.get("/downloadfile/")
-# async def download_file_endpoint(email: str):
-#     file_content = download_file(email)
-#     if file_content is None:
-#         raise HTTPException(status_code=404, detail="File not found")
-#     return {"file_content": file_content}
+
+
 
 
 if __name__ == "__main__":
     uvicorn.run(app, host=INSIDE_IP, port=PORT)  # 8000은 모두에게 배포로 설정
 
     # # HTTPS 연결용
-    # uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)
+    #uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)

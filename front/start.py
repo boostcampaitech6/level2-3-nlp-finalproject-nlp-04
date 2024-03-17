@@ -18,7 +18,7 @@ st.title('안녕자비스 - 면접 챗봇 서비스')
 st.markdown('## 언제든 면접 연습을 할 수 있는 인공지능 면접 챗봇 서비스입니다.')
 
 # 시작하기 버튼
-if st.button('시작하기'):
+if st.button('시작하기(카카오 로그인)'):
     url = f"http://{OUTSIDE_IP}:{PORT}/kakao"
     response = requests.get(url)
     if response.status_code == 200:

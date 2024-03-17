@@ -6,8 +6,8 @@ from loguru import logger as _logger
 
 sys.path.append("./")
 
-from etc.utils.logger import DevConfig
-from etc.utils.util import get_image_base64,read_gif,read_prompt_from_txt
+from front.jobits.utils.logger import DevConfig
+from front.jobits.utils.util import get_image_base64,read_gif,read_prompt_from_txt
 from PIL import Image
 import yaml
 
@@ -29,9 +29,10 @@ from back.config import *   #IP, PORT 얻어오기 위해 import
 # '''
 # YAML 파일 로드
 
+
+
 OPENAI_API_KEY_DIR = 'api_key.txt'
 NEXT_PAGE = 'user'
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
 if "logger" not in st.session_state:
     # logru_logger(**config.config)

@@ -9,7 +9,7 @@ import traceback
 import os
 import re
 import random
-from etc.src.generate_question import (preprocess_questions,
+from front.jobits.src.generate_question import (preprocess_questions,
                                    load_user_resume,
                                    save_user_resume,
                                    # 추가
@@ -19,7 +19,7 @@ from etc.src.generate_question import (preprocess_questions,
                                    create_prompt_with_resume,
                                    create_resume_vectordb
                                    )
-from etc.utils.util import (
+from  front.jobits.utils.util import (
                         read_user_job_info,
                         read_prompt_from_txt,
                         local_css,
@@ -44,32 +44,22 @@ from langchain.chains import LLMChain
 
 import tiktoken
 import chromadb
-import yaml
-
-# YAML 파일 로드
-with open("secret_key.yaml", "r") as yaml_file:
-    config = yaml.safe_load(yaml_file)
 
 
+from front.jobits.src.mypath import MY_PATH
+from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
 st.session_state.logger.info("start")
-NEXT_PAGE = 'show_questions'
-
-OPENAI_API_KEY = config['OPENAI_API_KEY']
-OPENAI_API_KEY_DIR = 'api_key.txt'
-DATA_DIR = config['STREAMLIT']['DATA_DIR']
+NEXT_PAGE = 'show_questions_hint'
+# ### 자기 API key 로 바꾸세요
+# OPENAI_API_KEY = read_prompt_from_txt(MY_PATH+'/data/test/OPANAI_KEY.txt')
 
 #### style css ####
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
-# text_splitter = CharacterTextSplitter(
-#     chunk_size=200,
-#     chunk_overlap=20
-#     )
 
-
-local_css('etc/css/background.css')
-local_css("etc/css/2_generate_question.css")
+local_css('front/jobits/css/background.css')
+local_css("front/jobits/css/2_generate_question.css")
 st.markdown(f"""<style>
                          /* 로딩이미지 */
                          .loading_space {{
@@ -134,11 +124,7 @@ st.markdown(f"""<style>
 #             """,  unsafe_allow_html=True)
 ## set variables
 MODEL_NAME = 'gpt-3.5-turbo-16k'
-INTERVIEWER_NAME = {
-    '0.5' : '혁신수',
-    '0.7' : '정의현',
-    '0.9' : '조화린'
-    }
+
 
 #
  
@@ -160,8 +146,8 @@ BIG_QUESTION_SAVE_DIR = os.path.join(st.session_state["save_dir"],'2_generate_qu
 
 # 진행률
 progress_holder = st.empty() # 작업에 따라 문구 바뀌는 곳
-loading_message = [f"'{INTERVIEWER_NAME[str(st.session_state.temperature)]}' 면접관이 '{st.session_state.user_name}'님의 이력서를 꼼꼼하게 읽고 있습니다. <br> 최대 3분까지 소요될 수 있습니다.",
-                f"'{INTERVIEWER_NAME[str(st.session_state.temperature)]}' 면접관이 '{st.session_state.user_name}'님과의 면접을 준비하고 있습니다"]
+loading_message = [f" JOBits 가 '{st.session_state.user_name}'님의 이력서를 꼼꼼하게 읽고 있습니다. <br> 최대 3분까지 소요될 수 있습니다.",
+                f" JOBits 가 '{st.session_state.user_name}'님과의 면접을 준비하고 있습니다"]
 
 # 로딩 그림(progress bar)
 st.markdown("""<section class="dots-container">
@@ -210,7 +196,7 @@ with progress_holder:
             ### JD 사용하여 JD 추출용 프롬프트 만들기
             st.session_state.logger.info("prompt JD start")
             
-            prompt_template = read_prompt_from_txt( DATA_DIR + "test/prompt_JD_template.txt")
+            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_JD_template.txt")
             
             prompt_JD = create_prompt_with_jd(prompt_template)
             # prompt_JD 생성완료
@@ -246,14 +232,10 @@ with progress_holder:
             
             st.session_state.logger.info("prompt QA start")
             
-            prompt_template = read_prompt_from_txt( DATA_DIR + "test/prompt_qa_template")
+            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_qa_template")
             
             
             st.session_state.logger.info("create prompt QA template")
-
-            vector_index = create_resume_vectordb(USER_RESUME_SAVE_DIR) # 이력서 vectordb를 생성해줍니다.
-
-
             
             
             prompt_qa = create_prompt_with_resume(prompt_template)
@@ -261,13 +243,7 @@ with progress_holder:
             st.session_state.logger.info("create prompt_qa")
             
             vector_index = create_resume_vectordb(USER_RESUME_SAVE_DIR) # 이력서 vectordb를 생성해줍니다.
-            # loader = PyPDFLoader(USER_RESUME_SAVE_DIR)
-            # pages = loader.load_and_split(text_splitter)
-            
-            # vector_index = Chroma.from_documents(
-            #     pages, # Documents
-            #     OpenAIEmbeddings(),) # Text embedding model
-            
+
             st.session_state.logger.info("user_resume chunk OpenAIEmbeddings ")
 
             ### STEP 2 를 위한 새 모델 호출
@@ -312,21 +288,8 @@ with progress_holder:
 
 
             
-            
-            # ### Token 사용량 기록
-            # total_tokens, prompt_tokens, completion_tokens = calculate_token_usage(prompt_qa, main_question)
-
-
-            # st.session_state.logger.info(f"QA tokens used: {total_tokens}")
-            # st.session_state.logger.info(f"QA Prompt tokens: {prompt_tokens}") 
-            # st.session_state.logger.info(f"Completion tokens: {completion_tokens}")
-            
-            # ### 문장앞 숫자 삭제. 질문 전처리
-            #questions = remove_numeration_from_questions(questions)
-            
             st.session_state.logger.info(f"save question result")
             
-            print("난 코딩이너무좋아",questions[0])
 
             ### User pdf파일 삭제
             try:

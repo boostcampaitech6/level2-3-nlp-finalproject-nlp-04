@@ -1,13 +1,15 @@
 import base64
 import os
-import sys
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 import time
 import traceback
 from PIL import Image
 import pandas as pd
-from etc.utils.util import (
+import sys
+sys.path.append("./")
+
+from front.jobits.utils.util import (
                         get_image_base64,
                         check_essential,
                         read_sample_resume,
@@ -17,31 +19,30 @@ from etc.utils.util import (
                         save_uploaded_jd_as_filepath,
                         read_prompt_from_txt
                         )
-import yaml
-from back.config import *   #IP, PORT 얻어오기 위해 import
+from front.jobits.src.mypath import MY_PATH
+from back.config import OPENAI_API_KEY   # OPENAI_API_KEY 불러오기
+# ### 자기 API key 로 바꾸세요
+# OPENAI_API_KEY = read_prompt_from_txt(MY_PATH+'/data/test/OPANAI_KEY.txt')
 
-sys.path.append("./")
+SAVE_JD_FILE_DIR = MY_PATH + "/data"
+EXAMPLE_JD = read_prompt_from_txt(MY_PATH + "/data/JD_example.txt")
+st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.
+# .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
 
-OPENAI_API_KEY_DIR = 'api_key.txt'
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
-
-EXAMPLE_JD = read_prompt_from_txt(os.path.join(DATA_DIR, 'JD_example.txt'))
-
+NEXT_PAGE_question = 'gene_question'
+NEXT_PAGE_interview = 'interview'
+NEXT_PAGE_question_hint = "gene_question"
+#### style css ####
+MAIN_IMG = st.session_state.MAIN_IMG
+LOGO_IMG = st.session_state.LOGO_IMG
 st.set_page_config(
-     page_title="안녕 자비스", # 브라우저탭에 뜰 제목
+     page_title="Hireview", # 브라우저탭에 뜰 제목
+     
      page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
      layout="wide",
      initial_sidebar_state="collapsed"
 )
-st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.
-# .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
-
-NEXT_PAGE = 'gene_question'
-
-#### style css ####
-MAIN_IMG = st.session_state.MAIN_IMG
-LOGO_IMG = st.session_state.LOGO_IMG
-local_css("./etc/css/background.css")
+local_css("front/jobits/css/background.css")
 st.markdown(f'''<a class="main-logo" href="/main" target="_self">
                 <img src="data:img\logo_char.jpg;base64,{LOGO_IMG}" width="240px"; height="70px";/>
             </a>''', unsafe_allow_html=True)
@@ -295,20 +296,20 @@ info_message = "※ 본 테스트 서비스는 사용자 분들의 개인정보�
 main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
 
 ## interviewer pictures
-interviewer_p1 = get_image_base64(os.path.join(DATA_DIR, 'images/interview_p1.png'))
-interviewer_p2 = get_image_base64(os.path.join(DATA_DIR, 'images/interview_p2.png'))
-interviewer_p3 = get_image_base64(os.path.join(DATA_DIR, 'images/interview_p3.png'))
+interviewer_p1 = get_image_base64(MY_PATH+'/data/images/interview_p1.png')
+interviewer_p2 = get_image_base64(MY_PATH+'/data/images/interview_p2.png')
+interviewer_p3 = get_image_base64(MY_PATH+'/data/images/interview_p3.png')
 st.session_state.logger.info("interviewer pic")
 
 ## read sample resume files / rb 바이너리 데이터로 PDF 읽어옴
-resume_sample1 = read_sample_resume(os.path.join(DATA_DIR, 'samples/resume_sample_BE.pdf'))
-resume_sample2 = read_sample_resume(os.path.join(DATA_DIR, 'samples/resume_sample_FE.pdf'))
-resume_sample3 = read_sample_resume(os.path.join(DATA_DIR, 'samples/resume_sample_MLE.pdf'))
-resume_sample4 = read_sample_resume(os.path.join(DATA_DIR, 'samples/resume_sample_NLP.pdf'))
+resume_sample1 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_BE.pdf')
+resume_sample2 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_FE.pdf')
+resume_sample3 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_MLE.pdf')
+resume_sample4 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_NLP.pdf')
 st.session_state.logger.info("resume sample")
 
 ## read job info tb
-job_info,JOBS = read_job_info_tb(os.path.join(DATA_DIR, 'samples/job_info_tb.parquet'))
+job_info,JOBS = read_job_info_tb(MY_PATH+'/data/samples/job_info_tb.parquet')
 st.session_state.job_info = job_info
 st.session_state.logger.info("read job tb")
 st.session_state.logger.info(f" job info is ... {JOBS}")
@@ -366,49 +367,11 @@ with input_form:
                         unsafe_allow_html=True)
      # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
     uploaded_JD = st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD)
-    st.session_state.uploaded_JD = save_uploaded_jd_as_filepath(uploaded_JD, DATA_DIR) # 파일 경로가 저장됩니다.
+    st.session_state.uploaded_JD = save_uploaded_jd_as_filepath(uploaded_JD,SAVE_JD_FILE_DIR) # 파일 경로가 저장됩니다.
     #st.session_state.uploaded_JD = uploaded_JD
     st.session_state.logger.info(f"upload JD -> Sucess")
  
-    ### 면접관 성향 선택  폼
-    input_form.markdown('''
-                        <div class="menu_name">피드백 받고 싶은 면접관<span class="essential_menu">*</span>
-                        <p style="font-size:14px; color:#989898">면접관 사진에 마우스를 갖다 대면 설명이 뜬답니다:)</p>
-                        </div>
-                        ''', 
-                        unsafe_allow_html=True)
-
-    p1_explain = """BE로 커리어를 시작하였으며, 여러 창업으로 엑싯을 경험한 친구입니다.\n혁신적인 아이디어와 뛰어난 문제 해결 능력을 갖춘 인재를 발굴하고 배출하였습니다.\n캠핑만 가면 텐션이 높아지는 것이 특징입니다."""     
-    p2_explain = """AI 개발과 컨설턴트로 커리어를 시작하였으며, Project Manager 특급 출신입니다.\n지원자의 세심한 준비와 depth 있는 주의력을 시험할 것입니다.\n캠핑에서 야밤의 사색을 즐기는 것이 특징입니다."""
-    p3_explain = """DB 아키텍처 커리어를 시작하였고, 기획과 개발 등 풀스택 그 자체인 친구입니다.\n팀에 어떻게 기여할 수 있을지와 어떻게 다른 사람들을 돕는지에 주목합니다.\n캠핑가서는 놀랍게도 무임승차 하는 것이 특징입니다."""
-    
-    input_form.markdown(f'''<div class="interviewer_icon">
-                                     <figure id = 'persona'>
-                                          <img src="data:img\logo_char.jpg;base64,{interviewer_p1}" title="{p1_explain}"/>
-                                          <figcaption>#BE #창업</figcaption> 
-                                          <p> 🐾혁신수 </p>
-                                     </figure>
-                                     <figure id = 'persona'>
-                                          <img src="data:img\logo_char.jpg;base64,{interviewer_p2}" title="{p2_explain}"/>
-                                          <figcaption>#AI #PM</figcaption> 
-                                          <p> 🌳정의현 </p>
-                                     </figure>
-                                     <figure id = 'persona'>
-                                          <img src="data:img\logo_char.jpg;base64,{interviewer_p3}" title="{p3_explain}"/>
-                                          <figcaption>#DB #풀스택</figcaption> 
-                                          <p> 🌿조화린 </p>
-                                     </figure>
-                                </div>
-                           ''', unsafe_allow_html=True)
-    
-    ### temperature 정해지는 곳
-    interview_style = input_form.radio('면접관고르기', 
-                                       INTERVIEW_STYLES,
-                                       horizontal=True,
-                                       index= 1, 
-                                       format_func=lambda x : '',
-                                       label_visibility='collapsed')
-    st.session_state.temperature = interview_style
+    st.session_state.temperature = 0.2
     st.session_state.logger.info(f"interview style (temperature) : {st.session_state.temperature}")
     
     ### custom message ; 개인정보는 수집하지 않는다는 메시지
@@ -424,7 +387,7 @@ with input_form:
         check_list, josa = check_essential()
         st.session_state.logger.info(f"check_essential")
         ### 필요사항 따라 버튼 클릭시 안내 문구 생성
-        if start_button.button('면접 시작하기'):
+        if start_button.button('예상 질문 확인하기'):
             ### 유저 고유 폴더 생성
             if check_list:
                 start_button.markdown(f'''
@@ -432,7 +395,29 @@ with input_form:
                                       ''',
                                       unsafe_allow_html=True)
             else:
-                switch_page(NEXT_PAGE)
+                switch_page(NEXT_PAGE_question)
+                st.session_state.logger.info(f"check_essential | Pass")
+                
+     #    if start_button.button('예상 질문 확인하기 (hint)'):
+     #        ### 유저 고유 폴더 생성
+     #        if check_list:
+     #            start_button.markdown(f'''
+     #                                  <p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>
+     #                                  ''',
+     #                                  unsafe_allow_html=True)
+     #        else:
+     #            switch_page(NEXT_PAGE_question_hint)
+     #            st.session_state.logger.info(f"check_essential | Pass")      
+
+        if start_button.button('모의면접 시작하기'):
+            ### 유저 고유 폴더 생성
+            if check_list:
+                start_button.markdown(f'''
+                                      <p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>
+                                      ''',
+                                      unsafe_allow_html=True)
+            else:
+                switch_page(NEXT_PAGE_interview)
                 st.session_state.logger.info(f"check_essential | Pass")
 
     # 광고 공간
@@ -442,6 +427,4 @@ with input_form:
                           ''', 
                           unsafe_allow_html=True)
 
-    INTERVIEWER_ICON = INTERVIEWER_PIC[str(st.session_state.temperature)]
-    st.session_state['INTERVIEWER_ICON'] = INTERVIEWER_ICON
 

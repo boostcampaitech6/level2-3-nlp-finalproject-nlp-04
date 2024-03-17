@@ -165,12 +165,62 @@ def create_prompt_with_resume(prompt_template):
     """
     
     prompt = PromptTemplate(
-        template=prompt_template, input_variables=["context", "question"]
-        )
+            template=prompt_template, input_variables=["context", "question"] )
     # JD 내용을 템플릿의 {jd} 부분에 삽입합니다.
     prompt_qa = prompt
     return prompt_qa
 
+
+def create_prompt_feedback(prompt_template):
+    """
+    feedback 프롬프트를 위해 해당 질문과 답변을 입력받아, 최종 프롬프트를 생성합니다.
+
+    
+    :param template: 채용공고 내용을 포함시킬 템플릿
+    :type template: str
+    :param question : 질문 내용
+    :type question: str
+    :param answer : 답변 내용
+    :type answer: str
+    
+
+    :return: 완성된 프롬프트
+    :rtype: str
+    """
+    # input_variables에 'question'과 'answer'를 명시적으로 설정
+    
+    #prompt_template = prompt_template.format(question=questions,answer=answers)
+    prompt_feedback = PromptTemplate(template=prompt_template, input_variables=["question", "answer"] )
+    
+    # 생성된 프롬프트를 반환
+    #prompt_feedback = prompt.format(question=questions, answer=answers)
+    return prompt_feedback
+
+def create_prompt_hint(prompt_template):
+    """
+    feedback 프롬프트를 위해 해당 질문과 답변을 입력받아, 최종 프롬프트를 생성합니다.
+
+    
+    :param template: 채용공고 내용을 포함시킬 템플릿
+    :type template: str
+    :param question : 질문 내용
+    :type question: str
+    :param answer : 답변 내용
+    :type answer: str
+    
+
+    :return: 완성된 프롬프트
+    :rtype: str
+    """
+    # input_variables에 'question'과 'answer'를 명시적으로 설정
+    
+    #prompt_template = prompt_template.format(question=questions,answer=answers)
+    prompt_hint = PromptTemplate(template=prompt_template, input_variables=["question"] )
+    
+    # 생성된 프롬프트를 반환
+    #prompt_feedback = prompt.format(question=questions, answer=answers)
+    return prompt_hint
+    
 
 
 def calculate_token_usage(response, prompt):
