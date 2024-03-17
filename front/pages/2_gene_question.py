@@ -68,8 +68,8 @@ LOGO_IMG = st.session_state.LOGO_IMG
 #     )
 
 
-local_css('css/background.css')
-local_css("css/2_generate_question.css")
+local_css('etc/css/background.css')
+local_css("etc/css/2_generate_question.css")
 st.markdown(f"""<style>
                          /* 로딩이미지 */
                          .loading_space {{
