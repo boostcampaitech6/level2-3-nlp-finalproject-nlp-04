@@ -126,7 +126,6 @@ def run_streamlit_app2():
             "streamlit",
             "run",
             MY_PATH + "/0_introduction.py",
-            #"/dev/shm/level2-3-nlp-finalproject-nlp-04/front/jobits/1_home.py",
             "--server.port",
             str(STREAMLIT_PORT2)
         ]
@@ -147,5 +146,5 @@ async def launch_streamlit_app(background_tasks: BackgroundTasks):
 if __name__ == "__main__":
     uvicorn.run(app, host=INSIDE_IP, port=PORT)  # 8000은 모두에게 배포로 설정
 
-    # # HTTPS 연결용
+    # # HTTPS 연결용 - 구현 예정
     #uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)
