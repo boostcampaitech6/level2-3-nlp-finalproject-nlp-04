@@ -24,7 +24,7 @@ from back.config import OPENAI_API_KEY   # OPENAI_API_KEY 불러오기
 # OPENAI_API_KEY = read_prompt_from_txt(MY_PATH+'/data/test/OPANAI_KEY.txt')
 
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
-SAVE_JD_FILE_DIR = os.path.joint(MY_PATH,"data")
+SAVE_JD_FILE_DIR = os.path.join(MY_PATH,"data")
 EXAMPLE_JD = read_prompt_from_txt(os.path.join(SAVE_JD_FILE_DIR, "JD_example.txt"))
 st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.
 # .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
