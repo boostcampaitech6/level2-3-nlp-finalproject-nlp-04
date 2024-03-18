@@ -43,7 +43,6 @@ app.add_middleware(
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     await websocket.send_json("FAST API")
-    # data = await websocket.receive_text()
     return
 
 # 미들웨어 : 모든 Path 에서 동작
@@ -52,7 +51,7 @@ async def add_process_time_header(request: Request, call_next):
     response = await call_next(request)
     return response
 
-# 첫 소개 페이지
+# 첫 시작 페이지
 @app.get("/")
 def read_root():
     return RedirectResponse(url='/launch_streamlit_app')
@@ -60,13 +59,12 @@ def read_root():
 
 @app.get("/launch_streamlit_app")
 async def launch_streamlit_app(background_tasks: BackgroundTasks):
-    if check_port(STREAMLIT_PORT):  # 포트 개방 여부 확인
-        background_tasks.add_task(run_streamlit_app)
+    
+    background_tasks.add_task(run_streamlit_app)    # 백그라운드로 streamlit 실행 (내부에서 포트 개방여부 확인)
 
-    NEXT_PATH = get_shared_var('NEXT_PATH')
+    NEXT_PATH = get_shared_var('NEXT_PATH') # 공유 변수에서 다음 이동 페이지 경로 가져오기
 
     streamlit_url = f"http://{OUTSIDE_IP}:{STREAMLIT_PORT}/{NEXT_PATH}"  # streamlit url 실행 시 띄우는 주소
-    print(streamlit_url)
     
     return RedirectResponse(url=streamlit_url)
 
