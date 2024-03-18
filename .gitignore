@@ -178,6 +178,7 @@ output
 *.txt
 *.csv
 *.pdf
+*.pkl
 
 0-hireview
 5-Prompting_test
