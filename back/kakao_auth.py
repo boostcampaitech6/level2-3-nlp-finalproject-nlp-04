@@ -63,16 +63,8 @@ def check_login():
     Raises:
         HTTPException: 로그인이 안 된 경우, 카카오 페이지로 리다이렉트합니다.
     """
-    
     global ID_TOKEN
     
     res, message = verify_token(ID_TOKEN)
-
-    # if res == False:
-    #     print(tests)
-    #     raise HTTPException(
-    #         status_code=status.HTTP_303_SEE_OTHER,
-    #         headers={"Location": "/kakao"},
-    #     )
 
     return res, message
