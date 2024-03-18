@@ -5,31 +5,11 @@ from streamlit_extras.switch_page_button import switch_page
 from loguru import logger as _logger
 
 sys.path.append("./")
-
 from front.jobits.utils.logger import DevConfig
-from front.jobits.utils.util import get_image_base64,read_gif,read_prompt_from_txt
+from front.jobits.utils.util import get_image_base64,read_gif
 from PIL import Image
-import yaml
 
 from back.config import *   #IP, PORT 얻어오기 위해 import
-
-# '''
-# 이 페이지를 가장 먼저 호출하여 loggger 나 이미지 패스 같은 부분들을 모두 실행합니다.
-# 그 후 최하단의 switch_page(NEXT_PAGE) 를 실행하여 user 페이지로 이동합니다. 
-
-# Loguru 라이브러리에서 로거 인스턴스는 여러 로깅 메서드를 제공하는데, 이는 로그 메시지를 다양한 수준에서 기록할 수 있게 해줍니다. 주요 로깅 메서드는 다음과 같습니다:
-
-# .debug(): 디버그 수준의 로깅을 수행합니다. 가장 낮은 로깅 레벨로, 상세한 시스템 정보를 기록할 때 사용됩니다.
-# .info(): 정보 수준의 로깅을 수행합니다. 애플리케이션이 정상적으로 작동하고 있는 상황에서 일반적인 정보를 기록할 때 사용됩니다.
-# .warning(): 경고 수준의 로깅을 수행합니다. 주의가 필요한 상황이나 예상치 못한 문제를 기록할 때 사용됩니다.
-# .error(): 오류 수준의 로깅을 수행합니다. 예외 처리나 중대한 문제가 발생했을 때 사용됩니다.
-# .critical(): 심각한 수준의 로깅을 수행합니다. 시스템의 중대한 실패나 긴급 상황을 기록할 때 사용됩니다.
-
-
-# '''
-# YAML 파일 로드
-
-
 
 OPENAI_API_KEY_DIR = 'api_key.txt'
 NEXT_PAGE = 'user'

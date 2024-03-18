@@ -5,10 +5,8 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 import time
-import traceback
 import os
 import re
-import random
 from front.jobits.src.generate_question import (preprocess_questions,
                                    load_user_resume,
                                    save_user_resume,

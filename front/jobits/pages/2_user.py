@@ -20,8 +20,6 @@ from front.jobits.utils.util import (
                         read_prompt_from_txt
                         )
 from back.config import OPENAI_API_KEY   # OPENAI_API_KEY 불러오기
-# ### 자기 API key 로 바꾸세요
-# OPENAI_API_KEY = read_prompt_from_txt(MY_PATH+'/data/test/OPANAI_KEY.txt')
 
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
 SAVE_JD_FILE_DIR = os.path.join(MY_PATH,"data")
@@ -396,18 +394,7 @@ with input_form:
                                       unsafe_allow_html=True)
             else:
                 switch_page(NEXT_PAGE_question)
-                st.session_state.logger.info(f"check_essential | Pass")
-                
-     #    if start_button.button('예상 질문 확인하기 (hint)'):
-     #        ### 유저 고유 폴더 생성
-     #        if check_list:
-     #            start_button.markdown(f'''
-     #                                  <p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>
-     #                                  ''',
-     #                                  unsafe_allow_html=True)
-     #        else:
-     #            switch_page(NEXT_PAGE_question_hint)
-     #            st.session_state.logger.info(f"check_essential | Pass")      
+                st.session_state.logger.info(f"check_essential | Pass")   
 
         if start_button.button('모의면접 시작하기'):
             ### 유저 고유 폴더 생성
@@ -426,5 +413,3 @@ with input_form:
                           <div id='real_ad'> </div>
                           ''', 
                           unsafe_allow_html=True)
-
-

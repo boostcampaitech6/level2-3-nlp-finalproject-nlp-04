@@ -2,20 +2,17 @@ import logging
 import sys
 import streamlit as st
 import requests
-import pickle
 
 sys.path.append("./")
 sys.path.append("./back")
 from back.config import *   #IP, PORT 얻어오기 위해 import
 
 from streamlit_extras.switch_page_button import switch_page
-from share_var import get_shared_var, set_shared_var  # 공유 변수 관련 함수 불러오기
+from share_var import set_shared_var  # 공유 변수 관련 함수 불러오기
 
 # 로거 초기화
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-
 
 # 페이지 제목 및 설명
 st.title('안녕자비스 - 면접 챗봇 서비스')
@@ -38,7 +35,6 @@ def goto_login_page(next_path):
         st.stop()  # 현재 페이지 중지
     else:
         st.error('리디렉션 실패')
-
 
 # 시작하기 버튼
 if st.button('시작하기(카카오 로그인)'):
