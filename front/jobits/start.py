@@ -12,6 +12,8 @@ from back.config import *   #IP, PORT 얻어오기 위해 import
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+def redirect(url):
+    st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
 
 
 # 페이지 제목 및 설명
@@ -23,7 +25,7 @@ if st.button('시작하기(카카오 로그인)'):
     url = f"http://{OUTSIDE_IP}:{PORT}/kakao"
     response = requests.get(url)
     if response.status_code == 200:
-        st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
+        redirect(url)
         st.stop()  # 현재 페이지 중지
     else:
         st.error('리디렉션 실패')
@@ -33,7 +35,7 @@ if st.button('GUEST'):
     url = f"http://{OUTSIDE_IP}:{PORT}/launch_streamlit_app"
     response = requests.get(url)
     if response.status_code == 200:
-        st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
+        redirect(url)
         st.stop()  # 현재 페이지 중지
     else:
         st.error('리디렉션 실패')
