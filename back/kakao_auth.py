@@ -34,9 +34,8 @@ async def kakaoAuth(response: Response, code: Optional[str] = "NONE"):
     ID_TOKEN = str(_result["id_token"])  # ID 토큰 저장
 
     end_point = "/launch_streamlit_app"  # 이동할 페이지 지정 > mainpage
-    return RedirectResponse(url=f"{end_point}?access_token={ACCESS_TOKEN}")
-
-
+    headers = dict(Authorization=f"Bearer {ACCESS_TOKEN}")
+    return RedirectResponse(url=f"{end_point}", headers=headers)
 
 @router.get("/kakaoLogout")
 def kakaoLogout(request: Request, response: Response):
@@ -61,11 +60,14 @@ def check_login():
     Raises:
         HTTPException: 로그인이 안 된 경우, 카카오 페이지로 리다이렉트합니다.
     """
-    res, tests = verify_token(ID_TOKEN)
-
-    if res == False:
-        print(tests)
-        raise HTTPException(
-            status_code=status.HTTP_303_SEE_OTHER,
-            headers={"Location": "/kakao"},
-        )
+    res, decoded_payload = verify_token(ID_TOKEN)
+    return res
+    # if res == False:
+        # go_kakao()
+        # raise HTTPException(
+        #     status_code=status.HTTP_303_SEE_OTHER,
+        #     headers={"Location": "/kakao"},
+        # )
+    
+def go_kakao():
+    return RedirectResponse(url="/kakao")
