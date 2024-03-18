@@ -31,8 +31,6 @@ from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi.templating import Jinja2Templates
 from jinja2 import Template
 
-from front.jobits.src.mypath import MY_PATH # MY_PATH 불러오기 - ~/level2-3-nlp-finalproject-nlp-04/front/jobits
-
 import sys
 sys.path.append('./')
 sys.path.append('./front')
@@ -42,8 +40,8 @@ from back.config import *
 from back.kakao_auth import check_login, router as kakao_router  # 카카오 로그인 라우터 불러오기
 from back.user_authorization import verify_token  # 토큰 유효성 검사 함수 불러오기
 
+MY_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "front", "jobits")
 # 필요한 값에 접근
-
 ACCESS_TOKEN = None  # 토큰 저장
 ID_TOKEN = None  # ID 토큰 : 로그인 여부 확인용
 

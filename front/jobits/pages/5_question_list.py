@@ -1,3 +1,4 @@
+import os
 import sys
 from openai import OpenAI
 import streamlit as st
@@ -8,7 +9,7 @@ sys.path.append("./")
 sys.path.append("./front")
 sys.path.append("./back")
 
-from front.jobits.src.mypath import MY_PATH
+MY_PATH = os.path.dirname(os.path.dirname(__file__))
 from back.config import OPENAI_API_KEY
 
 client = OpenAI(
