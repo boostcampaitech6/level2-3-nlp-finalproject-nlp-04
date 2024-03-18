@@ -44,8 +44,8 @@ sys.path.append('./back')
 from back.config import *
 from back.kakao_auth import check_login, router as kakao_router  # 카카오 로그인 라우터 불러오기
 
+MY_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "front", "jobits")
 # 필요한 값에 접근
-
 ACCESS_TOKEN = None  # 토큰 저장
 ID_TOKEN = None  # ID 토큰 : 로그인 여부 확인용
 
