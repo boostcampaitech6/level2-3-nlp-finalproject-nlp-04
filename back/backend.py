@@ -111,7 +111,9 @@ def run_streamlit_app():
             "run",
             MY_PATH + "/start.py",
             "--server.port",
-            str(STREAMLIT_PORT)
+            str(STREAMLIT_PORT),
+            "--browser.gatherUsageStats",
+            "false"
         ]
     )
     
@@ -125,14 +127,16 @@ def run_streamlit_app2():
             "run",
             MY_PATH + "/0_introduction.py",
             "--server.port",
-            str(STREAMLIT_PORT2)
+            str(STREAMLIT_PORT2),
+            "--browser.gatherUsageStats",
+            "false"
         ]
     )    
 
 @app.get("/launch_streamlit_app")
 async def launch_streamlit_app(background_tasks: BackgroundTasks):
 
-    #check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
+    # check_login()  # 로그인 체크 -> 안 된 경우 로그인 페이지로 리다이렉트
     # FastAPI의 백그라운드 작업을 사용하여 Streamlit 애플리케이션을 실행합니다.
     background_tasks.add_task(run_streamlit_app2)
 
