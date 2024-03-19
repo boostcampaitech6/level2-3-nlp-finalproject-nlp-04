@@ -118,6 +118,7 @@ st.markdown(f'''<style>
              animation: fadeInDown 1s;
              padding-left : 8rem;
              padding-bottom : 1rem;
+             color : white;
         }}
         #real_ad {{
              padding-left : 8rem;
@@ -279,12 +280,6 @@ st.markdown(f'''<style>
 info_message = "※ 본 테스트 서비스는 사용자 분들의 개인정보를 절대 수집하지 않습니다."
 main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
 
-## read sample resume files / rb 바이너리 데이터로 PDF 읽어옴
-# resume_sample1 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_BE.pdf')
-# resume_sample2 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_FE.pdf')
-# resume_sample3 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_MLE.pdf')
-# resume_sample4 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_NLP.pdf')
-# st.session_state.logger.info("resume sample")
 
 ## read job info tb
 job_info,JOBS = read_job_info_tb(MY_PATH+'/data/samples/job_info_tb.parquet')

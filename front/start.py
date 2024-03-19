@@ -4,6 +4,8 @@ import streamlit as st
 import requests
 from PIL import Image
 
+from utils.util import get_image_base64
+
 sys.path.append("./")
 sys.path.append("./back")
 from back.config import *   #IP, PORT 얻어오기 위해 import
@@ -24,11 +26,6 @@ st.set_page_config(
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-# 페이지 제목 및 설명
-st.title('안녕자비스 - 면접 챗봇 서비스')
-st.markdown('## 언제든 면접 연습을 할 수 있는 인공지능 면접 챗봇 서비스입니다.')
-
-
 # 로그인 페이지로 이동하는 함수(streamlit)
 # 이미 로그인 되어있으면 자동으로 다음 페이지로 이동
 def goto_login_page(next_path):
@@ -46,8 +43,60 @@ def goto_login_page(next_path):
     else:
         st.error('리디렉션 실패')
 
+
+st.session_state['START_IMG'] = get_image_base64(DATA_DIR + '/images/start_page.png')
+START_IMG = st.session_state.START_IMG
+# 버튼들을 화면 오른쪽 아래에 배치하기 위해 CSS 스타일을 적용합니다.
+st.markdown(f"""
+    <style>
+        .main {{
+             background-image: url("data:image/png;base64,{START_IMG}");
+             background-size:100% 100%;
+             padding:0px;
+             background-attachment: fixed;  /* 배경화면 이미지를 화면에 고정합니다. */
+        }}
+        [class="row-widget stButton"] button {{
+             border : none;
+             padding-left : 8rem;
+             background-color: transparent;
+        }}
+        [class="row-widget stButton"] button:hover {{
+             background-color: transparent;
+        }}
+        [class="row-widget stButton"] button>div {{
+             display : flex;
+             border-radius: 50px;
+             background : #D9D9D9;
+             filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+             width : 9em;
+             height : 2.5em;
+             font-size : 40px;
+             justify-content : center;
+             font-family : 'Nanumsquare';
+        }}
+        [class="row-widget stButton"] button>div:hover{{
+             transform : scale(1.1);
+             background : #2D5AF0;
+             transition : .5s;
+        }}
+        [class="row-widget stButton"] button>div>p {{
+             font-size : 40px;
+             font-weight: 700;
+             color: #FFFFFF;
+             text-align: center;
+             margin : auto;
+        }}
+        [class="row-widget stButton"] button:first-child {{
+            bottom: 40px; /* 시작하기 버튼을 현재 위치에서 위로 20만큼 이동 */
+        }}
+        
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # 시작하기 버튼
-if st.button('시작하기(카카오 로그인)'):
+if st.button('LOGIN(KAKAO)'):
     goto_login_page(next_path='home')
     
 # 비회원 버튼

@@ -13,7 +13,9 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
 from langchain.chains import ConversationChain
-from config import OPENAI_API_KEY
+
+sys.path.append('./')
+from back.config import OPENAI_API_KEY
 
 def load_css_as_string(file_name):
     with open(file_name,'r') as f:
