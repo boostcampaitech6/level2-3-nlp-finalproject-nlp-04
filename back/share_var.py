@@ -1,6 +1,8 @@
 # 변수 공유를 위한 함수들
+import os
 import pickle
 
+SHARED_PKL = os.path.join(os.path.dirname(__file__), "shared.pkl")
 
 def get_shared_var(name):
     """
@@ -13,7 +15,7 @@ def get_shared_var(name):
         object: 주어진 이름에 해당하는 공유 변수의 값. 만약 파일이 존재하지 않으면 None을 반환합니다.
     """
     try:
-        with open("shared.pkl", "rb") as fp:
+        with open(SHARED_PKL, "rb") as fp:
             shared = pickle.load(fp)
             return shared[name]
     except FileNotFoundError:
@@ -32,5 +34,5 @@ def set_shared_var(name, value):
         None
     """
     shared = {name: value}
-    with open("shared.pkl", "wb") as fp:
+    with open(SHARED_PKL, "wb") as fp:
         pickle.dump(shared, fp)
