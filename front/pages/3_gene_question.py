@@ -33,8 +33,6 @@ st.set_page_config(
 
 st.session_state.logger.info("start")
 NEXT_PAGE = 'show_questions_hint'
-# ### 자기 API key 로 바꾸세요
-# OPENAI_API_KEY = read_prompt_from_txt(MY_PATH+'/data/test/OPANAI_KEY.txt')
 
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
 
@@ -123,11 +121,6 @@ USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"],'2_generate_que
 USER_JD_SAVE_DIR = os.path.join(st.session_state["save_dir"],'2_generate_question_user_JD.txt')
 
 BIG_QUESTION_SAVE_DIR = os.path.join(st.session_state["save_dir"],'2_generate_question_generated_big_question.txt')
-
-# 원본은 read_user_job_info 를 이용해 사용자가 정한 직군에 따라 정해진 프롬프트와 핵심역량을 이용해 사용합니다.
-# 우리는 그런것 없이,  STEP 1. JD 를 GPT 를 통해 한번 요약하고, 
-# STEP 2. 요약한 JD 를 다시 이력서 내용과 함께 GPT 에 QA 프롬프트와 함께 질의
-# STEP 3. 답변을 /n/n 기준으로 잘라 변수에 저장 후 다음 페이지로 넘김.
 
 
 # 진행률
@@ -255,9 +248,6 @@ with progress_holder:
             
             print(main_question)
             
-            
-            
-
             end = time.time()
             st.session_state.logger.info(f"generate big question run time is ... {(end-start)/60:.3f} 분 ({(end-start):0.1f}초)")
             
@@ -271,8 +261,6 @@ with progress_holder:
             questions = re.split(r'\n\d+\.\s*', main_question.strip())
             #    첫 번째 빈 항목 제거
             questions = [question for question in questions if question]
-
-
             
             st.session_state.logger.info(f"save question result")
             
@@ -287,10 +275,13 @@ with progress_holder:
             st.session_state.big_q_progress = False ### 대질문 생성 끝
         else :
 
-
             ### 다음 세션으로 값 넘기기
             st.session_state.main_question = questions
             st.session_state.logger.info("end gene_question")
             time.sleep(3)
             ####
-            switch_page(NEXT_PAGE)
+            
+            if st.session_state.cur_task == 'gene_question':
+                switch_page('show_questions_hint')
+            elif st.session_state.cur_task == 'interview':
+                switch_page('interview')

@@ -27,9 +27,8 @@ EXAMPLE_JD = read_prompt_from_txt(os.path.join(SAVE_JD_FILE_DIR, "JD_example.txt
 st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.
 # .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
 
-NEXT_PAGE_question = 'gene_question'
-NEXT_PAGE_interview = 'interview'
-NEXT_PAGE_question_hint = "gene_question"
+NEXT_PAGE = 'gene_question'
+
 #### style css ####
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
@@ -281,11 +280,11 @@ info_message = "※ 본 테스트 서비스는 사용자 분들의 개인정보�
 main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
 
 ## read sample resume files / rb 바이너리 데이터로 PDF 읽어옴
-resume_sample1 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_BE.pdf')
-resume_sample2 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_FE.pdf')
-resume_sample3 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_MLE.pdf')
-resume_sample4 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_NLP.pdf')
-st.session_state.logger.info("resume sample")
+# resume_sample1 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_BE.pdf')
+# resume_sample2 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_FE.pdf')
+# resume_sample3 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_MLE.pdf')
+# resume_sample4 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_NLP.pdf')
+# st.session_state.logger.info("resume sample")
 
 ## read job info tb
 job_info,JOBS = read_job_info_tb(MY_PATH+'/data/samples/job_info_tb.parquet')
@@ -308,7 +307,7 @@ with input_form:
                         ''', 
                         unsafe_allow_html=True)
     
-    user_name = input_form.text_input('이름',label_visibility='collapsed',placeholder='김아무개',value="예진스")
+    user_name = input_form.text_input('이름',label_visibility='collapsed',placeholder='김아무개',value="아무개")
     st.session_state.user_name = user_name
     st.session_state.logger.info(f"user nae : {st.session_state.user_name}")
     
@@ -374,7 +373,8 @@ with input_form:
                                       ''',
                                       unsafe_allow_html=True)
             else:
-                switch_page(NEXT_PAGE_question)
+                st.session_state.cur_task = 'gene_question' # 예상 질문 생성하기 수행
+                switch_page(NEXT_PAGE)               
                 st.session_state.logger.info(f"check_essential | Pass")   
 
         if start_button.button('모의면접 시작하기'):
@@ -385,7 +385,8 @@ with input_form:
                                       ''',
                                       unsafe_allow_html=True)
             else:
-                switch_page(NEXT_PAGE_interview)
+                st.session_state.cur_task = 'interview' # 모의면접 수행
+                switch_page(NEXT_PAGE)
                 st.session_state.logger.info(f"check_essential | Pass")
 
     # 광고 공간

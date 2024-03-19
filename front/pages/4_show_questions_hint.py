@@ -152,5 +152,4 @@ with start_button:
     )
 
     if start_button.button("시작 화면으로 돌아가기"):
-
-        switch_page(NEXT_PAGE)
+        switch_page('user')

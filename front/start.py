@@ -48,8 +48,8 @@ def goto_login_page(next_path):
 
 # 시작하기 버튼
 if st.button('시작하기(카카오 로그인)'):
-    goto_login_page(next_path='introduction')
+    goto_login_page(next_path='home')
     
 # 비회원 버튼
 if st.button('GUEST'):
-    switch_page('introduction')
+    switch_page('home')
