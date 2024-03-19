@@ -109,12 +109,6 @@ st.markdown(f"""<style>
 ## set variables
 MODEL_NAME = 'gpt-3.5-turbo-16k'
 
-
-#
- 
- 
-## st.session_state["save_dir"] = logs/user/952d63ba-3e50-43d6-91dd-dcb2b5e0b10a
- 
 ## set save dir
 USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"],'2_generate_question_user_resume.pdf')
 ### 추가
