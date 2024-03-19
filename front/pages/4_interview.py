@@ -1,8 +1,18 @@
+import os
 import streamlit as st
 from utils.util import load_chain
 from streamlit_chat import message
+from back.config import DATA_DIR
+from PIL import Image
 
-st.set_page_config(page_title="generate")
+st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
+st.set_page_config(
+     page_title="Hello Jobits", # 브라우저탭에 뜰 제목
+     
+     page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
+     layout="wide",
+     initial_sidebar_state="collapsed"
+)
 st.title('모의면접 ChatGPT-3 (Demo)')
 if 'messages' not in st.session_state:
     st.session_state['messages'] = [{"role": "assistant",

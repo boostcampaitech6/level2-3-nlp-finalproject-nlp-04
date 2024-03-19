@@ -8,9 +8,17 @@ from langchain_community.chat_models import ChatOpenAI
 from src.generate_question import create_prompt_feedback, create_prompt_hint  # 추가
 from streamlit_extras.switch_page_button import switch_page
 from utils.util import read_prompt_from_txt
+from back.config import DATA_DIR
+from PIL import Image
 
-# import tiktoken
-# import chromadb
+st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
+st.set_page_config(
+     page_title="Hello Jobits", # 브라우저탭에 뜰 제목
+     
+     page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
+     layout="wide",
+     initial_sidebar_state="collapsed"
+)
 
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
 

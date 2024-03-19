@@ -1,25 +1,25 @@
-import base64
 import os
-import streamlit as st
-from streamlit_extras.switch_page_button import switch_page
-import time
-import traceback
-from PIL import Image
-import pandas as pd
 import sys
+
+import streamlit as st
+from PIL import Image
+from streamlit_extras.switch_page_button import switch_page
+
 sys.path.append("./")
 
-from utils.util import (
-                        get_image_base64,
-                        check_essential,
-                        read_sample_resume,
-                        read_job_info_tb,
-                        local_css,
-                        load_css_as_string,
-                        save_uploaded_jd_as_filepath,
-                        read_prompt_from_txt
-                        )
-from back.config import OPENAI_API_KEY   # OPENAI_API_KEY 불러오기
+from back.config import DATA_DIR
+from utils.util import (check_essential, get_image_base64, local_css,
+                        read_job_info_tb, read_prompt_from_txt,
+                        read_sample_resume, save_uploaded_jd_as_filepath)
+
+st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
+st.set_page_config(
+     page_title="Hello Jobits", # 브라우저탭에 뜰 제목
+     
+     page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
+     layout="wide",
+     initial_sidebar_state="collapsed"
+)
 
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
 SAVE_JD_FILE_DIR = os.path.join(MY_PATH,"data")
@@ -33,13 +33,7 @@ NEXT_PAGE_question_hint = "gene_question"
 #### style css ####
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
-st.set_page_config(
-     page_title="Hireview", # 브라우저탭에 뜰 제목
-     
-     page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
-     layout="wide",
-     initial_sidebar_state="collapsed"
-)
+
 local_css(MY_PATH + "/css/background.css")
 st.markdown(f'''<a class="main-logo" href="/main" target="_self">
                 <img src="data:img\logo_char.jpg;base64,{LOGO_IMG}" width="240px"; height="70px";/>
@@ -281,23 +275,10 @@ st.markdown(f'''<style>
         </style>''',unsafe_allow_html=True)
 ###########여까지 마크다운으로 화면 보여줌
 ## emoji for interviewer icon
-INTERVIEWER_PIC = {
-    '0.5' : '🐾',
-    '0.7' : '🌳',
-    '0.9' : '🌿'}
-st.session_state.logger.info("set interview emoji")
-## interview style is llm temperature
-INTERVIEW_STYLES = [0.5, 0.7, 0.9]
-st.session_state.logger.info("set interview styles")
+
 ## custom message
 info_message = "※ 본 테스트 서비스는 사용자 분들의 개인정보를 절대 수집하지 않습니다."
 main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
-
-## interviewer pictures
-interviewer_p1 = get_image_base64(MY_PATH+'/data/images/interview_p1.png')
-interviewer_p2 = get_image_base64(MY_PATH+'/data/images/interview_p2.png')
-interviewer_p3 = get_image_base64(MY_PATH+'/data/images/interview_p3.png')
-st.session_state.logger.info("interviewer pic")
 
 ## read sample resume files / rb 바이너리 데이터로 PDF 읽어옴
 resume_sample1 = read_sample_resume(MY_PATH+'/data/samples/resume_sample_BE.pdf')

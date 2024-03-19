@@ -54,7 +54,5 @@ if "user_name" not in st.session_state:
 if "temperature" not in st.session_state:
     st.session_state['temperature'] = 0
 
-if "INTERVIEWER_ICON" not in st.session_state:
-    st.session_state['INTERVIEWER_ICON'] = '🐾'
     
 switch_page(NEXT_PAGE)
