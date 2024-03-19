@@ -1,12 +1,19 @@
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 from io import BytesIO
 from PIL import Image
 import base64
 import streamlit as st
-import plotly.graph_objs as go
 import pandas as pd
 import os
-import ast
-
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain.memory import ConversationBufferWindowMemory
+from langchain.prompts import PromptTemplate
+from langchain.chains import ConversationChain
+from config import OPENAI_API_KEY
 
 def load_css_as_string(file_name):
     with open(file_name,'r') as f:
@@ -170,3 +177,33 @@ def save_uploaded_jd_as_filepath(uploaded_jd, save_directory, filename="uploaded
     with open(file_path, 'w', encoding='utf-8') as file:
         file.write(uploaded_jd)
     return file_path
+
+
+os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+
+
+
+@st.cache_resource
+def load_chain(question):
+    """
+    The `load_chain()` function initializes and configures a conversational retrieval chain for
+    answering user questions.
+    :return: The `load_chain()` function returns a ConversationalRetrievalChain object.
+    """
+
+    # Load OpenAI embedding model
+    embeddings = OpenAIEmbeddings()
+    
+    # Load OpenAI chat model
+    llm = ChatOpenAI(temperature=0)
+    template = read_prompt_from_txt(os.path.join(os.path.dirname(__file__), "tail_question_template.txt"))
+    
+    # Create memory 'chat_history' 
+    memory = ConversationBufferWindowMemory(human_prefix="면접자 답변", ai_prefix='answer')
+    memory.save_context({'input':''},{'output':question})
+    # Create system prompt
+    prompt = PromptTemplate(input_variables = ['history','input'],template = template)
+     # Create the Conversational Chain
+    chain = ConversationChain(llm = llm,verbose = False,memory=memory, prompt = prompt)
+    
+    return chain

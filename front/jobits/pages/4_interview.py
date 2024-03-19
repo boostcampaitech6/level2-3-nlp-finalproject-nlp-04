@@ -1,63 +1,43 @@
-from openai import OpenAI
 import streamlit as st
-from streamlit_extras.switch_page_button import switch_page
+from utils.util import load_chain
 from streamlit_chat import message
-import json
-from front.jobits.src.mypath import MY_PATH
-from back.config import OPENAI_API_KEY
-NEXT_PAGE = 'question_list'
 
-api_key = OPENAI_API_KEY
-client = OpenAI(
-    api_key=api_key,
-)
-system = "You are helpful AI"
-user = "안녕?"
-
-st.set_page_config(
-    page_title = "generate"
-)
-st.title('mock-up interview')
-# st.sidebar.success('select')
-
-def run_gpt(system, user):
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",  # 또는 다른 모델을 사용
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user", "content": user},
-        ],
-)
-    response = response.json()
-    response = json.loads(response)
-    return response["choices"][0]["message"]['content']
-
-
-system = """당신은 사용자를 도와주는 사람입니다."""
- 
- 
-st.header("🤖모의면접 ChatGPT-3 (Demo)")
-st.markdown("[Be Original](https://yunwoong.tistory.com/)")
- 
-if 'generated' not in st.session_state:
-    st.session_state['generated'] = []
- 
-if 'past' not in st.session_state:
-    st.session_state['past'] = []
- 
-with st.form('form', clear_on_submit=True):
-    user_input = st.text_input('You: ', '', key='input')
-    submitted = st.form_submit_button('Send')
- 
-if submitted and user_input:
-    output = run_gpt(system, user_input)
-    st.session_state.past.append(user_input)
-    st.session_state.generated.append(output)
- 
-if st.session_state['generated']:
-    for i in range(len(st.session_state['generated'])-1, -1, -1):
-        message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-        message(st.session_state["generated"][i], key=str(i))
-
-if st.button("다음 페이지"):
-    switch_page(NEXT_PAGE)
+st.set_page_config(page_title="generate")
+st.title('모의면접 ChatGPT-3 (Demo)')
+if 'messages' not in st.session_state:
+    st.session_state['messages'] = [{"role": "assistant",
+                                        "content": "안녕하세요, 면접 시작하도록 하겠습니다."}]
+# 질문 초기화
+questions = ['Boostcamp AI Tech 6기에서 진행한 NLP 분야 대회 프로젝트에서 사용한 DPR 모델의 동작 원리와 장점에 대해 설명해주세요.', 'Boostcamp AI Tech 6기에서 진행한 NLP 분야 대회 프로젝트에서 Curriculum Learning을 적용한 이유와 어떤 방식으로 적용하였는지 설명해주세요.']
+current_question_idx = 0
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+# 대화 로직
+def chat(question):
+    chain = load_chain(question)
+    count = 0
+    with st.chat_message('assistant'):
+        st.session_state.messages.append({"role": "assistant", "content": question})
+        st.markdown(question)
+    #st.write(1)
+    while True :
+        user_input = st.chat_input("면접자: ", key="unique_key")
+        if user_input:
+            with st.chat_message('user'):
+                st.session_state.messages.append({"role": "user", "content": user_input})
+                st.markdown(user_input)
+            result = chain.predict(input=user_input)
+            with st.chat_message('assistant'):
+                st.session_state.messages.append({"role": "assistant", "content": result})
+                st.markdown(result)
+            count += 1
+            if count > 2:
+               st.write('수고하셨습니다.')
+            if result == '다음 질문으로 넘어가겠습니다.':
+                break
+if __name__ == '__main__':
+    for question in questions:
+        #st.write('main')
+        chat(question)
+    print("수고하셨습니다. ")
