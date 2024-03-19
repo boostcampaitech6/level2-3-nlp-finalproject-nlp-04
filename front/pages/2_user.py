@@ -9,7 +9,7 @@ import pandas as pd
 import sys
 sys.path.append("./")
 
-from front.jobits.utils.util import (
+from utils.util import (
                         get_image_base64,
                         check_essential,
                         read_sample_resume,
@@ -40,7 +40,7 @@ st.set_page_config(
      layout="wide",
      initial_sidebar_state="collapsed"
 )
-local_css("front/jobits/css/background.css")
+local_css(MY_PATH + "/css/background.css")
 st.markdown(f'''<a class="main-logo" href="/main" target="_self">
                 <img src="data:img\logo_char.jpg;base64,{LOGO_IMG}" width="240px"; height="70px";/>
             </a>''', unsafe_allow_html=True)

@@ -1,63 +1,41 @@
 __import__('pysqlite3')
 import sys
+
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-import streamlit as st
-from streamlit_extras.switch_page_button import switch_page
-import time
 import os
 import re
-from front.jobits.src.generate_question import (preprocess_questions,
-                                   load_user_resume,
-                                   save_user_resume,
-                                   # 추가
-                                   load_user_JD, 
-                                   save_user_JD,
-                                   create_prompt_with_jd,
-                                   create_prompt_with_resume,
-                                   create_resume_vectordb
-                                   )
-from  front.jobits.utils.util import (
-                        read_user_job_info,
-                        read_prompt_from_txt,
-                        local_css,
-                        load_css_as_string)
-import base64 # gif 이미지 불러오기
-from langchain.document_loaders import PyPDFLoader
+import time
+
+import streamlit as st
+from langchain.chains import LLMChain, RetrievalQA
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import SequentialChain
-from langchain.callbacks import get_openai_callback
-
-
-from langchain.chains import RetrievalQA
-from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain_community.chat_models import ChatOpenAI
-from langchain_community.vectorstores import Chroma
-from langchain_community.document_loaders.csv_loader import CSVLoader
-from langchain.prompts import PromptTemplate
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain.document_loaders import PyPDFLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.chains import LLMChain
+from src.generate_question import create_prompt_with_jd  # 추가
+from src.generate_question import (create_prompt_with_resume,
+                                   create_resume_vectordb, load_user_JD,
+                                   load_user_resume, save_user_JD,
+                                   save_user_resume)
+from streamlit_extras.switch_page_button import switch_page
+from utils.util import local_css, read_prompt_from_txt
 
-import tiktoken
-import chromadb
-
-
-from front.jobits.src.mypath import MY_PATH
 from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
+
 st.session_state.logger.info("start")
 NEXT_PAGE = 'show_questions_hint'
 # ### 자기 API key 로 바꾸세요
 # OPENAI_API_KEY = read_prompt_from_txt(MY_PATH+'/data/test/OPANAI_KEY.txt')
+
+MY_PATH = os.path.dirname(os.path.dirname(__file__))
 
 #### style css ####
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
 
-local_css('front/jobits/css/background.css')
-local_css("front/jobits/css/2_generate_question.css")
+
+local_css(MY_PATH + '/css/background.css')
+local_css(MY_PATH + "/css/2_generate_question.css")
 st.markdown(f"""<style>
                          /* 로딩이미지 */
                          .loading_space {{

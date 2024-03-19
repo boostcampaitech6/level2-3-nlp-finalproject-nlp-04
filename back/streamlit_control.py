@@ -3,7 +3,7 @@ import socket
 import subprocess
 from back.config import *
 
-MY_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "front", "jobits")   # 필요한 값에 접근하기 위해 경로 설정
+MY_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "front")   # 필요한 값에 접근하기 위해 경로 설정
 
 #시작 페이지 띄우기
 def run_streamlit_app():

@@ -5,8 +5,8 @@ from streamlit_extras.switch_page_button import switch_page
 from loguru import logger as _logger
 
 sys.path.append("./")
-from front.jobits.utils.logger import DevConfig
-from front.jobits.utils.util import get_image_base64,read_gif
+from utils.logger import DevConfig
+from utils.util import get_image_base64,read_gif
 from PIL import Image
 
 from back.config import *   #IP, PORT 얻어오기 위해 import
