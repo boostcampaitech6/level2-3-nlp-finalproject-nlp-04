@@ -1,7 +1,6 @@
 import os
 import streamlit as st
 from utils.util import load_chain
-from streamlit_chat import message
 from time import sleep
 from streamlit_extras.switch_page_button import switch_page
 from PIL import Image
@@ -37,7 +36,6 @@ for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
             
-
 questions = st.session_state.main_question
             
 # 사용자 입력 받기
@@ -76,8 +74,7 @@ if st.session_state.plus == 0:
                 
 elif st.session_state.plus == 1:
     st.session_state.count += 1
-    # with st.chat_message('assistant'):
-    #     st.markdown(lang(st.session_state.count, questions[st.session_state.current_question_idx]))
+    
     if query := st.chat_input('답변을 입력해주세요. '):
         with st.chat_message('user'):
                 st.markdown(query)

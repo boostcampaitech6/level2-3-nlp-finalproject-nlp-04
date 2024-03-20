@@ -248,8 +248,6 @@ with progress_holder:
             ### 결과 텍스트 저장
             # '\n\n'을 사용하여 질문 분리 후 바로 unpacking
             
-
-            
             # 각 항목을 분리하여 리스트에 저장
             questions = re.split(r'\n\d+\.\s*', main_question.strip())
             #    첫 번째 빈 항목 제거

@@ -69,7 +69,6 @@ if 'properties' not in user_info: # GUEST인 경우 처리
     }
 }
 
-
 if "user_email" not in st.session_state:
     st.session_state['user_email'] = user_info['kakao_account']['email']
 

@@ -6,8 +6,6 @@ from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 
 sys.path.append("./")
-
-
 from utils.util import (check_essential, get_image_base64, local_css,
                         read_job_info_tb, read_prompt_from_txt,
                         read_sample_resume, save_uploaded_jd_as_filepath)
