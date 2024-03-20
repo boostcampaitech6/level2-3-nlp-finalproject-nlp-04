@@ -19,9 +19,10 @@ from src.generate_question import (create_prompt_with_resume,
 from streamlit_extras.switch_page_button import switch_page
 from utils.util import local_css, read_prompt_from_txt
 
-from back.config import OPENAI_API_KEY, DATA_DIR  # OPENAI_API_KEY 불러오기
+from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
 from PIL import Image
 
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
 st.set_page_config(
      page_title="Hello Jobits", # 브라우저탭에 뜰 제목

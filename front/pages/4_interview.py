@@ -4,11 +4,11 @@ from utils.util import load_chain
 from streamlit_chat import message
 from time import sleep
 from streamlit_extras.switch_page_button import switch_page
-from back.config import DATA_DIR
 from PIL import Image
 
 NEXT_PAGE = 'question_list'
 
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
 st.set_page_config(
      page_title="Hello Jobits", # 브라우저탭에 뜰 제목

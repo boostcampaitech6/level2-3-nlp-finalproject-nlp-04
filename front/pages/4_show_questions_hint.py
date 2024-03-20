@@ -8,8 +8,10 @@ from langchain_community.chat_models import ChatOpenAI
 from src.generate_question import create_prompt_feedback, create_prompt_hint  # 추가
 from streamlit_extras.switch_page_button import switch_page
 from utils.util import read_prompt_from_txt
-from back.config import DATA_DIR
 from PIL import Image
+
+MY_PATH = os.path.dirname(os.path.dirname(__file__))
+DATA_DIR = os.path.join(MY_PATH, 'data')
 
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
 st.set_page_config(
@@ -20,14 +22,9 @@ st.set_page_config(
      initial_sidebar_state="collapsed"
 )
 
-MY_PATH = os.path.dirname(os.path.dirname(__file__))
-
-OPENAI_API_KEY = read_prompt_from_txt(MY_PATH + "/data/test/OPANAI_KEY.txt")
-
+OPENAI_API_KEY = read_prompt_from_txt(os.path.join(DATA_DIR, "test/OPANAI_KEY.txt"))
 MODEL_NAME = "gpt-3.5-turbo-16k"
-
 NEXT_PAGE = "introduction"
-
 
 st.session_state.logger.info("start show_questions page")
 
@@ -52,9 +49,8 @@ questions = st.session_state.main_question
 
 st.title(f"{st.session_state.user_name}님의 이력서 예상 질문입니다.")
 
-prompt_template_fb = read_prompt_from_txt(MY_PATH + "/data/test/prompt_feedback.txt")
-
-prompt_template_ht = read_prompt_from_txt(MY_PATH + "/data/test/prompt_hint.txt")
+prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_feedback.txt"))
+prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_hint.txt"))
 
 
 # 각 질문에 대해 번호를 매기고 토글 위젯 생성

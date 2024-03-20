@@ -7,10 +7,13 @@ from streamlit_extras.switch_page_button import switch_page
 
 sys.path.append("./")
 
-from back.config import DATA_DIR
+
 from utils.util import (check_essential, get_image_base64, local_css,
                         read_job_info_tb, read_prompt_from_txt,
                         read_sample_resume, save_uploaded_jd_as_filepath)
+
+MY_PATH = os.path.dirname(os.path.dirname(__file__))
+DATA_DIR = os.path.join(MY_PATH, 'data')
 
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
 st.set_page_config(
@@ -21,7 +24,6 @@ st.set_page_config(
      initial_sidebar_state="collapsed"
 )
 
-MY_PATH = os.path.dirname(os.path.dirname(__file__))
 SAVE_JD_FILE_DIR = os.path.join(MY_PATH,"data")
 EXAMPLE_JD = read_prompt_from_txt(os.path.join(SAVE_JD_FILE_DIR, "JD_example.txt"))
 st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.

@@ -9,8 +9,9 @@ from utils.logger import DevConfig
 from utils.util import get_image_base64,read_gif
 from PIL import Image
 
-from back.config import *   #IP, PORT 얻어오기 위해 import
+from back.config import OPENAI_API_KEY    #IP, PORT 얻어오기 위해 import
 
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 OPENAI_API_KEY_DIR = 'api_key.txt'
 NEXT_PAGE = 'user'
 
@@ -46,7 +47,7 @@ if "LOADING_GIF2" not in st.session_state:
     st.session_state['LOADING_GIF2'] = read_gif(os.path.join(DATA_DIR,'images/loading_interview_2.gif'))
 
 if "USER_ICON" not in st.session_state:
-    st.session_state['USER_ICON'] = Image.open( DATA_DIR + '/images/user_icon.png')
+    st.session_state['USER_ICON'] = Image.open(os.path.join(DATA_DIR, 'images/user_icon.png'))
 
 if "user_name" not in st.session_state:
     st.session_state['user_name'] = '아무개'
