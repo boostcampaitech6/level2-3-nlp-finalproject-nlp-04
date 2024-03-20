@@ -1,9 +1,10 @@
 # kakao_auth.py
 from typing import Optional
+from fastapi.security import OAuth2PasswordBearer
 
 import requests
 from config import REDIRECT_URI, REST_API_KEY
-from fastapi import APIRouter, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from starlette.responses import RedirectResponse
 
 from user_authorization import verify_token
@@ -37,13 +38,12 @@ async def kakaoAuth(response: Response, code: Optional[str] = "NONE"):
     return RedirectResponse(url=f"{end_point}?access_token={ACCESS_TOKEN}")
 
 
-
 @router.get("/kakaoLogout")
-def kakaoLogout(request: Request, response: Response):
+def kakaoLogout(response: Response):
     url = "https://kapi.kakao.com/v1/user/unlink"
     headers = dict(Authorization=f"Bearer {ACCESS_TOKEN}")
     _res = requests.post(url, headers=headers)
-    response.set_cookie(key="kakao", value=None)
+    #response.set_cookie(key="kakao", value=None)
 
     global ID_TOKEN
     ID_TOKEN = None  # ID 토큰 초기화
@@ -51,6 +51,26 @@ def kakaoLogout(request: Request, response: Response):
     set_shared_var('NEXT_PATH', '') # 다음 페이지 이동 경로 초기화
 
     return {"logout": _res.json()}
+
+
+# 사용자 정보 가져오기
+@router.get("/user_info")
+async def get_user_info():
+    headers = { "Authorization": f"Bearer {ACCESS_TOKEN}" }
+
+    try:
+        response = requests.get("https://kapi.kakao.com/v2/user/me", headers=headers)
+        user_info = response.json()
+        return user_info
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Failed to fetch user info from Kakao")
+
+
+
+
+
+
+
 
 
 def check_login():
