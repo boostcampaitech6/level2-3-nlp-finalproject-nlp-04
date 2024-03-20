@@ -1,14 +1,13 @@
 # kakao_auth.py
 from typing import Optional
-from fastapi.security import OAuth2PasswordBearer
 
 import requests
 from config import REDIRECT_URI, REST_API_KEY
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, HTTPException, Response
 from starlette.responses import RedirectResponse
 
 from user_authorization import verify_token
-from share_var import get_shared_var, set_shared_var  # 공유 변수 관련 함수 불러오기
+from share_var import set_shared_var  # 공유 변수 관련 함수 불러오기
 
 router = APIRouter()
 
