@@ -1,5 +1,6 @@
 import os
 import sys
+import requests
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 from loguru import logger as _logger
@@ -9,7 +10,7 @@ from utils.logger import DevConfig
 from utils.util import get_image_base64,read_gif
 from PIL import Image
 
-from back.config import OPENAI_API_KEY    #IP, PORT 얻어오기 위해 import
+from back.config import OPENAI_API_KEY, OUTSIDE_IP, PORT     #KEY, IP, PORT 얻어오기 위해 import
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 OPENAI_API_KEY_DIR = 'api_key.txt'
@@ -23,8 +24,6 @@ if "logger" not in st.session_state:
     st.session_state["save_dir"] = config.SAVE_DIR
 
 if "openai_api_key" not in st.session_state:
-    # with open(OPENAI_API_KEY_DIR) as f:
-    #     OPENAI_API_KEY = f.read()
     os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
     st.session_state.openai_api_key = OPENAI_API_KEY
 
@@ -55,5 +54,26 @@ if "user_name" not in st.session_state:
 if "temperature" not in st.session_state:
     st.session_state['temperature'] = 0
 
-    
+
+# 사용자 정보 저장(session_state)
+response = requests.get("http://" + OUTSIDE_IP + ":" + str(PORT) + "/user_info")
+user_info = response.json()
+
+if 'properties' not in user_info: # GUEST인 경우 처리
+    user_info = {
+    'properties': {
+        'nickname': 'GUEST'
+    },
+    'kakao_account': {
+        'email': 'GUEST'
+    }
+}
+
+
+if "user_email" not in st.session_state:
+    st.session_state['user_email'] = user_info['kakao_account']['email']
+
+if "nickname" not in st.session_state:
+    st.session_state['nickname'] = user_info['properties']['nickname']
+
 switch_page(NEXT_PAGE)

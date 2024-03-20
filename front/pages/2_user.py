@@ -35,6 +35,8 @@ NEXT_PAGE = 'gene_question'
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
+st.title('안녕하세요, '+st.session_state.nickname+'님!') # 사용자 이름을 받아서 화면에 출력합니다.
+
 local_css(MY_PATH + "/css/background.css")
 st.markdown(f'''<a class="main-logo" href="/main" target="_self">
                 <img src="data:img\logo_char.jpg;base64,{LOGO_IMG}" width="240px"; height="70px";/>
@@ -279,6 +281,7 @@ st.markdown(f'''<style>
 ## emoji for interviewer icon
 
 ## custom message
+
 info_message = "※ 본 테스트 서비스는 사용자 분들의 개인정보를 절대 수집하지 않습니다."
 main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
 
@@ -298,14 +301,8 @@ with input_form:
                         ''',
                         
                         unsafe_allow_html=True )
-    ### 이름 폼
-    input_form.markdown('''
-                        <div class="menu_name">이름<span class="essential_menu">*</span></div>
-                        ''', 
-                        unsafe_allow_html=True)
-    
-    user_name = input_form.text_input('이름',label_visibility='collapsed',placeholder='김아무개',value="아무개")
-    st.session_state.user_name = user_name
+
+    st.session_state.user_name = st.session_state.nickname
     st.session_state.logger.info(f"user nae : {st.session_state.user_name}")
     
     ### 지원 직무 폼

@@ -41,8 +41,6 @@ MY_PATH = os.path.dirname(os.path.dirname(__file__))
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
-
-
 local_css(MY_PATH + '/css/background.css')
 local_css(MY_PATH + "/css/2_generate_question.css")
 st.markdown(f"""<style>

@@ -18,7 +18,7 @@ st.set_page_config(
      initial_sidebar_state="collapsed"
 )
 
-st.title('Hello-JobIts 모의면접 🤖')
+st.title('Hello-JobIts 모의면접 🤖 (지원자 : ' +  st.session_state['nickname']+')')
 
 if 'current_question_idx' not in st.session_state:
     st.session_state.current_question_idx = 0
