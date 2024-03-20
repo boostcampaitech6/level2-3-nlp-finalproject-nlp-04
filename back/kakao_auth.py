@@ -3,7 +3,7 @@ from typing import Optional
 
 import requests
 from config import REDIRECT_URI, REST_API_KEY
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, status
 from starlette.responses import RedirectResponse
 
 from user_authorization import verify_token
@@ -15,17 +15,16 @@ ACCESS_TOKEN = None # 토큰 저장
 ID_TOKEN = None  # ID 토큰 : 로그인 여부 확인용
 
 @router.get("/kakao")
-async def kakao(response: Response):
+async def kakao():
     url = f"https://kauth.kakao.com/oauth/authorize?client_id={REST_API_KEY}&response_type=code&redirect_uri={REDIRECT_URI}"
     return RedirectResponse(url)
 
 
 @router.get("/auth")
-async def kakaoAuth(response: Response, code: Optional[str] = "NONE"):
+async def kakaoAuth(code: Optional[str] = "NONE"):
     _url = f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={REST_API_KEY}&code={code}&redirect_uri={REDIRECT_URI}"
     _res = requests.post(_url)
     _result = _res.json()
-    response.set_cookie(key="kakao", value=str(_result["access_token"]))
 
     global ACCESS_TOKEN
     ACCESS_TOKEN = str(_result["access_token"])  # ACCESS 토큰 저장
@@ -34,15 +33,15 @@ async def kakaoAuth(response: Response, code: Optional[str] = "NONE"):
     ID_TOKEN = str(_result["id_token"])  # ID 토큰 저장
 
     end_point = "/launch_streamlit_app"  # 이동할 페이지 지정
+    
     return RedirectResponse(url=f"{end_point}?access_token={ACCESS_TOKEN}")
 
 
 @router.get("/kakaoLogout")
-def kakaoLogout(response: Response):
+def kakaoLogout():
     url = "https://kapi.kakao.com/v1/user/unlink"
     headers = dict(Authorization=f"Bearer {ACCESS_TOKEN}")
     _res = requests.post(url, headers=headers)
-    #response.set_cookie(key="kakao", value=None)
 
     global ID_TOKEN
     ID_TOKEN = None  # ID 토큰 초기화
@@ -57,20 +56,20 @@ def kakaoLogout(response: Response):
 async def get_user_info():
     headers = { "Authorization": f"Bearer {ACCESS_TOKEN}" }
 
+    # 로그인 안되어있으면 리다이렉트
+    is_login, _ = check_login()   
+    if is_login == False:
+        raise HTTPException(
+            status_code=status.HTTP_303_SEE_OTHER,
+            headers={"Location": "/kakao"},
+        )
+        
     try:
         response = requests.get("https://kapi.kakao.com/v2/user/me", headers=headers)
         user_info = response.json()
         return user_info
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Failed to fetch user info from Kakao")
-
-
-
-
-
-
-
-
+        return None
 
 def check_login():
     """
