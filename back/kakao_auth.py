@@ -56,14 +56,15 @@ def kakaoLogout():
 async def get_user_info():
     headers = { "Authorization": f"Bearer {ACCESS_TOKEN}" }
 
-    # 로그인 안되어있으면 리다이렉트
-    is_login, _ = check_login()   
-    if is_login == False:
-        raise HTTPException(
-            status_code=status.HTTP_303_SEE_OTHER,
-            headers={"Location": "/kakao"},
-        )
-        
+    # # 로그인 안되어있으면 리다이렉트
+    # is_login, _ = check_login()  
+    # if is_login == False:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_303_SEE_OTHER,
+    #         headers={"Location": "/kakao"},
+    #     )
+    
+    
     try:
         response = requests.get("https://kapi.kakao.com/v2/user/me", headers=headers)
         user_info = response.json()
