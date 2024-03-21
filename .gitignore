@@ -189,5 +189,5 @@ test.db
 maxseats
 
 .vscode
-mongod.log
+mongodb.log
 mongodb
