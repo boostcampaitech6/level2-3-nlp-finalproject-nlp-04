@@ -3,7 +3,7 @@ import sys
 import uuid
 import os
 
-USER = "KHAN"
+USER = os.environ.get("USER")
 LOG_DIR = "logs/user/"
 
 class Config(object):
