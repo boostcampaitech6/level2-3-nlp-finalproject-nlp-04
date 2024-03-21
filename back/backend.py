@@ -1,7 +1,8 @@
 import os
+from typing import Optional
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, Request, WebSocket
-from fastapi.responses import RedirectResponse
+from fastapi import BackgroundTasks, Cookie, FastAPI, Request, Response, WebSocket
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from share_var import get_shared_var, set_shared_var  # 공유 변수 관련 함수 불러오기
@@ -68,6 +69,26 @@ async def launch_streamlit_app(background_tasks: BackgroundTasks):
     
     return RedirectResponse(url=streamlit_url)
 
+
+@app.post("/cookie-and-object/")
+def create_cookie(response: Response):
+    response.set_cookie(key="fakesession", value="fake-cookie-session-value")
+    return {"message": "Come to the dark side, we have cookies"}
+
+
+@app.get("/cookie/")
+def create_cookie():
+    content = {"message": "Come to the dark side, we have cookies"}
+    response = JSONResponse(content=content)
+    response.set_cookie(key="fakesession", value="fake-cookie-session-value")
+    return response
+
+@app.get("/items")
+async def read_items(request: Request, ads_id: Optional[str] = Cookie(default=None)):
+    
+    # print("쿠키: ", request.cookies.get('sessionKey'))
+    print("쿠키: ", request.cookies.get('fakesession'))
+    return {"ads_id":ads_id}
 
 if __name__ == "__main__":
     uvicorn.run(app, host=INSIDE_IP, port=PORT)  # 8000은 모두에게 배포로 설정
