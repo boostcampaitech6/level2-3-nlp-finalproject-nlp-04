@@ -3,8 +3,8 @@
 3. level2-3-nlp-finalproject-nlp-04 폴더로 이동
   
 ### poetry로 실행
-4. poetry install (필요한 라이브러리 모두 깔기)
-5. pip install poetry (깔려 있으면 생략)
+4. pip install poetry (깔려 있으면 생략)
+5. poetry install (필요한 라이브러리 모두 깔기)
 6. poetry shell (가상환경 입장)
 7. python back/backend.py (실행)
 
