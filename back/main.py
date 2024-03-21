@@ -29,7 +29,7 @@ class Items(BaseModel):
 @app.post("/items/", response_model=Items)
 async def create_item(item: Items):
     result = await collection.insert_one(item.model_dump())
-    item.id = str(result.inserted_id)
+    item._id = str(result.inserted_id)
     return item
 
 
@@ -44,7 +44,7 @@ async def read_item(item_id: str):
 @app.put("/items/{item_id}", response_model=Items)
 async def update_item(item_id: str, item: Items):
     updated_item = await collection.find_one_and_update(
-        {"_id": item_id}, {"$set": item.model_dump()}
+        {"_id": ObjectId(item_id)}, {"$set": item.model_dump()}
     )
     if updated_item:
         return item
@@ -53,7 +53,7 @@ async def update_item(item_id: str, item: Items):
 
 @app.delete("/items/{item_id}", response_model=Items)
 async def delete_item(item_id: str):
-    deleted_item = await collection.find_one_and_delete({"_id": item_id})
+    deleted_item = await collection.find_one_and_delete({"_id": ObjectId(item_id)})
     if deleted_item:
         return deleted_item
     raise HTTPException(status_code=404, detail="Item not found")
