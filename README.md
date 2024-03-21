@@ -1,3 +1,4 @@
-# python back/backend.py로 실행
-- MY_PATH, secret_key.yaml 경로 설정해주기
-- yeh-jeans의 data 폴더 front/ 에 잘 넣어주기
+# level2-3-nlp-finalproject-nlp-04 폴더에 secret_key.yaml 넣어주고, 그 폴더에서 python back/backend.py로 실행
+- secret_key.yaml 파일을 자신에 맞게 잘 설정해주시기 바랍니다
+
+- secret_key.yaml 파일구조는 슬랙 참조
