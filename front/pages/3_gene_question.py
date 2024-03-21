@@ -15,7 +15,7 @@ from src.generate_question import create_prompt_with_jd  # 추가
 from src.generate_question import (create_prompt_with_resume,
                                    create_resume_vectordb, load_user_JD,
                                    load_user_resume, save_user_JD,
-                                   save_user_resume)
+                                   save_user_resume,create_prompt_with_question)
 from streamlit_extras.switch_page_button import switch_page
 from utils.util import local_css, read_prompt_from_txt
 
@@ -202,17 +202,17 @@ with progress_holder:
             # STEP 2. step 1 에서 생성된 job_description 를 qa prompt template 에 넣고, GPT 에 질의하여 예상 질문을 뽑습니다.
             # prompt_qa_template #######################################
             
-            st.session_state.logger.info("prompt QA start")
+            st.session_state.logger.info("prompt resume start")
             
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_qa_template")
-            
-            
-            st.session_state.logger.info("create prompt QA template")
+            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_resume_template.txt")
             
             
-            prompt_qa = create_prompt_with_resume(prompt_template)
+            st.session_state.logger.info("create prompt resume template")
             
-            st.session_state.logger.info("create prompt_qa")
+            
+            prompt_resume = create_prompt_with_resume(prompt_template)
+            
+            st.session_state.logger.info("create prompt_resume")
             
             vector_index = create_resume_vectordb(USER_RESUME_SAVE_DIR) # 이력서 vectordb를 생성해줍니다.
 
@@ -225,7 +225,7 @@ with progress_holder:
                             , openai_api_key=OPENAI_API_KEY
                             )
             
-            chain_type_kwargs = {"prompt": prompt_qa}
+            chain_type_kwargs = {"prompt": prompt_resume}
             
             qa_chain = RetrievalQA.from_chain_type(
                 llm=llm2,
@@ -233,16 +233,35 @@ with progress_holder:
                 retriever=vector_index.as_retriever(),
                 chain_type_kwargs=chain_type_kwargs, verbose = True)
             
-            main_question = qa_chain.run(job_description)
+            resume = qa_chain.run("기술면접에 나올만한 프로젝트 내용은?")
             
-            print("prompt_qa @@@@@@@@",prompt_qa)
+            print("prompt_resume @@@@@@@@",prompt_resume)
             
-            st.session_state.logger.info(" prompt_qa running complit")
+            st.session_state.logger.info(" prompt_resume running complit")
             
-            print(main_question)
+            print(resume)
+            
+            ## step3 : 
+            st.session_state.logger.info("prompt question start")
+            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_question_template.txt")
+            
+            st.session_state.logger.info("create prompt question template")
+    
+            prompt_question = create_prompt_with_question(prompt_template)
+
+            llm3= ChatOpenAI(temperature=0, model_name=MODEL_NAME,
+                        openai_api_key=OPENAI_API_KEY)
+            
+            chain = LLMChain(llm=llm3, prompt=prompt_question)
+            
+            main_question = chain.run({'jd': job_description,'resume': resume})
             
             end = time.time()
             st.session_state.logger.info(f"generate big question run time is ... {(end-start)/60:.3f} 분 ({(end-start):0.1f}초)")
+            
+            st.session_state.logger.info(" prompt_quest running complete")
+            
+            print(main_question)
             
             ### STEP 3. 결과물 및 Token 사용량 저장
             ### 결과 텍스트 저장
