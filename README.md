@@ -1,3 +1,5 @@
+### feat/develop 2chain으로 구성되어있던 것을 3chain으로 바꾼 version
+
 1. data폴더 넣어주기(front/data가 되도록)
 2. level2-3-nlp-finalproject-nlp-04 폴더에 secret_key.yaml 넣어주기
 3. level2-3-nlp-finalproject-nlp-04 폴더로 이동
