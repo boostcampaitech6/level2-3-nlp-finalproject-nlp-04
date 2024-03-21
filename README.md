@@ -7,7 +7,7 @@
 5. poetry install (필요한 라이브러리 모두 깔기)
 6. poetry shell (가상환경 입장)
 7. python back/backend.py (실행)
-
+8. 외부 아이피:포트 -> 이렇게 사이트 접속
 
 
 - secret_key.yaml 파일을 자신에게 맞게 잘 설정해주시기 바랍니다.
