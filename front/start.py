@@ -97,6 +97,35 @@ st.markdown(f"""
     unsafe_allow_html=True
 )
 
+# 클라이언트 측에서 쿠키를 읽어오는 코드(streamlit에서 작동)
+def read_cookie_from_client():
+    # JavaScript 코드를 포함하는 HTML 문자열
+    javascript_code = """
+    <script>
+        // 클라이언트 측의 쿠키를 읽어오는 함수
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // 쿠키 읽기 예시
+        const accessToken = getCookie('access_token');
+        console.log('안녕 자바스크립트, Access Token:', accessToken);
+        
+        // Streamlit으로 쿠키 값 전송
+        Streamlit.setComponentValue(accessToken);
+        
+    </script>
+    """
+
+    # HTML 컴포넌트를 사용하여 JavaScript 코드를 포함
+    st.components.v1.html(javascript_code)
+
+# 클라이언트의 쿠키를 읽어와서 a_token 변수에 저장
+a_token = read_cookie_from_client()
+print('토큰 a_token:', a_token)  
+
 # 시작하기 버튼
 if st.button('LOGIN(KAKAO)'):
     goto_login_page(next_path='home')
@@ -104,3 +133,5 @@ if st.button('LOGIN(KAKAO)'):
 # 비회원 버튼
 if st.button('GUEST'):
     switch_page('home')
+
+

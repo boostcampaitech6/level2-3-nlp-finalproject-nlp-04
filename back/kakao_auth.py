@@ -24,7 +24,7 @@ async def kakao():
 async def kakaoAuth(code: Optional[str] = "NONE"):
     _url = f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={REST_API_KEY}&code={code}&redirect_uri={REDIRECT_URI}"
     _res = requests.post(_url)
-    _result = _res.json()
+    _result = _res.json()   # 사용자 정보 반환
 
     global ACCESS_TOKEN
     ACCESS_TOKEN = str(_result["access_token"])  # ACCESS 토큰 저장
@@ -65,7 +65,7 @@ async def get_user_info():
     except Exception as e:
         return None
     
-
+# 사용자 쿠키에서 Access token 가져오기
 @router.get("/items")
 async def read_items(request: Request):
     print("쿠키: ", request.cookies.get('access_token'))

@@ -59,6 +59,8 @@ if "temperature" not in st.session_state:
 response = requests.get("http://" + OUTSIDE_IP + ":" + str(PORT) + "/user_info")
 user_info = response.json()
 
+get_cookie_url = "http://" + OUTSIDE_IP + ":" + str(PORT) + "/items"
+
 if 'properties' not in user_info: # GUEST인 경우 처리
     user_info = {
     'properties': {
@@ -66,13 +68,61 @@ if 'properties' not in user_info: # GUEST인 경우 처리
     },
     'kakao_account': {
         'email': 'GUEST'
-    }
+    },
+    'access_token': 'GUEST'
 }
+else:   # 로그인 한 사용자 -> access토큰 설정
+    # 사용자 access_token 불러오기
+    cookies = {"access_token": "your_access_token_here"}  # 쿠키 이름과 값을 적절히 설정하세요
+    token_response = requests.get(get_cookie_url, cookies=cookies)
+    user_info['access_token'] = token_response.json()['access_token']
+    print("불러온 사용자 access 토큰 : ", token_response.json(), user_info['access_token']) 
+
+
+
+
+
+
+# # HTML 컴포넌트에 JavaScript 코드를 삽입하여 실행
+# st.write("""
+#     <script>
+#     // GET 요청을 보낼 URL
+# var url = """+get_cookie_url+""";
+
+# // GET 요청 보내기
+# fetch(url)
+#     .then(response => {
+#         // 서버 응답이 성공적으로 도착한 경우
+#         if (response.ok) {
+#             // JSON 형식으로 응답을 파싱하여 반환
+#             return response.json();
+#         }
+#         // 서버 응답이 에러인 경우
+#         throw new Error('Network response was not ok');
+#     })
+#     .then(data => {
+#         // JSON 데이터를 사용하여 처리
+#         console.log(data);
+#     })
+#     .catch(error => {
+#         // 오류 처리
+#         console.error('There was a problem with the fetch operation:', error);
+#     });
+
+#     </script>
+# """)
+
+
+
 
 if "user_email" not in st.session_state:
     st.session_state['user_email'] = user_info['kakao_account']['email']
 
 if "nickname" not in st.session_state:
     st.session_state['nickname'] = user_info['properties']['nickname']
+
+if "access_token" not in st.session_state:  # access_token 설정
+    st.session_state['access_token'] = user_info['access_token']
+
 
 switch_page(NEXT_PAGE)
