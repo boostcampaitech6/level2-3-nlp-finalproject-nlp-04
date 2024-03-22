@@ -24,7 +24,8 @@ ID_TOKEN = None  # ID 토큰 : 로그인 여부 확인용
 
 # redirect URI 자동 설정
 app = FastAPI(docs_url="/documentation", redoc_url=None)
-app.include_router(kakao_router, mongo_router)
+app.include_router(kakao_router)
+app.include_router(mongo_router)
 templates = Jinja2Templates(directory="front/templates")  # 템플릿 폴더 지정(HTML 파일 저장 폴더)
 
 origins = [
