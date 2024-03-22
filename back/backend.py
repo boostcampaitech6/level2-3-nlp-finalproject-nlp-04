@@ -14,6 +14,7 @@ sys.path.append('./back')
 
 from back.config import *
 from back.kakao_auth import router as kakao_router  # 카카오 로그인 라우터 불러오기
+from back.mongodb import router as mongo_router  # MongoDB 라우터 불러오기
 from back.streamlit_control import run_streamlit_app, check_port  # streamlit 관련 함수 불러오기
 
 set_shared_var('NEXT_PATH', '')  # 다음 이동 페이지 초기화
@@ -24,6 +25,7 @@ ID_TOKEN = None  # ID 토큰 : 로그인 여부 확인용
 # redirect URI 자동 설정
 app = FastAPI(docs_url="/documentation", redoc_url=None)
 app.include_router(kakao_router)
+app.include_router(mongo_router)
 templates = Jinja2Templates(directory="front/templates")  # 템플릿 폴더 지정(HTML 파일 저장 폴더)
 
 origins = [
