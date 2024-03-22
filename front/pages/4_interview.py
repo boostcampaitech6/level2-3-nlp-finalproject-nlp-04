@@ -58,14 +58,14 @@ if st.session_state.plus == 0:
                 result = '답변 감사합니다'
                 st.session_state.feedback = result
                 st.markdown(result)
-            st.session_state.messages.append({"role": "assistant", "content": result})
+            #st.session_state.messages.append({"role": "assistant", "content": result})
             # st.session_state.current_question_idx += 1
             st.session_state.plus = 1
         if st.session_state.plus == 1:
             st.session_state.chain = load_chain(questions[st.session_state.current_question_idx])
             with st.chat_message('assistant'):
                 st.session_state.tail = st.session_state.chain.predict(input = query)
-                st.session_state.messages.append({"role": "assistant", "content": st.session_state.tail})
+                #st.session_state.messages.append({"role": "assistant", "content": st.session_state.tail})
                 st.markdown(st.session_state.tail)
         elif len(questions) > st.session_state.current_question_idx + 1:
             st.session_state.current_question_idx += 1
@@ -78,7 +78,8 @@ elif st.session_state.plus == 1:
     if query := st.chat_input('답변을 입력해주세요. '):
         with st.chat_message('user'):
                 st.markdown(query)
-        st.session_state.messages.append({"role": "user", "content": query})
+        st.session_state.answer.append({"role": "user", "content": query})
+        #st.session_state.messages.append({"role": "user", "content": query})
     if st.session_state.count != 2:
         with st.chat_message('assistant'):
             plus_result = "꼬리질문 답변 감사합니다."
