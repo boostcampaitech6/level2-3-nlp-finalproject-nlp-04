@@ -68,8 +68,6 @@ async def get_user_info():
 
 @router.get("/items")
 async def read_items(request: Request):
-    
-    # print("쿠키: ", request.cookies.get('sessionKey'))
     print("쿠키: ", request.cookies.get('access_token'))
     return {"access_token":request.cookies.get('access_token')}
 
