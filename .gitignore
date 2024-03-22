@@ -191,3 +191,14 @@ maxseats
 .vscode
 mongodb.log
 mongodb
+#database
+*.conf
+.mongodb
+*.data
+journal
+*.wt
+.bash_history
+mongod.lock
+*.bson
+WiredTiger
+WiredTiger*
