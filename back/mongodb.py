@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 from bson import ObjectId
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, APIRouter, Query
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
 from pymongo import ReturnDocument, errors
@@ -15,7 +15,7 @@ logging.basicConfig(
     filemode="w",
 )
 
-app = FastAPI(docs_url="/", redoc_url=None)
+router = APIRouter()
 
 # MongoDB connection URL
 MONGO_URL = "mongodb://localhost:27017"
@@ -41,7 +41,7 @@ class User(BaseModel):
     # resume: Optional[str] = None
 
 
-@app.get("/users/{email}/exists")
+@router.get("/users/{email}/exists")
 async def check_email_exists(email: str):
     """
     이 함수는 주어진 이메일이 데이터베이스에 존재하는지 확인합니다.
@@ -56,7 +56,7 @@ async def check_email_exists(email: str):
     return user is not None
 
 
-@app.post("/users/", response_model=User)
+@router.post("/users/", response_model=User)
 async def create_user(user: User):
     """
     사용자를 생성하는 함수입니다.
@@ -72,7 +72,7 @@ async def create_user(user: User):
     return user
 
 
-@app.put("/users/{email}", response_model=User)
+@router.put("/users/{email}", response_model=User)
 async def update_user(email: str, user: User):
     """
     사용자 정보를 업데이트하는 함수입니다.
@@ -96,7 +96,7 @@ async def update_user(email: str, user: User):
     raise HTTPException(status_code=404, detail="User not found")
 
 
-@app.get("/users/{email}", response_model=User)
+@router.get("/users/{email}", response_model=User)
 async def read_user(email: str):
     """
     사용자 이메일을 받아와서 해당 이메일을 가진 사용자를 조회합니다.
@@ -116,7 +116,7 @@ async def read_user(email: str):
     raise HTTPException(status_code=404, detail="User not found")
 
 
-@app.delete("/users/{email}", response_model=User)
+@router.delete("/users/{email}", response_model=User)
 async def delete_user(email: str):
     """
     사용자를 삭제하는 함수입니다.
@@ -136,7 +136,7 @@ async def delete_user(email: str):
     raise HTTPException(status_code=404, detail="User not found")
 
 
-@app.get("/users/{email}/token")
+@router.get("/users/{email}/token")
 async def get_access_token(email: str):
     """
     사용자의 이메일을 입력받아 해당 사용자의 액세스 토큰을 반환합니다.
@@ -158,7 +158,7 @@ async def get_access_token(email: str):
     )
 
 
-@app.put("/users/{email}/token", response_model=User)
+@router.put("/users/{email}/token", response_model=User)
 async def update_access_token(email: str, token: str):
     """
     사용자의 액세스 토큰을 업데이트하는 함수입니다.
@@ -181,9 +181,3 @@ async def update_access_token(email: str, token: str):
     if updated_user:
         return User(**updated_user)
     raise HTTPException(status_code=404, detail="User not found")
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
