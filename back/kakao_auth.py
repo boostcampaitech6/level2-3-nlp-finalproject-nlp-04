@@ -3,8 +3,7 @@ from typing import Optional
 
 import requests
 from config import REDIRECT_URI, REST_API_KEY
-from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Cookie, Request
 from starlette.responses import RedirectResponse
 
 from user_authorization import verify_token
@@ -65,11 +64,6 @@ async def get_user_info():
     except Exception as e:
         return None
     
-# 사용자 쿠키에서 Access token 가져오기
-@router.get("/items")
-async def read_items(request: Request):
-    print("쿠키: ", request.cookies.get('access_token'))
-    return {"access_token":request.cookies.get('access_token')}
 
 
 def check_login():

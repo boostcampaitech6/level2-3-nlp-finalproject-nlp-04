@@ -1,5 +1,6 @@
 import os
 from typing import Optional
+from pydantic import BaseModel
 import uvicorn
 from fastapi import BackgroundTasks, Cookie, FastAPI, Request, Response, WebSocket
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -30,12 +31,14 @@ templates = Jinja2Templates(directory="front/templates")  # 템플릿 폴더 지
 
 origins = [
     f"http://{INSIDE_IP}:{PORT}",
+    f"http://{OUTSIDE_IP}:{PORT}"
+    f"http://{OUTSIDE_IP}:{STREAMLIT_PORT}"
     f"http://localhost:{PORT}",
-    f"http://127.0.01:{PORT}",
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    #allow_origins=origins,
+    allow_origins=["*"],  # 모든 출처 허용
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -85,12 +88,13 @@ def create_cookie():
     response.set_cookie(key="fakesession", value="fake-cookie-session-value")
     return response
 
-@app.get("/items")
-async def read_items(request: Request, ads_id: Optional[str] = Cookie(default=None)):
+class AccessToken(BaseModel):
+    access_token: str
     
-    # print("쿠키: ", request.cookies.get('sessionKey'))
-    print("쿠키: ", request.cookies.get('fakesession'))
-    return {"ads_id":ads_id}
+@app.post("/items")
+async def print_access_token(token: AccessToken):
+    print("Received access token:", token.access_token)
+    return {"message": "Access token received successfully"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host=INSIDE_IP, port=PORT)  # 8000은 모두에게 배포로 설정
