@@ -21,6 +21,8 @@ from utils.util import local_css, read_prompt_from_txt
 
 from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
 from PIL import Image
+from src.rule_based_algorithm import generate_rule_based_questions
+
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
@@ -284,9 +286,12 @@ with progress_holder:
 
             st.session_state.big_q_progress = False ### 대질문 생성 끝
         else :
-
+            selected_job = st.session_state.selected_job
+            
+            rule_questions = generate_rule_based_questions(selected_job,user_JD,user_resume)
+            print()
             ### 다음 세션으로 값 넘기기
-            st.session_state.main_question = questions
+            st.session_state.main_question = questions + rule_questions
             st.session_state.logger.info("end gene_question")
             time.sleep(3)
             ####
