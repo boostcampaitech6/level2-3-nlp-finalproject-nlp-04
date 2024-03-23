@@ -18,7 +18,7 @@ logging.basicConfig(
 
 router = APIRouter()
 username = os.getenv("MONGO_USERNAME", "admin")
-password = os.getenv("MONGO_PASSWORD", "password")
+password = os.getenv("MONGO_PASSWORD", "maxseats")
 print(username, password)
 # MongoDB connection URL
 MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
