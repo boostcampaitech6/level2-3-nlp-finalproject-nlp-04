@@ -10,7 +10,6 @@ from utils.util import get_image_base64
 sys.path.append("./")
 sys.path.append("./back")
 from back.config import OUTSIDE_IP, PORT   #IP, PORT 얻어오기 위해 import
-
 from streamlit_extras.switch_page_button import switch_page
 from back.share_var import set_shared_var  # 공유 변수 관련 함수 불러오기
 
@@ -97,62 +96,6 @@ st.markdown(f"""
     unsafe_allow_html=True
 )
 
-# 클라이언트 측에서 쿠키를 읽어오는 코드(streamlit에서 작동)
-def read_cookie_from_client():
-    # JavaScript 코드를 포함하는 HTML 문자열
-    # Python 변수에서 JavaScript 코드로 URL 값 전달
-    url = f"http://{OUTSIDE_IP}:{PORT}/items"
-    
-    javascript_code = f"""
-        <script>
-            // 클라이언트 측의 쿠키를 읽어오는 함수
-            function getCookie(name) {{
-                const value = `; ${{document.cookie}}`;
-                const parts = value.split(`; ${{name}}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }}
-
-            // 쿠키 읽기 예시
-            const accessToken = getCookie('access_token');
-            console.log('안녕 자바스크립트, Access Token:', accessToken);
-            
-            
-            // GET 요청 보내기
-            const url = "{url}";  // Python 변수를 JavaScript 변수로 설정
-            // 서버에 HTTP 요청 보내기
-            fetch(url, {{
-                method: 'POST',
-                headers: {{
-                    'Content-Type': 'application/json',
-                }},
-                body: JSON.stringify({{ access_token: accessToken }}),
-            }})
-            .then(response => {{
-                if (!response.ok) {{
-                    throw new Error('네트워크 오류 발생');
-                }}
-                return response.json();
-            }})
-            .then(data => {{
-                console.log('서버에서 받은 데이터:', data);
-            }})
-            .catch(error => {{
-                console.error('요청 실패:', error);
-            }});
-            
-            
-            
-        </script>
-    """
-
-    # HTML 컴포넌트를 사용하여 JavaScript 코드를 포함
-    st.components.v1.html(javascript_code)
-
-# 클라이언트의 쿠키를 읽어와서 a_token 변수에 저장
-a_token = read_cookie_from_client()
-print('토큰 a_token:', a_token)  
-
-# 시작하기 버튼
 if st.button('LOGIN(KAKAO)'):
     goto_login_page(next_path='home')
     

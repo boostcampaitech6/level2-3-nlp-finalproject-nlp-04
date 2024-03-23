@@ -1,6 +1,7 @@
 import os
 from typing import Optional
 from pydantic import BaseModel
+import requests
 import uvicorn
 from fastapi import BackgroundTasks, Cookie, FastAPI, Request, Response, WebSocket
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -93,8 +94,22 @@ class AccessToken(BaseModel):
     
 @app.post("/items")
 async def print_access_token(token: AccessToken):
-    print("Received access token:", token.access_token)
-    return {"message": "Access token received successfully"}
+    print("아이템 : Received access token:", token.access_token)
+    access_token = token.access_token   # 현재 저장된 access_token 값
+
+    headers = { "Authorization": f"Bearer {access_token}" }
+    
+    try:
+        response = requests.get("https://kapi.kakao.com/v2/user/me", headers=headers)
+        user_info = response.json()
+        print("items에서 user_info :; ", user_info)
+        #return user_info
+    except Exception as e:
+        return None
+
+    # return user_info
+    # return {"message": "Access token received successfully"}
+    
 
 if __name__ == "__main__":
     uvicorn.run(app, host=INSIDE_IP, port=PORT)  # 8000은 모두에게 배포로 설정

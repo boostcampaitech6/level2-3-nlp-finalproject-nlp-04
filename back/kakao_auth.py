@@ -52,17 +52,6 @@ def kakaoLogout():
     return {"logout": _res.json()}
 
 
-# 사용자 정보 가져오기
-@router.get("/user_info")
-async def get_user_info():
-    headers = { "Authorization": f"Bearer {ACCESS_TOKEN}" }
-    
-    try:
-        response = requests.get("https://kapi.kakao.com/v2/user/me", headers=headers)
-        user_info = response.json()
-        return user_info
-    except Exception as e:
-        return None
     
 
 

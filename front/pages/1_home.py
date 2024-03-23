@@ -1,5 +1,6 @@
 import os
 import sys
+from time import sleep
 import requests
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
@@ -54,12 +55,78 @@ if "user_name" not in st.session_state:
 if "temperature" not in st.session_state:
     st.session_state['temperature'] = 0
 
+   
+   
+# 클라이언트 측에서 쿠키를 읽어오는 코드(streamlit에서 작동)
+def read_cookie_from_client():
+    # JavaScript 코드를 포함하는 HTML 문자열
+    # Python 변수에서 JavaScript 코드로 URL 값 전달
+    url = f"http://{OUTSIDE_IP}:{PORT}/items"
+    
+    
+    javascript_code = f"""
+        <script>
+            // 클라이언트 측의 쿠키를 읽어오는 함수
+            function getCookie(name) {{
+                const value = `; ${{document.cookie}}`;
+                const parts = value.split(`; ${{name}}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }}
 
-# 사용자 정보 저장(session_state)
-response = requests.get("http://" + OUTSIDE_IP + ":" + str(PORT) + "/user_info")
-user_info = response.json()
+            // 쿠키 읽기 예시
+            const accessToken = getCookie('access_token');
+            console.log('안녕 자바스크립트, Access Token:', accessToken);
+            
+            
+            // POST 요청 보내기
+            const url = "{url}";  // Python 변수를 JavaScript 변수로 설정
+            // 서버에 HTTP 요청 보내기
+            fetch(url, {{
+                method: 'POST',
+                headers: {{
+                    'Content-Type': 'application/json',
+                }},
+                body: JSON.stringify({{ access_token: accessToken }}),
+            }})
+            .then(response => {{
+                if (!response.ok) {{
+                    throw new Error('네트워크 오류 발생');
+                }}
+                return response.json();
+            }})
+            .then(data => {{
+                console.log('서버에서 받은 데이터:', data);
+            }})
+            .catch(error => {{
+                console.error('요청 실패:', error);
+            }});
+            
+        </script>
+    """
 
-get_cookie_url = "http://" + OUTSIDE_IP + ":" + str(PORT) + "/items"
+    # HTML 컴포넌트를 사용하여 JavaScript 코드를 포함
+    st.components.v1.html(javascript_code)
+ 
+print("read_cookie_from_client() 실행")  
+
+read_cookie_from_client() # user -> fastAPI한테 쿠키 전달
+
+sleep(3)    # read_cookie_from_client()가 실행되는 동안 대기
+
+user_info = {
+'properties': {
+    'nickname': 'GUEST'
+},
+'kakao_account': {
+    'email': 'GUEST'
+},
+'access_token': 'GUEST'
+}
+
+
+
+#user_info = None
+#get_cookie_url = "http://" + OUTSIDE_IP + ":" + str(PORT) + "/items"
 
 if 'properties' not in user_info: # GUEST인 경우 처리
     user_info = {
@@ -73,46 +140,18 @@ if 'properties' not in user_info: # GUEST인 경우 처리
 }
 else:   # 로그인 한 사용자 -> access토큰 설정
     # 사용자 access_token 불러오기
-    cookies = {"access_token": "your_access_token_here"}  # 쿠키 이름과 값을 적절히 설정하세요
-    token_response = requests.get(get_cookie_url, cookies=cookies)
-    user_info['access_token'] = token_response.json()['access_token']
-    print("불러온 사용자 access 토큰 : ", token_response.json(), user_info['access_token']) 
+    # token_response = read_cookie_from_client()
+    # 쿠키 가져오기
+    # print("불러온 사용자 access 토큰 : ", token_response.json(), user_info['access_token'])
+    
+    pass
 
 
-
-
-
-
-# # HTML 컴포넌트에 JavaScript 코드를 삽입하여 실행
-# st.write("""
-#     <script>
-#     // GET 요청을 보낼 URL
-# var url = """+get_cookie_url+""";
-
-# // GET 요청 보내기
-# fetch(url)
-#     .then(response => {
-#         // 서버 응답이 성공적으로 도착한 경우
-#         if (response.ok) {
-#             // JSON 형식으로 응답을 파싱하여 반환
-#             return response.json();
-#         }
-#         // 서버 응답이 에러인 경우
-#         throw new Error('Network response was not ok');
-#     })
-#     .then(data => {
-#         // JSON 데이터를 사용하여 처리
-#         console.log(data);
-#     })
-#     .catch(error => {
-#         // 오류 처리
-#         console.error('There was a problem with the fetch operation:', error);
-#     });
-
-#     </script>
-# """)
-
-
+   
+# import extra_streamlit_components as stx
+# cookie_manager = stx.CookieManager() 
+# value = cookie_manager.get(cookie='access_token')
+# print("cookie value : ", value)
 
 
 if "user_email" not in st.session_state:
