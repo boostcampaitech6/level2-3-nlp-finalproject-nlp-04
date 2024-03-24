@@ -147,8 +147,9 @@ st.markdown(f'''<style>
         .info_message {{
              display : flex;
              flex-grow : 1;
-             justify-content : end;
-             color : #989898;
+             justify
+             -content : end;
+             color : white;
              font-family : 'Nanumsquare'
         }}
         .check_message{{
@@ -305,7 +306,7 @@ st.session_state.big_q_progress = True
 input_form, start_button = st.columns([1,2]) # 노션 컬럼처럼 열을 나눠서 할수있게 해주는것
 with input_form:
     input_form.markdown('''
-                        <div class="additional_message" style="font-size:13px; justify-content : center; font-weight : 1000;">※크롬 환경 및 라이트모드를 권장합니다※</div>
+                        <div class="additional_message" style="font-size:13px; justify-content : center; font-weight : 1000; color: white;">※크롬 환경 및 라이트모드를 권장합니다※</div>
                         ''',
                         
                         unsafe_allow_html=True )
@@ -316,7 +317,7 @@ with input_form:
     ### 지원 직무 폼
     input_form.markdown('''
                         <div class="menu_name">지원 직무<span class="essential_menu">*</span>
-                        <!--<span style="font-size:14px; color:#989898; text-align:right;">직접 검색도 가능해요!</span>-->
+                        <!--<span style="font-size:14px; color: white; text-align:right;">직접 검색도 가능해요!</span>-->
                         </div>
                         ''',
                         unsafe_allow_html=True)
@@ -329,7 +330,7 @@ with input_form:
     
     ### 이력서 폼
     input_form.markdown('''
-                        <div class="menu_name">이력서<span style="font-size:14px; color:#989898">(200MB이하 PDF파일만 지원)</span><span class="essential_menu">*</span></div>
+                        <div class="menu_name">이력서<span style="font-size:14px; color: white;">(200MB이하 PDF파일만 지원)</span><span class="essential_menu">*</span></div>
                         ''', 
                         unsafe_allow_html=True)
     uploaded_resume = input_form.file_uploader("이력서",
@@ -342,7 +343,7 @@ with input_form:
     
     ### JD 폼 ######################
     input_form.markdown('''
-                        <div class="menu_name">채용공고<span style="font-size:14px; color:#989898">(1500자 이내로 작성해주세요)</span><span class="essential_menu">*</span></div>
+                        <div class="menu_name">채용공고<span style="font-size:14px; color: white;">(1500자 이내로 작성해주세요)</span><span class="essential_menu">*</span></div>
                         ''', 
                         unsafe_allow_html=True)
      # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
@@ -355,7 +356,8 @@ with input_form:
     st.session_state.logger.info(f"interview style (temperature) : {st.session_state.temperature}")
     
     ### custom message ; 개인정보는 수집하지 않는다는 메시지
-    input_form.markdown(f'''<div class='info_message'> {info_message} </div> ''', unsafe_allow_html=True)
+    # 이거 표시 해야하나? -> 우리 이력서, 채용공고 수집해뒀다가 보여주면 개인정보 수집하는 거 아닌가 해서
+    #input_form.markdown(f'''<div class='info_message'> {info_message} </div> ''', unsafe_allow_html=True)
     
     ## start_button
     with start_button:
