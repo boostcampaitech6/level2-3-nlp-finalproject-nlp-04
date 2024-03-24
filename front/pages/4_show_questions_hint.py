@@ -5,21 +5,23 @@ import streamlit as st
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain_community.chat_models import ChatOpenAI
-from src.generate_question import create_prompt_feedback, create_prompt_hint  # 추가
+from PIL import Image
+from src.generate_question import (create_prompt_feedback,  # 추가
+                                   create_prompt_hint)
 from streamlit_extras.switch_page_button import switch_page
 from utils.util import read_prompt_from_txt
-from PIL import Image
 
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
-DATA_DIR = os.path.join(MY_PATH, 'data')
+DATA_DIR = os.path.join(MY_PATH, "data")
 
-st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
 st.set_page_config(
-     page_title="Hello Jobits", # 브라우저탭에 뜰 제목
-     
-     page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
-     layout="wide",
-     initial_sidebar_state="collapsed"
+    page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
+    page_icon=Image.open(
+        st.session_state.FAV_IMAGE_PATH
+    ),  # 브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드
+    layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 OPENAI_API_KEY = read_prompt_from_txt(os.path.join(DATA_DIR, "test/OPANAI_KEY.txt"))
@@ -114,9 +116,7 @@ for i, question in enumerate(questions, start=1):
                 st.session_state.logger.info("create prompt_Hint object")
 
                 ### 모델 세팅
-                llm = ChatOpenAI(temperature=0.0, 
-                                 model_name=MODEL_NAME, 
-                                 openai_api_key=OPENAI_API_KEY)
+                llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
 
                 st.session_state.logger.info("create llm object")
 
@@ -148,4 +148,4 @@ with start_button:
     )
 
     if start_button.button("시작 화면으로 돌아가기"):
-        switch_page('user')
+        switch_page("user")

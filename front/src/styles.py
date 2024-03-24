@@ -1,5 +1,5 @@
 def page_1_user_style(main_img):
-    return f'''<style>
+    return f"""<style>
                 @keyframes fadeInDown {{
                      0% {{
                           opacity: 0;
@@ -234,4 +234,4 @@ def page_1_user_style(main_img):
                 }}
 
 
-                </style>'''
+                </style>"""

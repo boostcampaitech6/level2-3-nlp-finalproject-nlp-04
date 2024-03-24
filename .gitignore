@@ -189,9 +189,10 @@ test.db
 maxseats
 
 .vscode
+
+#database
 mongodb.log
 mongodb
-#database
 *.conf
 .mongodb
 *.data
@@ -202,3 +203,8 @@ mongod.lock
 *.bson
 WiredTiger
 WiredTiger*
+
+# npm pakage
+package.json
+node_modules
+package-lock.json
