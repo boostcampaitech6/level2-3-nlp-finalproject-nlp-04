@@ -1,54 +1,62 @@
-import os
 import logging
+import os
 import sys
-import streamlit as st
-import requests
-from PIL import Image
 
+import requests
+import streamlit as st
+from PIL import Image
 from utils.util import get_image_base64
 
 sys.path.append("./")
 sys.path.append("./back")
-from back.config import OUTSIDE_IP, PORT   #IP, PORT 얻어오기 위해 import
 from streamlit_extras.switch_page_button import switch_page
+
+from back.config import OUTSIDE_IP, PORT  # IP, PORT 얻어오기 위해 import
 from back.share_var import set_shared_var  # 공유 변수 관련 함수 불러오기
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
-st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
 
 st.set_page_config(
-     page_title="Hello Jobits", # 브라우저탭에 뜰 제목
-     page_icon=Image.open(st.session_state.FAV_IMAGE_PATH), #브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드 
-     layout="wide",
-     initial_sidebar_state="collapsed"
+    page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
+    page_icon=Image.open(
+        st.session_state.FAV_IMAGE_PATH
+    ),  # 브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드
+    layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 # 로거 초기화
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 # 로그인 페이지로 이동하는 함수(streamlit)
 # 이미 로그인 되어있으면 자동으로 다음 페이지로 이동
 def goto_login_page(next_path):
-    
-    #다음 이동 페이지 경로 저장
-    set_shared_var('NEXT_PATH', next_path)
-    
-    url = f"http://{OUTSIDE_IP}:{PORT}/kakao"
-    response = requests.get(url)
-    
-    
-    if response.status_code == 200:
-        st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
-        st.stop()  # 현재 페이지 중지
-    else:
-        st.error('리디렉션 실패')
+
+    # 다음 이동 페이지 경로 저장
+    set_shared_var("NEXT_PATH", next_path)
+
+    url = f"http://{OUTSIDE_IP}:{PORT}/kakao/login"
+    res_kakaologin = requests.get(url)
+    url = res_kakaologin.url
+    st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
 
 
-st.session_state['START_IMG'] = get_image_base64(os.path.join(DATA_DIR, 'images/start_page.png'))
+#     st.write(response.status_code)
+#     if response.status_code == 200:
+#         st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
+#         st.stop()  # 현재 페이지 중지
+#     else:
+#         st.error('리디렉션 실패')
+
+
+st.session_state["START_IMG"] = get_image_base64(os.path.join(DATA_DIR, "images/start_page.png"))
 START_IMG = st.session_state.START_IMG
 # 버튼들을 화면 오른쪽 아래에 배치하기 위해 CSS 스타일을 적용합니다.
-st.markdown(f"""
+st.markdown(
+    f"""
     <style>
         .main {{
              background-image: url("data:image/png;base64,{START_IMG}");
@@ -93,16 +101,14 @@ st.markdown(f"""
         
     </style>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
-if st.button('LOGIN(KAKAO)'):
-    st.session_state['cur_user'] = 'kakao'  # 사용자 상태 설정
-    goto_login_page(next_path='home')
-    
+if st.button("LOGIN(KAKAO)"):
+    st.session_state["cur_user"] = "kakao"  # 사용자 상태 설정
+    goto_login_page(next_path="home")
+
 # 비회원 버튼
-if st.button('GUEST'):
-    st.session_state['cur_user'] = 'guest'  # 사용자 상태 설정
-    switch_page('home')
-
-
+if st.button("GUEST"):
+    st.session_state["cur_user"] = "guest"  # 사용자 상태 설정
+    switch_page("home")

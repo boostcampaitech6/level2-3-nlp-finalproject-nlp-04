@@ -1,2 +1,1 @@
-from . import generate_question
-from . import chat
+from . import chat, generate_question

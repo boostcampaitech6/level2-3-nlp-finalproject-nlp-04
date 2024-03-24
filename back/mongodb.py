@@ -1,13 +1,13 @@
-import os
 import logging
+import os
 from datetime import datetime
 from typing import Optional
 
 from bson import ObjectId
-from fastapi import FastAPI, HTTPException, APIRouter, Query
+from fastapi import APIRouter, FastAPI, HTTPException, Query
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
-from pymongo import ReturnDocument, errors, MongoClient, ASCENDING
+from pymongo import ASCENDING, MongoClient, ReturnDocument, errors
 
 logging.basicConfig(
     level=logging.INFO,
@@ -158,9 +158,7 @@ async def get_access_token(email: str):
     user = await collection.find_one({"email": email}, {"access_token": 1})
     if user and "access_token" in user:
         return {"access_token": user["access_token"]}
-    raise HTTPException(
-        status_code=404, detail="User not found or access token not set"
-    )
+    raise HTTPException(status_code=404, detail="User not found or access token not set")
 
 
 @router.put("/{email}/token", response_model=User)
