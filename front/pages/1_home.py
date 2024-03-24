@@ -1,7 +1,5 @@
 import os
 import sys
-from time import sleep
-import requests
 
 import streamlit as st
 from loguru import logger as _logger
@@ -10,11 +8,9 @@ from PIL import Image
 
 sys.path.append("./")
 
-from back.config import OPENAI_API_KEY, OUTSIDE_IP, PORT
-from back.share_var import get_shared_var, set_shared_var
-from back.streamlit_control import get_info_from_kakao, get_user_info
+from back.config import OPENAI_API_KEY
+from back.streamlit_control import get_info_from_kakao
 from back.user_authorization import verify_token
-from back.streamlit_control import get_user_info
 from utils.logger import DevConfig
 from utils.util import get_image_base64, read_gif
 

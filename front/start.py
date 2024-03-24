@@ -5,6 +5,9 @@ import sys
 import requests
 import streamlit as st
 from PIL import Image
+
+sys.path.append("./")
+from back.streamlit_control import goto_login_page
 from utils.util import get_image_base64
 
 sys.path.append("./")
@@ -12,7 +15,6 @@ sys.path.append("./back")
 from streamlit_extras.switch_page_button import switch_page
 
 from back.config import OUTSIDE_IP, PORT  # IP, PORT 얻어오기 위해 import
-from back.share_var import set_shared_var  # 공유 변수 관련 함수 불러오기
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
@@ -31,29 +33,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-# 로그인 페이지로 이동하는 함수(streamlit)
-# 이미 로그인 되어있으면 자동으로 다음 페이지로 이동
-def goto_login_page(next_path):
-
-    # 다음 이동 페이지 경로 저장
-    set_shared_var("NEXT_PATH", next_path)
-
-    url = f"http://{OUTSIDE_IP}:{PORT}/kakao/login"
-    res_kakaologin = requests.get(url)
-    url = res_kakaologin.url
-    st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
-
-
-#     st.write(response.status_code)
-#     if response.status_code == 200:
-#         st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
-#         st.stop()  # 현재 페이지 중지
-#     else:
-#         st.error('리디렉션 실패')
-
-
 st.session_state["START_IMG"] = get_image_base64(os.path.join(DATA_DIR, "images/start_page.png"))
 START_IMG = st.session_state.START_IMG
+
 # 버튼들을 화면 오른쪽 아래에 배치하기 위해 CSS 스타일을 적용합니다.
 st.markdown(
     f"""
@@ -106,7 +88,7 @@ st.markdown(
 
 if st.button("LOGIN(KAKAO)"):
     st.session_state["cur_user"] = "kakao"  # 사용자 상태 설정
-    goto_login_page(next_path="home")
+    goto_login_page()
 
 # 비회원 버튼
 if st.button("GUEST"):

@@ -6,7 +6,7 @@ import jwt
 import requests
 import rsa
 import yaml
-from config import REST_API_KEY
+from back.config import REST_API_KEY
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicNumbers
