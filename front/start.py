@@ -97,10 +97,12 @@ st.markdown(f"""
 )
 
 if st.button('LOGIN(KAKAO)'):
+    st.session_state['cur_user'] = 'kakao'  # 사용자 상태 설정
     goto_login_page(next_path='home')
     
 # 비회원 버튼
 if st.button('GUEST'):
+    st.session_state['cur_user'] = 'guest'  # 사용자 상태 설정
     switch_page('home')
 
 

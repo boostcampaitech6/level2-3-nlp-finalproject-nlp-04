@@ -107,6 +107,14 @@ async def print_access_token(token: AccessToken):
     except Exception as e:
         return None
 
+    set_shared_var('access_token', access_token)  # 공유 변수에 access_token 저장
+    
+    
+    # TO DO :
+    # user_info얻어온 후, mongoDB에 접속해서 해당 유저 정보 가져오기
+    # (access_token으로 비교, 없으면 이메일로 찾아서 access_token 업데이트)
+
+
     # return user_info
     # return {"message": "Access token received successfully"}
     
