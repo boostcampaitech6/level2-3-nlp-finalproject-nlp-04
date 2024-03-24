@@ -15,14 +15,12 @@ from src.generate_question import create_prompt_with_jd  # 추가
 from src.generate_question import (create_prompt_with_resume,
                                    create_resume_vectordb, load_user_JD,
                                    load_user_resume, save_user_JD,
-                                   save_user_resume,create_prompt_with_question)
+                                   save_user_resume)
 from streamlit_extras.switch_page_button import switch_page
 from utils.util import local_css, read_prompt_from_txt
 
 from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
 from PIL import Image
-from src.rule_based_algorithm import generate_rule_based_questions
-
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
@@ -204,17 +202,17 @@ with progress_holder:
             # STEP 2. step 1 에서 생성된 job_description 를 qa prompt template 에 넣고, GPT 에 질의하여 예상 질문을 뽑습니다.
             # prompt_qa_template #######################################
             
-            st.session_state.logger.info("prompt resume start")
+            st.session_state.logger.info("prompt QA start")
             
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_resume_template.txt")
-            
-            
-            st.session_state.logger.info("create prompt resume template")
+            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_qa_template")
             
             
-            prompt_resume = create_prompt_with_resume(prompt_template)
+            st.session_state.logger.info("create prompt QA template")
             
-            st.session_state.logger.info("create prompt_resume")
+            
+            prompt_qa = create_prompt_with_resume(prompt_template)
+            
+            st.session_state.logger.info("create prompt_qa")
             
             vector_index = create_resume_vectordb(USER_RESUME_SAVE_DIR) # 이력서 vectordb를 생성해줍니다.
 
@@ -227,7 +225,7 @@ with progress_holder:
                             , openai_api_key=OPENAI_API_KEY
                             )
             
-            chain_type_kwargs = {"prompt": prompt_resume}
+            chain_type_kwargs = {"prompt": prompt_qa}
             
             qa_chain = RetrievalQA.from_chain_type(
                 llm=llm2,
@@ -235,35 +233,16 @@ with progress_holder:
                 retriever=vector_index.as_retriever(),
                 chain_type_kwargs=chain_type_kwargs, verbose = True)
             
-            resume = qa_chain.run("기술면접에 나올만한 프로젝트 내용은?")
+            main_question = qa_chain.run(job_description)
             
-            print("prompt_resume @@@@@@@@",prompt_resume)
+            print("prompt_qa @@@@@@@@",prompt_qa)
             
-            st.session_state.logger.info(" prompt_resume running complit")
+            st.session_state.logger.info(" prompt_qa running complit")
             
-            print(resume)
-            
-            ## step3 : 
-            st.session_state.logger.info("prompt question start")
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_question_template.txt")
-            
-            st.session_state.logger.info("create prompt question template")
-    
-            prompt_question = create_prompt_with_question(prompt_template)
-
-            llm3= ChatOpenAI(temperature=0, model_name=MODEL_NAME,
-                        openai_api_key=OPENAI_API_KEY)
-            
-            chain = LLMChain(llm=llm3, prompt=prompt_question)
-            
-            main_question = chain.run({'jd': job_description,'resume': resume})
+            print(main_question)
             
             end = time.time()
             st.session_state.logger.info(f"generate big question run time is ... {(end-start)/60:.3f} 분 ({(end-start):0.1f}초)")
-            
-            st.session_state.logger.info(" prompt_quest running complete")
-            
-            print(main_question)
             
             ### STEP 3. 결과물 및 Token 사용량 저장
             ### 결과 텍스트 저장
@@ -286,12 +265,9 @@ with progress_holder:
 
             st.session_state.big_q_progress = False ### 대질문 생성 끝
         else :
-            selected_job = st.session_state.selected_job
-            
-            rule_questions = generate_rule_based_questions(selected_job,user_JD,user_resume)
-            print()
+
             ### 다음 세션으로 값 넘기기
-            st.session_state.main_question = questions + rule_questions
+            st.session_state.main_question = questions
             st.session_state.logger.info("end gene_question")
             time.sleep(3)
             ####
