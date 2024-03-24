@@ -1,12 +1,9 @@
 import os
 import sys
-from time import sleep
-import requests
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 from loguru import logger as _logger
-from back.share_var import get_shared_var, set_shared_var
-from back.streamlit_control import get_info_from_kakao, get_user_info
+from back.streamlit_control import get_user_info
 
 sys.path.append("./")
 from utils.logger import DevConfig
