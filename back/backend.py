@@ -76,19 +76,6 @@ async def launch_streamlit_app(background_tasks: BackgroundTasks):
     return RedirectResponse(url=streamlit_url)
 
 
-@app.post("/cookie-and-object/")
-def create_cookie(response: Response):
-    response.set_cookie(key="fakesession", value="fake-cookie-session-value")
-    return {"message": "Come to the dark side, we have cookies"}
-
-
-@app.get("/cookie/")
-def create_cookie():
-    content = {"message": "Come to the dark side, we have cookies"}
-    response = JSONResponse(content=content)
-    response.set_cookie(key="fakesession", value="fake-cookie-session-value")
-    return response
-
 class AccessToken(BaseModel):
     access_token: str
     
