@@ -49,7 +49,7 @@ st.markdown(
 questions = st.session_state.main_question
 # 사용자 인터페이스 생성
 
-st.title(f"{st.session_state.user_name}님의 이력서 예상 질문입니다.")
+st.title(f"{st.session_state.user_name}님의 기술면접 예상 질문입니다.")
 
 prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_feedback.txt"))
 prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_hint.txt"))

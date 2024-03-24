@@ -1,23 +1,23 @@
 import os
 import sys
 from time import sleep
-
 import requests
+
 import streamlit as st
 from loguru import logger as _logger
 from streamlit_extras.switch_page_button import switch_page
+from PIL import Image
 
+sys.path.append("./")
+
+from back.config import OPENAI_API_KEY, OUTSIDE_IP, PORT
 from back.share_var import get_shared_var, set_shared_var
 from back.streamlit_control import get_info_from_kakao, get_user_info
 from back.user_authorization import verify_token
-
-sys.path.append("./")
-from PIL import Image
+from back.streamlit_control import get_user_info
 from utils.logger import DevConfig
 from utils.util import get_image_base64, read_gif
 
-from back.config import (OPENAI_API_KEY,  # KEY, IP, PORT 얻어오기 위해 import
-                         OUTSIDE_IP, PORT)
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 NEXT_PAGE = "user"
@@ -33,7 +33,7 @@ if user_id is not None:
     st.session_state["user_id"] = user_id
     st.session_state["access_token"] = token
 
-# session_state 값 사용 예
+# session_state 값 사용
 if "user_id" in st.session_state:
     if verify_token(st.session_state["user_id"]):
         user_info = get_info_from_kakao(st.session_state["access_token"])
@@ -82,6 +82,7 @@ if "temperature" not in st.session_state:
 if "user_email" not in st.session_state:
     st.session_state["user_email"] = user_info["kakao_account"]["email"]
     print("user_email : ", st.session_state["user_email"])
+    
 if "nickname" not in st.session_state:
     st.session_state["nickname"] = user_info["properties"]["nickname"]
     print("nickname : ", st.session_state["nickname"])

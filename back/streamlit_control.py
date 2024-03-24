@@ -1,6 +1,7 @@
 # streamlit 관련 함수 모음
 import socket
 import subprocess
+import threading
 from time import sleep
 
 import requests
@@ -90,17 +91,23 @@ def get_info_from_kakao(access_token):
     user_info = response.json()
     return user_info
 
+# 락 객체 생성
+lock = threading.Lock()
 
 def get_user_info():
+    # 락 획득
+    lock.acquire()
+        
+    try:
+        # 임계 영역에 대한 코드 실행
+        read_cookie_from_client() # user -> fastAPI한테 쿠키 전달
+        sleep(2)    # read_cookie_from_client()가 실행되는 동안 대기
+        access_token = get_shared_var('access_token')  # fastAPI에서 받은 access_token
+        set_shared_var('NEXT_PATH', 'home')  # 바로 공유변수 원래대로 되돌리기
+        user_info = get_info_from_kakao(access_token)    # kakao API로 사용자 정보 가져오기
 
-    read_cookie_from_client()  # user -> fastAPI한테 쿠키 전달
-
-    sleep(2)  # read_cookie_from_client()가 실행되는 동안 대기
-
-    access_token = get_shared_var("access_token")  # fastAPI에서 받은 access_token
-
-    set_shared_var("NEXT_PATH", "home")  # 바로 공유변수 원래대로 되돌리기
-
-    user_info = get_info_from_kakao(access_token)  # kakao API로 사용자 정보 가져오기
-
+    finally:
+        # 락 해제
+        lock.release()
+        
     return user_info
