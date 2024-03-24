@@ -70,8 +70,7 @@ else:   # GUEST인 경우 처리
     },
     'kakao_account': {
         'email': 'GUEST'
-    },
-    'access_token': 'GUEST'
+    }
 }
 
 if "user_email" not in st.session_state:

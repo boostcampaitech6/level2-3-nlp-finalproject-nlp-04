@@ -4,6 +4,8 @@ import sys
 import streamlit as st
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
+from utils.logger import DevConfig
+from loguru import logger as _logger
 
 sys.path.append("./")
 from utils.util import (check_essential, get_image_base64, local_css,
@@ -14,6 +16,14 @@ MY_PATH = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(MY_PATH, 'data')
 
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
+
+if "logger" not in st.session_state:
+    # logru_logger(**config.config)
+    config = DevConfig
+    _logger.configure(**config.config)
+    st.session_state["logger"] = _logger # session_state에 ["logger"] 라는 키값을 추가하여 사용
+    st.session_state["save_dir"] = config.SAVE_DIR
+
 st.set_page_config(
      page_title="Hello Jobits", # 브라우저탭에 뜰 제목
      
