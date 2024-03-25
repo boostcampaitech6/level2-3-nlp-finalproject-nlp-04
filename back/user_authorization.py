@@ -6,7 +6,7 @@ import jwt
 import requests
 import rsa
 import yaml
-from config import REST_API_KEY
+from back.config import REST_API_KEY
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicNumbers
@@ -109,6 +109,22 @@ def verify_token(token):
         return False, "Expired token"
     except jwt.InvalidSignatureError:
         return False, "Invalid signature"
+
+
+def check_login(id_token: str):
+    """
+    ID 토큰을 검증하여 로그인 여부를 확인합니다.
+
+    Returns:
+        bool: 로그인 여부를 나타내는 불리언 값입니다.
+
+    Raises:
+        HTTPException: 로그인이 안 된 경우, 카카오 페이지로 리다이렉트합니다.
+    """
+
+    res, message = verify_token(id_token)
+
+    return res, message
 
 
 # 토큰 검증

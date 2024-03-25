@@ -1,12 +1,13 @@
 import logging
+import os
 from datetime import datetime
 from typing import Optional
 
 from bson import ObjectId
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import APIRouter, FastAPI, HTTPException, Query
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
-from pymongo import ReturnDocument, errors
+from pymongo import ASCENDING, MongoClient, ReturnDocument, errors
 
 logging.basicConfig(
     level=logging.INFO,
@@ -15,18 +16,22 @@ logging.basicConfig(
     filemode="w",
 )
 
-app = FastAPI(docs_url="/", redoc_url=None)
-
+router = APIRouter()
+username = os.getenv("MONGO_USERNAME", "admin")
+password = os.getenv("MONGO_PASSWORD", "maxseats")
+print(username, password)
 # MongoDB connection URL
-MONGO_URL = "mongodb://localhost:27017"
+MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
 client = AsyncIOMotorClient(MONGO_URL)
-database = client["mydatabase"]
+database = client["database"]
 collection = database["users"]
 
-try:
-    collection.create_index("email", unique=True)  # 이메일 필드에 고유 인덱스 생성
-except errors.DuplicateKeyError:
-    print("This email already exists")  # 이미 존재하는 이메일인 경우 출력
+# try:
+#     collection.create_index("email", unique=True)  # 이메일 필드에 고유 인덱스 생성
+# except errors.DuplicateKeyError:
+#     print("This email already exists")  # 이미 존재하는 이메일인 경우 출력
+
+# await collection.create_index([("email", ASCENDING)], unique=True)
 
 
 class User(BaseModel):
@@ -41,22 +46,53 @@ class User(BaseModel):
     # resume: Optional[str] = None
 
 
-@app.get("/users/{email}/exists")
+@router.get("/{email}/exists")
 async def check_email_exists(email: str):
+    """
+    이 함수는 주어진 이메일이 데이터베이스에 존재하는지 확인합니다.
+
+    Parameters:
+        email (str): 확인할 이메일 주소
+
+    Returns:
+        bool: 이메일이 데이터베이스에 존재하는 경우 True를 반환하고, 그렇지 않은 경우 False를 반환합니다.
+    """
     user = await collection.find_one({"email": email})
     return user is not None
 
 
-@app.post("/users/", response_model=User)
+@router.post("/", response_model=User)
 async def create_user(user: User):
-    result = await collection.insert_one(user.model_dump())
-    user.email = str(result.inserted_id)
+    """
+    사용자를 생성하는 함수입니다.
+
+    Parameters:
+        user (User): 생성할 사용자 정보를 담고 있는 User 객체
+
+    Returns:
+        User: 생성된 사용자 정보를 담고 있는 User 객체
+    """
+    await collection.insert_one(user.model_dump())
+    # user.email = str(result.inserted_id)
     return user
 
 
-@app.put("/users/{email}", response_model=User)
+@router.put("/{email}", response_model=User)
 async def update_user(email: str, user: User):
-    update_fields = {k: v for k, v in user.model_dump().users() if v is not None}
+    """
+    사용자 정보를 업데이트하는 함수입니다.
+
+    Parameters:
+        email (str): 사용자 이메일
+        user (User): 업데이트할 사용자 정보
+
+    Returns:
+        User: 업데이트된 사용자 정보
+
+    Raises:
+        HTTPException: 사용자를 찾을 수 없을 때 발생하는 예외
+    """
+    update_fields = {k: v for k, v in user.model_dump().items() if v is not None}
     updated_user = await collection.find_one_and_update(
         {"email": email}, {"$set": update_fields}, return_document=ReturnDocument.AFTER
     )
@@ -65,34 +101,81 @@ async def update_user(email: str, user: User):
     raise HTTPException(status_code=404, detail="User not found")
 
 
-@app.get("/users/{email}", response_model=User)
+@router.get("/{email}", response_model=User)
 async def read_user(email: str):
+    """
+    사용자 이메일을 받아와서 해당 이메일을 가진 사용자를 조회합니다.
+
+    Parameters:
+        email (str): 조회할 사용자의 이메일
+
+    Returns:
+        User: 조회된 사용자 정보
+
+    Raises:
+        HTTPException: 조회된 사용자가 없을 경우 404 에러를 발생시킵니다.
+    """
     user = await collection.find_one({"email": email})
     if user:
         return User(**user)  # User 모델에 맞게 딕셔너리를 언팩
     raise HTTPException(status_code=404, detail="User not found")
 
 
-@app.delete("/users/{email}", response_model=User)
+@router.delete("/{email}", response_model=User)
 async def delete_user(email: str):
+    """
+    사용자를 삭제하는 함수입니다.
+
+    Parameters:
+        email (str): 삭제할 사용자의 이메일 주소
+
+    Returns:
+        User: 삭제된 사용자의 정보
+
+    Raises:
+        HTTPException: 삭제할 사용자가 없을 경우 발생합니다.
+    """
     deleted_user = await collection.find_one_and_delete({"email": email})
     if deleted_user:
         return deleted_user
     raise HTTPException(status_code=404, detail="User not found")
 
 
-@app.get("/users/{email}/token")
+@router.get("/{email}/token")
 async def get_access_token(email: str):
+    """
+    사용자의 이메일을 입력받아 해당 사용자의 액세스 토큰을 반환합니다.
+
+    Parameters:
+        email (str): 사용자의 이메일 주소
+
+    Returns:
+        dict: 액세스 토큰을 포함한 딕셔너리
+
+    Raises:
+        HTTPException: 사용자를 찾을 수 없거나 액세스 토큰이 설정되지 않은 경우 404 오류를 발생시킵니다.
+    """
     user = await collection.find_one({"email": email}, {"access_token": 1})
     if user and "access_token" in user:
         return {"access_token": user["access_token"]}
-    raise HTTPException(
-        status_code=404, detail="User not found or access token not set"
-    )
+    raise HTTPException(status_code=404, detail="User not found or access token not set")
 
 
-@app.put("/users/{email}/token", response_model=User)
+@router.put("/{email}/token", response_model=User)
 async def update_access_token(email: str, token: str):
+    """
+    사용자의 액세스 토큰을 업데이트하는 함수입니다.
+
+    Parameters:
+        email (str): 사용자 이메일
+        token (str): 업데이트할 액세스 토큰
+
+    Returns:
+        User: 업데이트된 사용자 정보
+
+    Raises:
+        HTTPException: 사용자를 찾을 수 없을 때 발생하는 예외
+    """
     updated_user = await collection.find_one_and_update(
         {"email": email},
         {"$set": {"access_token": token}},
@@ -101,9 +184,3 @@ async def update_access_token(email: str, token: str):
     if updated_user:
         return User(**updated_user)
     raise HTTPException(status_code=404, detail="User not found")
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
