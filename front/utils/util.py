@@ -140,11 +140,11 @@ def check_essential():
     if st.session_state.selected_job == "검색 또는 선택":
         check_result.append("지원 직무")
         josa += "가"
-    if not st.session_state.uploaded_resume:
+    if not st.session_state[st.session_state['user_email'] + 'uploaded_resume']:
         check_result.append("이력서")
         josa += "가"
     # 추가된 코드 @@@@@@@@@@@@@@@@@@
-    if not st.session_state.uploaded_JD:
+    if not st.session_state[st.session_state['user_email'] + 'uploaded_JD']:
         check_result.append("채용 공고")
         josa += "가"
     return check_result, josa
