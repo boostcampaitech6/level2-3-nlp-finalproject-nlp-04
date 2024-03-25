@@ -33,8 +33,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-SAVE_JD_FILE_DIR = os.path.join(MY_PATH, "data")
-EXAMPLE_JD = read_prompt_from_txt(os.path.join(SAVE_JD_FILE_DIR, "JD_example.txt"))
+SAVE_JD_FILE_DIR = st.session_state['save_dir']
+EXAMPLE_JD = read_prompt_from_txt(os.path.join(MY_PATH, "data", "JD_example.txt") )
 # st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.
 # .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
 
@@ -340,12 +340,11 @@ with input_form:
                         <div class="menu_name">이력서<span style="font-size:14px; color: white;">(200MB이하 PDF파일만 지원)</span><span class="essential_menu">*</span></div>
                         ''', 
                         unsafe_allow_html=True)
-    uploaded_resume = input_form.file_uploader("이력서",
+    
+    st.session_state["uploaded_resume"] = input_form.file_uploader("이력서",
                                                accept_multiple_files=False, 
                                                type = ['pdf'],
                                                label_visibility='collapsed')
-
-    st.session_state.uploaded_resume = uploaded_resume
     st.session_state.logger.info(f"upload resume -> Sucess")
 
     ### JD 폼 ######################
@@ -355,8 +354,10 @@ with input_form:
                         ''', 
                         unsafe_allow_html=True)
      # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
-    uploaded_JD = st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD)
-    st.session_state.uploaded_JD = save_uploaded_jd_as_filepath(uploaded_JD,SAVE_JD_FILE_DIR) # 파일 경로가 저장됩니다.
+    st.session_state['uploaded_JD'] = save_uploaded_jd_as_filepath( # text, path, filename="uploaded_jd.txt" 형태
+                                                                st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD),
+                                                                SAVE_JD_FILE_DIR
+                                                                ) # 파일 경로에 저장됩니다.
     #st.session_state.uploaded_JD = uploaded_JD
 
     st.session_state.logger.info(f"upload JD -> Sucess")
@@ -373,8 +374,8 @@ with input_form:
     with start_button:
         start_button.markdown(
             f""" 
-                              <div class = 'main_message'> {main_message}<br></div> 
-                              """,
+                <div class = 'main_message'> {main_message}<br></div> 
+            """,
             unsafe_allow_html=True,
         )
         ### 필요사항체크
