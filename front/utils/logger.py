@@ -3,7 +3,7 @@ import sys
 # from loguru import logger
 import uuid
 
-USER = "KHAN"
+USER = os.environ.get("USER")
 LOG_DIR = "logs/user/"
 
 
