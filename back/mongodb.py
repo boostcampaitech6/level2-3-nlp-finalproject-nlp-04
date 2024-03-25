@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from bson import ObjectId
 from fastapi import APIRouter, FastAPI, HTTPException, Query
@@ -19,7 +19,9 @@ logging.basicConfig(
 router = APIRouter()
 username = os.getenv("MONGO_USERNAME", "admin")
 password = os.getenv("MONGO_PASSWORD", "password")
-print(username, password)
+print("username", username)
+print("password", password)
+
 # MongoDB connection URL
 MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
 client = AsyncIOMotorClient(MONGO_URL)
@@ -35,15 +37,16 @@ collection = database["users"]
 
 
 class User(BaseModel):
-    email: str = Field(..., alias="_id")
-    name: str
-    access_token: str = None
-    id_token: str = None
-    # expires_in: int = None
-    # available_credits: Optional[int] = 3
-    # last_used: Optional[datetime] = None
-    # jd: Optional[str] = None
-    # resume: Optional[str] = None
+    email: str = Field(..., alias="_id")    # _id 필드를 email로 alias
+    name: str                               # 이름
+    access_token: str = None                # OAuth2의 access_token
+    id_token: str = None                    # OAuth2의 id_token(JWT)
+    expires_in: int = None # 언제 사용할까요?   # 아직 사용하지 않음
+    last_login: Optional[datetime] = None   # 마지막 로그인 시간
+    joined: Optional[datetime] = None       # 가입 날짜
+    available_credits: Optional[int] = 3    # 무료로 사용 가능한 크레딧
+    jd: Optional[List] = None               # 입력한 채용공고 list
+    resume: Optional[List] = None           # 입력한 이력서 list
 
 
 @router.get("/{email}/exists")
@@ -57,11 +60,11 @@ async def check_email_exists(email: str):
     Returns:
         bool: 이메일이 데이터베이스에 존재하는 경우 True를 반환하고, 그렇지 않은 경우 False를 반환합니다.
     """
-    user = await collection.find_one({"email": email})
+    user = await collection.find_one({"_id": email})
     return user is not None
 
 
-@router.post("/{email}", response_model=User)
+@router.post("/", response_model=User)
 async def create_user(user: User):
     """
     사용자를 생성하는 함수입니다.
@@ -74,8 +77,8 @@ async def create_user(user: User):
     """
     # user.emial = email
     try:
-        result = await collection.insert_one(user.model_dump(by_alias=True))
-        user.id = str(result.inserted_id)
+        await collection.insert_one(user.model_dump(by_alias=True))
+        # user._id = str(result.inserted_id)
     except errors.DuplicateKeyError:
         raise HTTPException(status_code=409, detail="User already exists")
     return user
@@ -98,7 +101,7 @@ async def update_user(email: str, user: User):
     """
     update_fields = {k: v for k, v in user.model_dump().items() if v is not None}
     updated_user = await collection.find_one_and_update(
-        {"email": email}, {"$set": update_fields}, return_document=ReturnDocument.AFTER
+        {"_id": email}, {"$set": update_fields}, return_document=ReturnDocument.AFTER
     )
     if updated_user:
         return User(**updated_user)
@@ -119,7 +122,7 @@ async def read_user(email: str):
     Raises:
         HTTPException: 조회된 사용자가 없을 경우 404 에러를 발생시킵니다.
     """
-    user = await collection.find_one({"email": email})
+    user = await collection.find_one({"_id": email})
     if user:
         return User(**user)  # User 모델에 맞게 딕셔너리를 언팩
     raise HTTPException(status_code=404, detail="User not found")
@@ -139,7 +142,7 @@ async def delete_user(email: str):
     Raises:
         HTTPException: 삭제할 사용자가 없을 경우 발생합니다.
     """
-    deleted_user = await collection.find_one_and_delete({"email": email})
+    deleted_user = await collection.find_one_and_delete({"_id": email})
     if deleted_user:
         return deleted_user
     raise HTTPException(status_code=404, detail="User not found")
@@ -159,7 +162,7 @@ async def get_access_token(email: str):
     Raises:
         HTTPException: 사용자를 찾을 수 없거나 액세스 토큰이 설정되지 않은 경우 404 오류를 발생시킵니다.
     """
-    user = await collection.find_one({"email": email}, {"access_token": 1})
+    user = await collection.find_one({"_id": email}, {"access_token": 1})
     if user and "access_token" in user:
         return {"access_token": user["access_token"]}
     raise HTTPException(status_code=404, detail="User not found or access token not set")
@@ -181,7 +184,7 @@ async def update_access_token(email: str, token: str):
         HTTPException: 사용자를 찾을 수 없을 때 발생하는 예외
     """
     updated_user = await collection.find_one_and_update(
-        {"email": email},
+        {"_id": email},
         {"$set": {"access_token": token}},
         return_document=ReturnDocument.AFTER,
     )
