@@ -22,6 +22,8 @@ from src.rule_based_algorithm import generate_rule_based_questions
 from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
 
 
+
+
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
 st.set_page_config(
@@ -159,7 +161,8 @@ with progress_holder:
             ### 이력서 Pre-process
             st.session_state.logger.info("resume process ")
             ### uploaded_file는 streamlit의 file_uploader에서 반환된 객체
-            uploaded_file = st.session_state.uploaded_resume
+            user_resume = st.session_state['user_email'] + 'uploaded_resume'
+            uploaded_file = st.session_state[user_resume]
             ### 저장
             save_user_resume(USER_RESUME_SAVE_DIR, uploaded_file)
             st.session_state.logger.info("save resume")
@@ -170,7 +173,8 @@ with progress_holder:
             ### JD Pre-process @@@@@@@@@@@@@@@@@@@@@@@@@@
             st.session_state.logger.info("JD precess")
             ### uploaded_txt 로 uploaded_JD 에서 JD 를 받아옵니다
-            uploaded_file = st.session_state.uploaded_JD
+            user_jd = st.session_state['user_email'] + 'uploaded_JD'
+            uploaded_file = st.session_state[user_jd]
             ### 저장 USER_JD_SAVE_DIR 경로에 uploaded_file 내용을 적어 저장합니다.
             save_user_JD(USER_JD_SAVE_DIR, uploaded_file)
             st.session_state.logger.info("save JD")

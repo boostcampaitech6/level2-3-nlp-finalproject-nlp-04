@@ -1,5 +1,6 @@
 import os
 import sys
+import threading
 
 import streamlit as st
 from PIL import Image
@@ -341,11 +342,16 @@ with input_form:
                         ''', 
                         unsafe_allow_html=True)
     
-    st.session_state["uploaded_resume"] = input_form.file_uploader("이력서",
-                                               accept_multiple_files=False, 
-                                               type = ['pdf'],
-                                               label_visibility='collapsed')
+    user_resume = st.session_state['user_email'] + "uploaded_resume"
+    st.session_state[user_resume] = input_form.file_uploader("이력서",
+                                                   accept_multiple_files=False, 
+                                                   type = ['pdf'],
+                                                   label_visibility='collapsed')
+    print("user에서 입력받은 이력서 파일 : ", st.session_state[user_resume])
     st.session_state.logger.info(f"upload resume -> Sucess")
+    
+
+    
 
     ### JD 폼 ######################
 
@@ -354,7 +360,9 @@ with input_form:
                         ''', 
                         unsafe_allow_html=True)
      # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
-    st.session_state['uploaded_JD'] = save_uploaded_jd_as_filepath( # text, path, filename="uploaded_jd.txt" 형태
+    
+    user_jd = st.session_state['user_email'] + "uploaded_JD"
+    st.session_state[user_jd] = save_uploaded_jd_as_filepath( # text, path, filename="uploaded_jd.txt" 형태
                                                                 st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD),
                                                                 SAVE_JD_FILE_DIR
                                                                 ) # 파일 경로에 저장됩니다.

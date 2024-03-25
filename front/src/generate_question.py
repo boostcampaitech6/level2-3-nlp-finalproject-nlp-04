@@ -94,6 +94,7 @@ def load_user_resume(USER_RESUME_SAVE_DIR):
 
 def save_user_resume(USER_RESUME_SAVE_DIR, uploaded_file):
     with open(USER_RESUME_SAVE_DIR, "wb") as f:
+        print('get버퍼 왜 뜨는 거야 / uploaded_file : ', type(uploaded_file),  "\n 실제 값 : ", uploaded_file)
         f.write(uploaded_file.getbuffer())
 
 
