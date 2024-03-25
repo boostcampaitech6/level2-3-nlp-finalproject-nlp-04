@@ -236,13 +236,17 @@ def calculate_token_usage(response, prompt):
 
 
 def create_resume_vectordb(USER_RESUME_SAVE_DIR):
-    """
+    '''
     이력서를 text_splitter로 chunking하고 chromadb에 embedding으로 저장합니다.
-
-    """
-    text_splitter = CharacterTextSplitter(chunk_size=200, chunk_overlap=20)
+    
+    '''
+    text_splitter = CharacterTextSplitter(chunk_size=200,chunk_overlap=20)
     loader = PyPDFLoader(USER_RESUME_SAVE_DIR)
     pages = loader.load_and_split(text_splitter)
+            
+    vector_index = Chroma.from_documents(pages, # Documents
+                OpenAIEmbeddings(),) # Text embedding model
+    return vector_index
 
 
 def create_prompt_with_question(prompt_template):
