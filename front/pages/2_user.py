@@ -2,10 +2,10 @@ import os
 import sys
 
 import streamlit as st
+from loguru import logger as _logger
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 from utils.logger import DevConfig
-from loguru import logger as _logger
 
 sys.path.append("./")
 from utils.util import (check_essential, get_image_base64, local_css,
@@ -15,13 +15,13 @@ from utils.util import (check_essential, get_image_base64, local_css,
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(MY_PATH, "data")
 
-st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
 
 if "logger" not in st.session_state:
     # logru_logger(**config.config)
     config = DevConfig
     _logger.configure(**config.config)
-    st.session_state["logger"] = _logger # session_state에 ["logger"] 라는 키값을 추가하여 사용
+    st.session_state["logger"] = _logger  # session_state에 ["logger"] 라는 키값을 추가하여 사용
     st.session_state["save_dir"] = config.SAVE_DIR
 
 st.set_page_config(
@@ -33,8 +33,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-SAVE_JD_FILE_DIR = st.session_state['save_dir']
-EXAMPLE_JD = read_prompt_from_txt(os.path.join(MY_PATH, "data", "JD_example.txt") )
+SAVE_JD_FILE_DIR = st.session_state["save_dir"]
+EXAMPLE_JD = read_prompt_from_txt(os.path.join(MY_PATH, "data", "JD_example.txt"))
 # st.session_state.logger.info("start") # 이 logger 가  st.session_state["logger"] = _logger 로 home 에서 생성된 함수입니다.
 # .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
 
@@ -312,11 +312,12 @@ st.session_state.big_q_progress = True
 ## input_form
 input_form, start_button = st.columns([1, 2])  # 노션 컬럼처럼 열을 나눠서 할수있게 해주는것
 with input_form:
-    input_form.markdown('''
+    input_form.markdown(
+        """
                         <div class="additional_message" style="font-size:13px; justify-content : center; font-weight : 1000; color: white;">※크롬 환경 및 라이트모드를 권장합니다※</div>
-                        ''',
-                        
-                        unsafe_allow_html=True )
+                        """,
+        unsafe_allow_html=True,
+    )
 
     st.session_state.user_name = st.session_state.nickname
     st.session_state.logger.info(f"user name : {st.session_state.user_name}")
@@ -336,40 +337,42 @@ with input_form:
 
     ### 이력서 폼
 
-    input_form.markdown('''
+    input_form.markdown(
+        """
                         <div class="menu_name">이력서<span style="font-size:14px; color: white;">(200MB이하 PDF파일만 지원)</span><span class="essential_menu">*</span></div>
-                        ''', 
-                        unsafe_allow_html=True)
-    
-    st.session_state["uploaded_resume"] = input_form.file_uploader("이력서",
-                                               accept_multiple_files=False, 
-                                               type = ['pdf'],
-                                               label_visibility='collapsed')
+                        """,
+        unsafe_allow_html=True,
+    )
+
+    st.session_state["uploaded_resume"] = input_form.file_uploader(
+        "이력서", accept_multiple_files=False, type=["pdf"], label_visibility="collapsed"
+    )
     st.session_state.logger.info(f"upload resume -> Sucess")
 
     ### JD 폼 ######################
 
-    input_form.markdown('''
+    input_form.markdown(
+        """
                         <div class="menu_name">채용공고<span style="font-size:14px; color: white;">(1500자 이내로 작성해주세요)</span><span class="essential_menu">*</span></div>
-                        ''', 
-                        unsafe_allow_html=True)
-     # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
-    st.session_state['uploaded_JD'] = save_uploaded_jd_as_filepath( # text, path, filename="uploaded_jd.txt" 형태
-                                                                st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD),
-                                                                SAVE_JD_FILE_DIR
-                                                                ) # 파일 경로에 저장됩니다.
-    #st.session_state.uploaded_JD = uploaded_JD
+                        """,
+        unsafe_allow_html=True,
+    )
+    # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
+    st.session_state["uploaded_JD"] = save_uploaded_jd_as_filepath(  # text, path, filename="uploaded_jd.txt" 형태
+        st.text_area("채용 공고", max_chars=1500, value=EXAMPLE_JD), SAVE_JD_FILE_DIR
+    )  # 파일 경로에 저장됩니다.
+    # st.session_state.uploaded_JD = uploaded_JD
 
     st.session_state.logger.info(f"upload JD -> Sucess")
 
     st.session_state.temperature = 0.2
     st.session_state.logger.info(f"interview style (temperature) : {st.session_state.temperature}")
-    
+
     ##############################################
     ### custom message 개인정보 수집 관련 메시지 ###
     ##############################################
-    #input_form.markdown(f'''<div class='info_message'> {info_message} </div> ''', unsafe_allow_html=True)
-    
+    # input_form.markdown(f'''<div class='info_message'> {info_message} </div> ''', unsafe_allow_html=True)
+
     ## start_button
     with start_button:
         start_button.markdown(
@@ -385,12 +388,8 @@ with input_form:
         if start_button.button("예상 질문 확인하기"):
             ### 유저 고유 폴더 생성
             if check_list:
-                start_button.markdown(
-                    f"""
-                                      <p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>
-                                      """,
-                    unsafe_allow_html=True,
-                )
+                start_button.markdown(f"""<p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>""",
+                                      unsafe_allow_html=True,)
             else:
                 st.session_state.cur_task = "gene_question"  # 예상 질문 생성하기 수행
                 switch_page(NEXT_PAGE)
@@ -399,22 +398,16 @@ with input_form:
         if start_button.button("모의면접 시작하기"):
             ### 유저 고유 폴더 생성
             if check_list:
-                start_button.markdown(
-                    f"""
-                                      <p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>
-                                      """,
-                    unsafe_allow_html=True,
-                )
+                start_button.markdown(f"""<p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>""",
+                                      unsafe_allow_html=True,)
             else:
                 st.session_state.cur_task = "interview"  # 모의면접 수행
                 switch_page(NEXT_PAGE)
                 st.session_state.logger.info(f"check_essential | Pass")
 
     # 광고 공간
-    start_button.markdown(
-        f"""
+    start_button.markdown(f"""
                           <div class='ad_space'>
                           <div id='real_ad'> </div>
                           """,
-        unsafe_allow_html=True,
-    )
+                          unsafe_allow_html=True,)

@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
 
 from bson import ObjectId
 from fastapi import APIRouter, FastAPI, HTTPException, Query
@@ -9,12 +9,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
 from pymongo import ASCENDING, MongoClient, ReturnDocument, errors
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    filename="mongodb.log",
-    filemode="w",
-)
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                    filename="mongodb.log",
+                    filemode="w",)
 
 router = APIRouter()
 username = os.getenv("MONGO_USERNAME", "admin")
@@ -37,16 +35,16 @@ collection = database["users"]
 
 
 class User(BaseModel):
-    email: str = Field(..., alias="_id")    # _id 필드를 email로 alias
-    name: str                               # 이름
-    access_token: str = None                # OAuth2의 access_token
-    id_token: str = None                    # OAuth2의 id_token(JWT)
-    expires_in: int = None # 언제 사용할까요?   # 아직 사용하지 않음
-    last_login: Optional[datetime] = None   # 마지막 로그인 시간
-    joined: Optional[datetime] = None       # 가입 날짜
-    available_credits: Optional[int] = 3    # 무료로 사용 가능한 크레딧
-    jd: Optional[List] = None               # 입력한 채용공고 list
-    resume: Optional[List] = None           # 입력한 이력서 list
+    email: str = Field(..., alias="_id")        # _id 필드를 email로 alias
+    name: str                                   # 이름
+    access_token: str = None                    # OAuth2의 access_token
+    id_token: str = None                        # OAuth2의 id_token(JWT)
+    expires_in: int = None  # 언제 사용할까요?   # 아직 사용하지 않음
+    last_login: Optional[datetime] = None       # 마지막 로그인 시간
+    joined: Optional[datetime] = None           # 가입 날짜
+    available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧
+    jd: Optional[List] = None                   # 입력한 채용공고 list
+    resume: Optional[List] = None               # 입력한 이력서 list
 
 
 @router.get("/{email}/exists")
@@ -188,6 +186,8 @@ async def update_access_token(email: str, token: str):
         {"$set": {"access_token": token}},
         return_document=ReturnDocument.AFTER,
     )
+
     if updated_user:
         return User(**updated_user)
+    
     raise HTTPException(status_code=404, detail="User not found")

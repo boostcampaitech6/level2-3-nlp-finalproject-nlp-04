@@ -1,11 +1,8 @@
 import os
 import sys
-from typing import Optional
 
-import requests
 import uvicorn
-from fastapi import (BackgroundTasks, Cookie, FastAPI, Request, Response,
-                     WebSocket)
+from fastapi import FastAPI, Request, Response, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -70,9 +67,8 @@ class AccessToken(BaseModel):
     access_token: str
 
 
-
 if __name__ == "__main__":
-    uvicorn.run(app, host='0.0.0.0', port=PORT)  # 8000은 모두에게 배포로 설정
+    uvicorn.run(app, host="0.0.0.0", port=PORT)  # 8000은 모두에게 배포로 설정
 
     # # HTTPS 연결용 - 구현 예정
     # uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)

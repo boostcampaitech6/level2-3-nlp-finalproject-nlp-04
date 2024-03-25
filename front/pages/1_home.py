@@ -3,17 +3,17 @@ import sys
 
 import streamlit as st
 from loguru import logger as _logger
-from streamlit_extras.switch_page_button import switch_page
 from PIL import Image
+from streamlit_extras.switch_page_button import switch_page
 
 sys.path.append("./")
+
+from utils.logger import DevConfig
+from utils.util import get_image_base64, read_gif
 
 from back.config import OPENAI_API_KEY
 from back.streamlit_control import get_info_from_kakao
 from back.user_authorization import verify_token
-from utils.logger import DevConfig
-from utils.util import get_image_base64, read_gif
-
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 NEXT_PAGE = "user"
@@ -78,7 +78,7 @@ if "temperature" not in st.session_state:
 if "user_email" not in st.session_state:
     st.session_state["user_email"] = user_info["kakao_account"]["email"]
     print("user_email : ", st.session_state["user_email"])
-    
+
 if "nickname" not in st.session_state:
     st.session_state["nickname"] = user_info["properties"]["nickname"]
     print("nickname : ", st.session_state["nickname"])

@@ -5,11 +5,11 @@ from time import time
 import jwt
 import requests
 import rsa
-import yaml
-from back.config import REST_API_KEY
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicNumbers
+
+from back.config import REST_API_KEY
 
 
 # OIDC를 위해 공개키 가져오기
@@ -61,17 +61,17 @@ def verify_token(token):
     decoded_payload = json.loads(decoded_payload)
 
     # 필요한 정보 추출
-    issuer = decoded_payload["iss"]  # 발급자
-    audience = decoded_payload["aud"]  # 대상자
-    expiration_time = decoded_payload["exp"]  # 만료 시간
+    issuer = decoded_payload["iss"]         # 발급자
+    audience = decoded_payload["aud"]       # 대상자
+    expiration_time = decoded_payload["exp"]# 만료 시간
     current_time = int(time())
 
     # 토큰 유효성 검사
-    if issuer != "https://kauth.kakao.com":
+    if issuer != "https://kauth.kakao.com": # JWT 발급자 체크
         return False, "Issuer mismatch"
-    if audience != REST_API_KEY:
-        return False, "Audience mismatch"
-    if expiration_time < current_time:
+    if audience != REST_API_KEY:            # JWT 대상자 체크
+        return False, "Audience mismatch"   
+    if expiration_time < current_time:      # JWT 만료 시간 체크
         return False, "Token expired"
 
     # 헤더 디코딩 및 kid 값 추출

@@ -1,17 +1,15 @@
-import json
 import random
 import re
 
 import openai
-from langchain.callbacks import get_openai_callback
-from langchain.chains import LLMChain, SequentialChain
-from langchain.chat_models import ChatOpenAI
+from langchain.chains import LLMChain
 from langchain.document_loaders import PyPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.prompts import (ChatPromptTemplate, HumanMessagePromptTemplate,
-                               PromptTemplate, SystemMessagePromptTemplate)
+from langchain.prompts import PromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.vectorstores import Chroma
+from langchain.callbacks import get_openai_callback
+from langchain.chat_models import ChatOpenAI
 
 
 def generate_llm_sub_chain(llm, template, output_key: str):
@@ -236,22 +234,24 @@ def calculate_token_usage(response, prompt):
 
 
 def create_resume_vectordb(USER_RESUME_SAVE_DIR):
-    '''
+    """
     이력서를 text_splitter로 chunking하고 chromadb에 embedding으로 저장합니다.
-    
-    '''
-    text_splitter = CharacterTextSplitter(chunk_size=200,chunk_overlap=20)
+
+    """
+    text_splitter = CharacterTextSplitter(chunk_size=200, chunk_overlap=20)
     loader = PyPDFLoader(USER_RESUME_SAVE_DIR)
     pages = loader.load_and_split(text_splitter)
-            
-    vector_index = Chroma.from_documents(pages, # Documents
-                OpenAIEmbeddings(),) # Text embedding model
+
+    vector_index = Chroma.from_documents(
+        pages,  # Documents
+        OpenAIEmbeddings(),
+    )  # Text embedding model
     return vector_index
 
 
 def create_prompt_with_question(prompt_template):
     """
-    3_chain에서 마지막 단계에서 사용되는 함수, chain1,2에서 요약된 jd와 resume을 이용해 
+    3_chain에서 마지막 단계에서 사용되는 함수, chain1,2에서 요약된 jd와 resume을 이용해
     기술 면접 질문을 생성해줍니다.
     :param jd: 채용공고 내용
     :type jd: str
@@ -261,10 +261,8 @@ def create_prompt_with_question(prompt_template):
     :return: 완성된 프롬프트
     :rtype: str
     """
-    
-    prompt = PromptTemplate(
-                template=prompt_template, input_variables=["jd", "resume"])
+
+    prompt = PromptTemplate(template=prompt_template, input_variables=["jd", "resume"])
     # JD 내용을 템플릿의 {jd} 부분에 삽입합니다.
     prompt_question = prompt
     return prompt_question
-

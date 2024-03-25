@@ -64,9 +64,10 @@ def read_cookie_from_client():
 
 lock = threading.Lock()
 
+
 def get_info_from_kakao(access_token):
     # 카카오 사용자 정보 가져오기
-    
+
     lock.acquire()  # 락 획득
 
     try:
@@ -75,10 +76,10 @@ def get_info_from_kakao(access_token):
         response = requests.get("https://kapi.kakao.com/v2/user/me", headers=headers)
         user_info = response.json()
     finally:
-        lock.release() # 락 해제
-    
+        lock.release()  # 락 해제
+
     return user_info
-    
+
 
 # 로그인 페이지로 이동하는 함수(streamlit)
 # 이미 로그인 되어있으면 자동으로 다음 페이지로 이동
@@ -88,4 +89,3 @@ def goto_login_page():
     res_kakaologin = requests.get(url)
     url = res_kakaologin.url
     st.markdown(f'<meta http-equiv="refresh" content="0;URL={url}">', unsafe_allow_html=True)
-
