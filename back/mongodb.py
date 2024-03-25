@@ -6,7 +6,7 @@ from typing import Optional
 from bson import ObjectId
 from fastapi import APIRouter, FastAPI, HTTPException, Query
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pymongo import ASCENDING, MongoClient, ReturnDocument, errors
 
 logging.basicConfig(
@@ -18,7 +18,7 @@ logging.basicConfig(
 
 router = APIRouter()
 username = os.getenv("MONGO_USERNAME", "admin")
-password = os.getenv("MONGO_PASSWORD", "maxseats")
+password = os.getenv("MONGO_PASSWORD", "password")
 print(username, password)
 # MongoDB connection URL
 MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
@@ -35,7 +35,7 @@ collection = database["users"]
 
 
 class User(BaseModel):
-    email: str
+    email: str = Field(..., alias="_id")
     name: str
     access_token: str = None
     id_token: str = None
@@ -61,7 +61,7 @@ async def check_email_exists(email: str):
     return user is not None
 
 
-@router.post("/", response_model=User)
+@router.post("/{email}", response_model=User)
 async def create_user(user: User):
     """
     사용자를 생성하는 함수입니다.
@@ -72,8 +72,12 @@ async def create_user(user: User):
     Returns:
         User: 생성된 사용자 정보를 담고 있는 User 객체
     """
-    await collection.insert_one(user.model_dump())
-    # user.email = str(result.inserted_id)
+    # user.emial = email
+    try:
+        result = await collection.insert_one(user.model_dump(by_alias=True))
+        user.id = str(result.inserted_id)
+    except errors.DuplicateKeyError:
+        raise HTTPException(status_code=409, detail="User already exists")
     return user
 
 
