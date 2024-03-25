@@ -7,6 +7,7 @@ import os
 import re
 import time
 
+from pymongo import MongoClient
 import streamlit as st
 from langchain.chains import LLMChain, RetrievalQA
 from langchain.chat_models import ChatOpenAI
@@ -21,6 +22,27 @@ from utils.util import local_css, read_prompt_from_txt
 
 from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
 from PIL import Image
+
+# MongoDB 연결 설정
+client = MongoClient('mongodb://localhost:27017/')
+db = client['interview_app']  # 사용할 DB
+collection = db['interviews']  # 사용할 Collection
+
+def save_generated_questions_to_db(user_id, questions):
+    """
+    MongoDB에 생성된 예상 질문을 사용자 데이터에 저장합니다.
+    
+    Args:
+        user_id (str): 사용자의 ID
+        questions (list): 생성된 예상 질문 목록
+    """
+    # MongoDB에 사용자 ID를 기반으로 예상 질문 데이터 저장 또는 업데이트
+    result = collection.update_one(
+        {"user_id": user_id},
+        {"$set": {"generated_questions": questions}},
+        upsert=True
+    )
+    return result
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(DATA_DIR,'images/favicon.png')
@@ -276,3 +298,17 @@ with progress_holder:
                 switch_page('show_questions_hint')
             elif st.session_state.cur_task == 'interview':
                 switch_page('interview')
+
+# 사용자 ID와 생성된 예상 질문을 세션 상태에서 가져옴
+user_id = st.session_state.get('user_id', None)
+generated_questions = st.session_state.get('generated_questions', None)
+
+# 사용자 ID와 생성된 예상 질문이 모두 있을 경우, DB에 저장
+if user_id and generated_questions:
+    save_result = save_generated_questions_to_db(user_id, generated_questions)
+    if save_result:
+        st.success("예상 질문이 성공적으로 저장되었습니다.")
+    else:
+        st.error("예상 질문 저장에 실패했습니다.")
+else:
+    st.warning("사용자 ID 또는 생성된 예상 질문 정보가 없습니다.")
