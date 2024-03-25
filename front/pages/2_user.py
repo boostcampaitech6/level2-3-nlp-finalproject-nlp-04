@@ -306,7 +306,7 @@ main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
 job_info, JOBS = read_job_info_tb(MY_PATH + "/data/samples/job_info_tb.parquet")
 st.session_state.job_info = job_info
 st.session_state.logger.info("read job tb")
-st.session_state.logger.info(f" job info is ... {JOBS}")
+st.session_state.logger.info(f"job info is ... {JOBS}")
 st.session_state.big_q_progress = True
 
 ## input_form
@@ -319,7 +319,7 @@ with input_form:
                         unsafe_allow_html=True )
 
     st.session_state.user_name = st.session_state.nickname
-    st.session_state.logger.info(f"user nae : {st.session_state.user_name}")
+    st.session_state.logger.info(f"user name : {st.session_state.user_name}")
 
     ### 지원 직무 폼
     input_form.markdown(
