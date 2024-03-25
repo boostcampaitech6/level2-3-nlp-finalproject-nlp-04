@@ -376,16 +376,12 @@ with input_form:
     ##############################################
     ### custom message 개인정보 수집 관련 메시지 ###
     ##############################################
-    #input_form.markdown(f'''<div class='info_message'> {info_message} </div> ''', unsafe_allow_html=True)
+    # input_form.markdown(f'''<div class='info_message'> {info_message} </div> ''', unsafe_allow_html=True)
     
     ## start_button
     with start_button:
-        start_button.markdown(
-            f""" 
-                <div class = 'main_message'> {main_message}<br></div> 
-            """,
-            unsafe_allow_html=True,
-        )
+        start_button.markdown(f""" <div class = 'main_message'> {main_message}<br></div> """,
+                              unsafe_allow_html=True,)
         ### 필요사항체크
         check_list, josa = check_essential()
         st.session_state.logger.info(f"check_essential")
@@ -393,12 +389,9 @@ with input_form:
         if start_button.button("예상 질문 확인하기"):
             ### 유저 고유 폴더 생성
             if check_list:
-                start_button.markdown(
-                    f"""
-                                      <p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>
-                                      """,
-                    unsafe_allow_html=True,
-                )
+                start_button.markdown(f"""<p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>""",
+                                      unsafe_allow_html=True,
+                                      )
             else:
                 st.session_state.cur_task = "gene_question"  # 예상 질문 생성하기 수행
                 switch_page(NEXT_PAGE)
@@ -407,22 +400,16 @@ with input_form:
         if start_button.button("모의면접 시작하기"):
             ### 유저 고유 폴더 생성
             if check_list:
-                start_button.markdown(
-                    f"""
-                                      <p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>
-                                      """,
-                    unsafe_allow_html=True,
-                )
+                start_button.markdown(f"""<p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>""",
+                                      unsafe_allow_html=True,)
             else:
                 st.session_state.cur_task = "interview"  # 모의면접 수행
                 switch_page(NEXT_PAGE)
                 st.session_state.logger.info(f"check_essential | Pass")
 
     # 광고 공간
-    start_button.markdown(
-        f"""
+    start_button.markdown(f"""
                           <div class='ad_space'>
                           <div id='real_ad'> </div>
                           """,
-        unsafe_allow_html=True,
-    )
+                          unsafe_allow_html=True,)
