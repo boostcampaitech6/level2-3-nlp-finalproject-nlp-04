@@ -1,15 +1,18 @@
+import os
+import json
 import random
 import re
 
 # JSON 파일을 로드하여 데이터를 가져옵니다.
-# with open('/root/feat_maxseats/level2-3-nlp-finalproject-nlp-04/temp/룰베이스드/simplified_data.json', 'r', encoding='utf-8') as json_file:
-#     data_dict = json.load(json_file)
+FILE_NAME = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "rulebased_data.json")  # 필요한 값에 접근하기 위해 경로 설정
+with open(FILE_NAME, "r", encoding="utf-8") as json_file: 
+    data_dict = json.load(json_file)
 
 def list_extend_questions_based_on_keywords(data_dict, jd, position):
     # 키워드로 딕셔너리 검색을 위한 keywords
 
     # 분야
-    ai = "['ai', '머신러닝', '딥러닝', 'ml', 'dl']"
+    ai = ['ai', '머신러닝', '딥러닝', 'ml', 'dl']
     fe = ['프론트엔드', 'frontend']
     be = ['백엔드', 'backend']
 
@@ -70,4 +73,5 @@ def list_extend_questions_based_on_keywords(data_dict, jd, position):
     return question_essential
 
 if __name__ == "__main__":
-    print(list_extend_questions_based_on_keywords(data_dict, jd, position="AI"))
+    jd = "자바스크립트를 사용하여 프론트엔드 개발을 하고 싶습니다."
+    print(*list_extend_questions_based_on_keywords(data_dict, jd, position="FE"), sep="\n")
