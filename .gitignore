@@ -179,6 +179,8 @@ output
 *.csv
 *.pdf
 *.pkl
+!FAISS_INDEX_TAG/index.pkl
+
 
 0-hireview
 5-Prompting_test
