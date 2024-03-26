@@ -286,7 +286,7 @@ with progress_holder:
         else:
             selected_job = st.session_state.selected_job
             # rule-based question
-            with open(os.path.join(DATA_DIR, "data_dict.json"), "r", encoding="utf-8") as f:
+            with open(os.path.join(DATA_DIR, "rulebased_data.json"), "r", encoding="utf-8") as f:
                 data_dict = json.load(f)
             
             #########################################
