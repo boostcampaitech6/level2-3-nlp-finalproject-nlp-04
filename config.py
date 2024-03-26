@@ -8,6 +8,7 @@ with open(os.path.join(path, "secret_key.yaml"), "r") as yaml_file:
     cfg = yaml.safe_load(yaml_file)
 
 OPENAI_API_KEY = cfg["OPENAI_API_KEY"]
+COHERE_API_KEY = cfg["COHERE_API_KEY"]
 
 INSIDE_IP = cfg["IP"]["INSIDE_IP"]
 OUTSIDE_IP = cfg["IP"]["OUTSIDE_IP"]

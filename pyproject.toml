@@ -43,6 +43,7 @@ faiss-cpu = "^1.8.0"
 sentence-transformers = "^2.5.1"
 cryptography = "^42.0.5"
 faiss-gpu = "^1.7.2"
+cohere = "^5.1.2"
 
 
 [build-system]

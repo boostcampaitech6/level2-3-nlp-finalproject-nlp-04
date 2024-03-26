@@ -286,16 +286,22 @@ with progress_holder:
         else:
             selected_job = st.session_state.selected_job
             # rule-based question
-            with open(os.path.join(DATA_DIR, "data_dicr.json"), "r", encoding="utf-8") as f:
+            with open(os.path.join(DATA_DIR, "data_dict.json"), "r", encoding="utf-8") as f:
                 data_dict = json.load(f)
-
-            rule_questions = list_extend_questions_based_on_keywords(data_dict, user_JD,selected_job)
+            
+            #########################################
+            ### position 하드코딩되어있음 수정 요망 ###
+            #########################################
+            rule_questions = list_extend_questions_based_on_keywords(data_dict, user_JD, "AI")
+            print("### rule_questions ###")
+            print(*rule_questions, sep='/n')
             
             # semantic search question generation
             faiss_result = faiss_inference(job_description)
             faiss_question = reranker(job_description, faiss_result)
             st.session_state.logger.info(f"save faiss question")
-            print(faiss_question)
+            print("### faiss_question ###")
+            print(*faiss_question, sep='/n')
             ### 다음 세션으로 값 넘기기
             st.session_state.main_question = questions + rule_questions + faiss_question
             st.session_state.logger.info("end gene_question")
