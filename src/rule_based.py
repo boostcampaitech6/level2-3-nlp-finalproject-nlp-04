@@ -65,10 +65,10 @@ def list_extend_questions_based_on_keywords(data_dict, jd, position):
             
             # 새로운 질문 목록에서 랜덤하게 2개를 선택하여 추가합니다.
             if new_questions:
-                question_essential.extend(random.sample(new_questions, 2))
+                question_essential.extend(random.sample(new_questions, min(len(new_questions), 2)))
     
     # 3개만 랜덤하게 선정합니다.
-    question_essential = random.sample(question_essential, k=3)
+    question_essential = random.sample(question_essential, k=min(len(question_essential), 3))
     
     return question_essential
 
