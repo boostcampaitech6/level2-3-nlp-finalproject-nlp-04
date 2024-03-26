@@ -35,7 +35,7 @@ def list_extend_questions_based_on_keywords(data_dict, jd, position):
 
     # user 에서 선정된 position 을 기준으로 질문 2개 선정
     if position == 'AI':
-        ai_list = data_dict['ai']
+        ai_list = data_dict[str(ai)]
         ai_list = random.sample(ai_list, 3)
         question_essential.extend(ai_list)
     

@@ -1,5 +1,6 @@
 # 인터뷰 진행이 아닌 예상 질문을 모아보기 위한 임시 페이지 입니다.
 import os
+import sys
 
 import streamlit as st
 from langchain.chains import LLMChain
@@ -9,12 +10,11 @@ from PIL import Image
 from src.generate_question import (create_prompt_feedback,  # 추가
                                    create_prompt_hint)
 from streamlit_extras.switch_page_button import switch_page
-from utils.util import read_prompt_from_txt
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from src.util import read_prompt_from_txt
+from config import DATA_DIR, IMG_PATH, OPENAI_API_KEY
 
-MY_PATH = os.path.dirname(os.path.dirname(__file__))
-DATA_DIR = os.path.join(MY_PATH, "data")
-
-st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
     page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
     page_icon=Image.open(
@@ -24,7 +24,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-OPENAI_API_KEY = read_prompt_from_txt(os.path.join(DATA_DIR, "test/OPANAI_KEY.txt"))
 MODEL_NAME = "gpt-3.5-turbo-16k"
 NEXT_PAGE = "introduction"
 

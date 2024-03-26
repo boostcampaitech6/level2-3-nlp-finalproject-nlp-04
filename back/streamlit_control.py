@@ -7,7 +7,7 @@ from time import sleep
 import requests
 import streamlit as st
 
-from back.config import *
+from config import *
 
 
 # 클라이언트 측에서 쿠키를 읽어오는 코드(streamlit에서 작동)

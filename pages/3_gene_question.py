@@ -6,36 +6,35 @@ sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 import os
 import re
 import time
+import json
 
 import streamlit as st
 from langchain.chains import LLMChain, RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain_community.chat_models import ChatOpenAI
 from PIL import Image
-from src.generate_question import create_prompt_with_jd  # 추가
+from streamlit_extras.switch_page_button import switch_page
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from src.generate_question import create_prompt_with_jd
 from src.generate_question import (create_prompt_with_question,
                                    create_prompt_with_resume,
                                    create_resume_vectordb, load_user_JD,
                                    load_user_resume, save_user_JD,
                                    save_user_resume)
-from src.rule_based_algorithm import generate_rule_based_questions
-from streamlit_extras.switch_page_button import switch_page
-from utils.util import local_css, read_prompt_from_txt
+from src.rule_based import list_extend_questions_based_on_keywords
+from src.util import local_css, read_prompt_from_txt
+from src.semantic_search import faiss_inference, reranker
+from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH, CSS_PATH
 
-from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
-
-
-
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
     page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
     page_icon=Image.open(
         st.session_state.FAV_IMAGE_PATH
     ),  # 브라우저 탭에 뜰 아이콘,Image.open 을 이용해 특정경로 이미지 로드
     layout="wide",
-    initial_sidebar_state="collapsed",
-)
+    initial_sidebar_state="collapsed",)
 
 st.session_state.logger.info("start")
 NEXT_PAGE = "show_questions_hint"
@@ -46,8 +45,8 @@ MY_PATH = os.path.dirname(os.path.dirname(__file__))
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
-local_css(MY_PATH + "/css/background.css")
-local_css(MY_PATH + "/css/2_generate_question.css")
+local_css(os.path.join(CSS_PATH, "background.css"))
+local_css(os.path.join(CSS_PATH, "2_generate_question.css"))
 st.markdown(f"""<style>
                 /* 로딩이미지 */
                 .loading_space {{
@@ -185,16 +184,16 @@ with progress_holder:
             ### JD 사용하여 JD 추출용 프롬프트 만들기
             st.session_state.logger.info("prompt JD start")
 
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_JD_template.txt")
+            prompt_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_JD_template.txt"))
 
             prompt_JD = create_prompt_with_jd(prompt_template)
             # prompt_JD 생성완료
             st.session_state.logger.info("create prompt JD object")
 
             ### 모델 세팅 그대로
-            llm = ChatOpenAI(
-                temperature=st.session_state.temperature, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY
-            )
+            llm = ChatOpenAI(temperature=st.session_state.temperature,
+                             model_name=MODEL_NAME,
+                             openai_api_key=OPENAI_API_KEY)
 
             st.session_state.logger.info("create llm object")
 
@@ -216,7 +215,7 @@ with progress_holder:
             # prompt_qa_template #######################################
 
             st.session_state.logger.info("prompt resume start")
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_resume_template.txt")
+            prompt_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_resume_template.txt"))
 
             st.session_state.logger.info("create prompt resume template")
             prompt_resume = create_prompt_with_resume(prompt_template)
@@ -233,13 +232,11 @@ with progress_holder:
 
             chain_type_kwargs = {"prompt": prompt_resume}
 
-            qa_chain = RetrievalQA.from_chain_type(
-                llm=llm2,
-                chain_type="stuff",
-                retriever=vector_index.as_retriever(),
-                chain_type_kwargs=chain_type_kwargs,
-                verbose=True,
-            )
+            qa_chain = RetrievalQA.from_chain_type(llm=llm2,
+                                                   chain_type="stuff",
+                                                   retriever=vector_index.as_retriever(),
+                                                   chain_type_kwargs=chain_type_kwargs,
+                                                   verbose=True,)
 
             resume = qa_chain.run("기술면접에 나올만한 프로젝트 내용은?")
             print("prompt_resume @@@@@@@@", prompt_resume)
@@ -248,7 +245,7 @@ with progress_holder:
 
             ## step3 :
             st.session_state.logger.info("prompt question start")
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_question_template.txt")
+            prompt_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_question_template.txt"))
 
             st.session_state.logger.info("create prompt question template")
             prompt_question = create_prompt_with_question(prompt_template)
@@ -288,17 +285,30 @@ with progress_holder:
 
         else:
             selected_job = st.session_state.selected_job
-
-            rule_questions = generate_rule_based_questions(selected_job, user_JD, user_resume)
-            print()
-
+            # rule-based question
+            with open(os.path.join(DATA_DIR, "data_dict.json"), "r", encoding="utf-8") as f:
+                data_dict = json.load(f)
+            
+            #########################################
+            ### position 하드코딩되어있음 수정 요망 ###
+            #########################################
+            rule_questions = list_extend_questions_based_on_keywords(data_dict, user_JD, "AI")
+            print("### rule_questions ###")
+            print(*rule_questions, sep='/n')
+            
+            # semantic search question generation
+            faiss_result = faiss_inference(job_description)
+            faiss_question = reranker(job_description, faiss_result)
+            st.session_state.logger.info(f"save faiss question")
+            print("### faiss_question ###")
+            print(*faiss_question, sep='/n')
             ### 다음 세션으로 값 넘기기
-            st.session_state.main_question = questions + rule_questions
+            st.session_state.main_question = questions + rule_questions + faiss_question
             st.session_state.logger.info("end gene_question")
             time.sleep(3)
             ####
-
-            if st.session_state.cur_task == "gene_question":
-                switch_page("show_questions_hint")
-            elif st.session_state.cur_task == "interview":
-                switch_page("interview")
+            
+            if st.session_state.cur_task == 'gene_question':
+                switch_page('show_questions_hint')
+            elif st.session_state.cur_task == 'interview':
+                switch_page('interview')

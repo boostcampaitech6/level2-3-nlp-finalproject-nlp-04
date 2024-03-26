@@ -1,24 +1,18 @@
 import logging
 import os
-import sys
 
 import requests
 import streamlit as st
 from PIL import Image
-
-sys.path.append("./")
-from utils.util import get_image_base64
-
-from back.streamlit_control import goto_login_page
-
-sys.path.append("./")
-sys.path.append("./back")
 from streamlit_extras.switch_page_button import switch_page
 
-from back.config import OUTSIDE_IP, PORT  # IP, PORT 얻어오기 위해 import
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
-st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
+from back.streamlit_control import goto_login_page
+from config import IMG_PATH
+from src.util import get_image_base64
+
+
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 
 st.set_page_config(page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
                    page_icon=Image.open(st.session_state.FAV_IMAGE_PATH),  # 브라우저 탭에 뜰 아이콘
@@ -30,7 +24,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-st.session_state["START_IMG"] = get_image_base64(os.path.join(DATA_DIR, "images/start_page.png"))
+st.session_state["START_IMG"] = get_image_base64(os.path.join(IMG_PATH, "start_page.png"))
 START_IMG = st.session_state.START_IMG
 
 # 버튼들을 화면 오른쪽 아래에 배치하기 위해 CSS 스타일을 적용합니다.
