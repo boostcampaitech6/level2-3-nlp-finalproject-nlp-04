@@ -42,10 +42,9 @@ class User(BaseModel):
     expires_in: int = None  # 언제 사용할까요?   # 아직 사용하지 않음
     last_login: Optional[datetime] = None       # 마지막 로그인 시간
     joined: Optional[datetime] = None           # 가입 날짜
-    available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧
     jd: Optional[List] = None                   # 입력한 채용공고 list
-    resume: Optional[List] = None               # 입력한 이력서 list
-
+    resume_file_ids: Optional[List] = None      # 입력한 이력서 list
+    available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧
 
 @router.get("/{email}/exists")
 async def check_email_exists(email: str):
@@ -98,9 +97,10 @@ async def update_user(email: str, user: User):
         HTTPException: 사용자를 찾을 수 없을 때 발생하는 예외
     """
     update_fields = {k: v for k, v in user.model_dump().items() if v is not None}
-    updated_user = await collection.find_one_and_update(
-        {"_id": email}, {"$set": update_fields}, return_document=ReturnDocument.AFTER
-    )
+    updated_user = await collection.find_one_and_update({"_id": email},
+                                                        {"$set": update_fields},
+                                                        return_document=ReturnDocument.AFTER,)
+    
     if updated_user:
         return User(**updated_user)
     raise HTTPException(status_code=404, detail="User not found")
