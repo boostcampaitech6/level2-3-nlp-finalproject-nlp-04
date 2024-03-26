@@ -5,8 +5,8 @@ from typing import List, Optional
 
 from bson import ObjectId
 from gridfs import GridFSBucket, NoFile
-from pydantic import BaseModel
-from pymongo import MongoClient
+from pydantic import BaseModel, Field
+from pymongo import MongoClient, errors
 
 # 환경 변수로부터 MongoDB 설정 읽기
 username = os.getenv("MONGO_USERNAME", "admin")
@@ -83,45 +83,54 @@ def read_resume(email: str):
 
 
 def delete_resume(user_id: str, file_id: str):
-    file_id_obj = ObjectId(file_id)
+    try:
+        file_id_obj = ObjectId(file_id)
 
-    # GridFSBucket에서 파일 삭제
-    fs_bucket.delete(file_id_obj)
+        # GridFSBucket에서 파일 삭제
+        fs_bucket.delete(file_id_obj)
 
-    # 사용자 컬렉션에서 파일 ID 제거
-    collection.update_one(
-        {'_id': user_id},
-        {'$pull': {'resume_file_ids': file_id_obj}}
-    )
+        # 사용자 컬렉션에서 파일 ID 제거
+        collection.update_one(
+            {'_id': user_id},
+            {'$pull': {'resume_file_ids': file_id_obj}}
+        )
 
-    print(f"Deleted file with ID: {file_id} from user with ID: {user_id}")
+        print(f"Deleted file with ID: {file_id} from user with ID: {user_id}")
+    except NoFile:
+        print(f"No file found with ID: {file_id}")
 
 
 if __name__ == "__main__":
     class User(BaseModel):
-        email: str        # _id 필드를 email로 alias
+        email: str = Field(..., alias="_id")      # _id 필드를 email로 alias
         name: str                                   # 이름
         access_token: str = None                    # OAuth2의 access_token
         id_token: str = None                        # OAuth2의 id_token(JWT)
         expires_in: int = None  # 언제 사용할까요?   # 아직 사용하지 않음
         last_login: Optional[datetime] = None       # 마지막 로그인 시간
         joined: Optional[datetime] = None           # 가입 날짜
-        available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧
         jd: Optional[List] = None                   # 입력한 채용공고 list
-        resume: Optional[List] = None               # 입력한 이력서 list
-        resume_file_id: Optional[str] = None        # 추가된 필드
+        resume_file_ids: Optional[List] = []      # 입력한 이력서 list
+        available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧
 
     
-    fake_user = User(email="koo", name="희찬")
+    fake_user = User(_id="koo", name="희찬")
+
+    # 사용자 생성
+    try:
+        collection.insert_one(fake_user.model_dump(by_alias=True))
+    except errors.DuplicateKeyError:
+        print("User already exists")
+
 
     # 파일 저장
-    with open('./test.txt', 'rb') as f:
+    with open('./back/test.txt', 'rb') as f:
         file_id = upload_resume("koo", f.name.split('/')[-1], f)
     
     # 파일 읽기
     user_files = read_resume("koo")
-    for file in user_files:
-        print(file)
+    # for file in user_files:
+        # print(file)
 
     # 파일 삭제
     delete_resume("koo", "6602f70ac35b92eeafa54458")
