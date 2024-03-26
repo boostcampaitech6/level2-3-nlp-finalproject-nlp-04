@@ -18,9 +18,9 @@ from src.generate_question import (create_prompt_with_resume,
                                    load_user_resume, save_user_JD,
                                    save_user_resume)
 from streamlit_extras.switch_page_button import switch_page
-from utils.util import local_css, read_prompt_from_txt
+from util import local_css, read_prompt_from_txt
 
-from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
+from config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")

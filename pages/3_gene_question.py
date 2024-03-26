@@ -12,6 +12,8 @@ from langchain.chains import LLMChain, RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain_community.chat_models import ChatOpenAI
 from PIL import Image
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from src.generate_question import create_prompt_with_jd  # 추가
 from src.generate_question import (create_prompt_with_question,
                                    create_prompt_with_resume,
@@ -20,14 +22,10 @@ from src.generate_question import (create_prompt_with_question,
                                    save_user_resume)
 from src.rule_based_algorithm import generate_rule_based_questions
 from streamlit_extras.switch_page_button import switch_page
-from utils.util import local_css, read_prompt_from_txt
+from src.util import local_css, read_prompt_from_txt
+from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH, CSS_PATH
 
-from back.config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
-
-
-
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
     page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
     page_icon=Image.open(
@@ -46,8 +44,8 @@ MY_PATH = os.path.dirname(os.path.dirname(__file__))
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
-local_css(MY_PATH + "/css/background.css")
-local_css(MY_PATH + "/css/2_generate_question.css")
+local_css(os.path.join(CSS_PATH, "background.css"))
+local_css(os.path.join(CSS_PATH, "2_generate_question.css"))
 st.markdown(f"""<style>
                 /* 로딩이미지 */
                 .loading_space {{
@@ -185,7 +183,7 @@ with progress_holder:
             ### JD 사용하여 JD 추출용 프롬프트 만들기
             st.session_state.logger.info("prompt JD start")
 
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_JD_template.txt")
+            prompt_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_JD_template.txt"))
 
             prompt_JD = create_prompt_with_jd(prompt_template)
             # prompt_JD 생성완료
@@ -216,7 +214,7 @@ with progress_holder:
             # prompt_qa_template #######################################
 
             st.session_state.logger.info("prompt resume start")
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_resume_template.txt")
+            prompt_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_resume_template.txt"))
 
             st.session_state.logger.info("create prompt resume template")
             prompt_resume = create_prompt_with_resume(prompt_template)
@@ -248,7 +246,7 @@ with progress_holder:
 
             ## step3 :
             st.session_state.logger.info("prompt question start")
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_question_template.txt")
+            prompt_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_question_template.txt"))
 
             st.session_state.logger.info("create prompt question template")
             prompt_question = create_prompt_with_question(prompt_template)

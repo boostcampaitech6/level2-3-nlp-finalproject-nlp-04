@@ -1,5 +1,4 @@
 import os
-
 import yaml
 
 path = os.getcwd()  # 상위 폴더에서 실행된 경우 -> secret_key.yaml이 상위 폴더에 있음
@@ -24,3 +23,7 @@ CERT_FILE = cfg["SSL"]["CERT_FILE"]
 
 CLIENT_ID = cfg["CLIENT_ID"]
 CLIENT_SECRET = cfg["CLIENT_SECRET"]
+
+DATA_DIR = os.path.join(path, "data")
+IMG_PATH = os.path.join(path, "data", "images")
+CSS_PATH = os.path.join(path, "front", "css")

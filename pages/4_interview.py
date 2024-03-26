@@ -1,15 +1,16 @@
 import os
+import sys
 from time import sleep
 
 import streamlit as st
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
-from utils.util import load_chain
-
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from src.util import load_chain
+from config import DATA_DIR, IMG_PATH
 NEXT_PAGE = "question_list"
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
     page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
     page_icon=Image.open(

@@ -9,7 +9,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicNumbers
 
-from back.config import REST_API_KEY
+from config import REST_API_KEY
 
 
 # OIDC를 위해 공개키 가져오기

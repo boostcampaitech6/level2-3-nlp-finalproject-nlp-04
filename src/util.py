@@ -17,7 +17,7 @@ from langchain.prompts import PromptTemplate
 from PIL import Image
 
 sys.path.append("./")
-from back.config import OPENAI_API_KEY
+from config import OPENAI_API_KEY
 
 
 def load_css_as_string(file_name):
