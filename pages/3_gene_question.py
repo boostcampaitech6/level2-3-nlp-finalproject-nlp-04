@@ -10,7 +10,6 @@ import json
 
 import streamlit as st
 from langchain.chains import LLMChain, RetrievalQA
-from langchain.chat_models import ChatOpenAI
 from langchain_community.chat_models import ChatOpenAI
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page

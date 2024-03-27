@@ -3,13 +3,11 @@ import re
 
 import openai
 from langchain.chains import LLMChain
-from langchain.document_loaders import PyPDFLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.embeddings.openai import OpenAIEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.vectorstores import Chroma
-from langchain.callbacks import get_openai_callback
-from langchain.chat_models import ChatOpenAI
+from langchain_community.vectorstores.chroma import Chroma
 
 
 def generate_llm_sub_chain(llm, template, output_key: str):
