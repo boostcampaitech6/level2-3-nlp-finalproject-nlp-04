@@ -1,18 +1,15 @@
 import ast
 import base64
 import json
-import os
 import re
 
 import matplotlib.pyplot as plt
-import openai
 import plotly.graph_objs as go
 import plotly.io as pio
 from langchain import PromptTemplate
-from langchain.callbacks import get_openai_callback
+from langchain_community.callbacks import get_openai_callback
 from langchain.chains import LLMChain, SequentialChain
-from langchain.chat_models import ChatOpenAI
-from PIL import Image
+
 
 
 def generate_llm_sub_chain(llm, template: str, output_key: str):

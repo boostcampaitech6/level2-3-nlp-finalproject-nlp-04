@@ -3,13 +3,10 @@ FAISS INDEX TAG 생성 시키는 코드 : 900개의 기술면접 질문 데이�
 - 모델 학습과 같은 역할로, inference시에는 사용되지 않습니다
 '''
 
-import faiss
 import pandas as pd
-import numpy as np
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
-from langchain_community.document_loaders.csv_loader import CSVLoader
-import os
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores.faiss import FAISS
+
 
 # 질문 csv 불러오기
 data = pd.read_csv('hellojobits_tag.csv')

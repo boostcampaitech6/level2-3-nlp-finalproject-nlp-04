@@ -1,12 +1,11 @@
 import os
 import sys
 import re
+
 import cohere
-import faiss
-import pandas as pd
-import numpy as np
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores.faiss import FAISS
+
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from config import COHERE_API_KEY  # COHERE_API_KEY 불러오기
 
