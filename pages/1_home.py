@@ -28,12 +28,10 @@ if user_id is not None:
     st.session_state["access_token"] = token
 
 # session_state 값 사용
-if "user_id" in st.session_state:
-    if verify_token(st.session_state["user_id"]):
-        user_info = get_info_from_kakao(st.session_state["access_token"])
+if "user_id" in st.session_state and verify_token(st.session_state["user_id"]):
+    user_info = get_info_from_kakao(st.session_state["access_token"])
 else:
     user_info = {"properties": {"nickname": "GUEST"}, "kakao_account": {"email": "GUEST"}, "access_token": "GUEST"}
-
 
 if "logger" not in st.session_state:
     # logru_logger(**config.config)
@@ -80,6 +78,14 @@ if "user_email" not in st.session_state:
 if "nickname" not in st.session_state:
     st.session_state["nickname"] = user_info["properties"]["nickname"]
     print("nickname : ", st.session_state["nickname"])
+
+if "access_token" not in st.session_state:
+    st.session_state["access_token"] = user_info["access_token"]
+    print("access_token : ", st.session_state["access_token"])
+
+if "user_id" not in st.session_state:
+    st.session_state["user_id"] = user_info["kakao_account"]["email"]
+    print("user_id : ", st.session_state["user_id"])
 
 
 switch_page(NEXT_PAGE)
