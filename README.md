@@ -111,4 +111,5 @@
 - 생성형 모델 특성 상 정량적 지표 사용이 어려워, 휴먼 피드백 기법을 사용하여 생성된 예상 질문에 대한 평가를 통해 모델 평가를 진행하였습니다.
 - 유사 서비스 3개와 저희 프로젝트의 예상 면접 질문을 블라인드로 사용자에게 제공한 뒤, 서비스에서 중요하다고 생각되는 다음 지표(metric)에 대하여 평가를 요청하였습니다.
 - 그 결과, 전반적인 평가에서 저희 안녕자비스 팀의 생성 결과가 가장 좋은 평가를 받은 점을 확인할 수 있었습니다.
-![img (11)](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-04/assets/67735022/e63f22be-f24b-4652-b74f-4e6e5118bd82)
+![image](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-04/assets/67735022/3ba26bbc-e92e-42b8-b303-6be12402da87)
+
