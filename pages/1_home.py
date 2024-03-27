@@ -1,5 +1,6 @@
 import os
 import sys
+import requests
 
 import streamlit as st
 from loguru import logger as _logger
@@ -10,11 +11,21 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 from src.logger import DevConfig
 from src.util import get_image_base64, read_gif
-from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH
+from config import OPENAI_API_KEY, IMG_PATH, PORT
 
 from back.streamlit_control import get_info_from_kakao
 from back.user_authorization import verify_token
+from back.mongodb import User
+
 NEXT_PAGE = "user"
+is_logged_in = False
+
+if "logger" not in st.session_state:
+    # logru_logger(**config.config)
+    config = DevConfig
+    _logger.configure(**config.config)
+    st.session_state["logger"] = _logger  # session_state에 ["logger"] 라는 키값을 추가하여 사용
+    st.session_state["save_dir"] = config.SAVE_DIR
 
 try:
     user_id = st.query_params["user_id"]
@@ -27,18 +38,56 @@ if user_id is not None:
     st.session_state["user_id"] = user_id
     st.session_state["access_token"] = token
 
-# session_state 값 사용
-if "user_id" in st.session_state and verify_token(st.session_state["user_id"]):
+    # 토큰 검증, 토큰 페이로드 디코딩
+    is_logged_in, token_payload = verify_token(st.session_state["user_id"])
+
+# 로그인 상태에 따라 사용자 정보 설정
+if "user_id" in st.session_state and is_logged_in:
     user_info = get_info_from_kakao(st.session_state["access_token"])
 else:
     user_info = {"properties": {"nickname": "GUEST"}, "kakao_account": {"email": "GUEST"}, "access_token": "GUEST"}
 
-if "logger" not in st.session_state:
-    # logru_logger(**config.config)
-    config = DevConfig
-    _logger.configure(**config.config)
-    st.session_state["logger"] = _logger  # session_state에 ["logger"] 라는 키값을 추가하여 사용
-    st.session_state["save_dir"] = config.SAVE_DIR
+
+if "user_email" not in st.session_state:
+    st.session_state["user_email"] = user_info["kakao_account"]["email"]
+    print("user_email : ", st.session_state["user_email"])
+
+if "nickname" not in st.session_state:
+    st.session_state["nickname"] = user_info["properties"]["nickname"]
+    print("nickname : ", st.session_state["nickname"])
+
+if "access_token" not in st.session_state:
+    st.session_state["access_token"] = user_info["access_token"]
+    print("access_token : ", st.session_state["access_token"])
+
+if "user_id" not in st.session_state:
+    st.session_state["user_id"] = user_info["kakao_account"]["email"]
+    print("user_id : ", st.session_state["user_id"])
+
+
+if is_logged_in:
+    # DB에 저장할 변수 설정
+    last_login = token_payload["auth_time"]
+    expires_at = token_payload["exp"]
+
+    user = User(
+        _id=st.session_state["user_email"],
+        name=st.session_state["nickname"],
+        access_token=st.session_state["access_token"],
+        id_token=st.session_state["user_id"],
+        last_login=last_login,
+        expires_at=expires_at,
+    )
+
+    is_member = requests.get(f"http://localhost:{PORT}/kako/{st.session_state['user_email']}/exists")
+
+    if is_member: # 이미 DB에 저장된 사용자라면
+        user = requests.post(f"http://localhost:{PORT}/users/{user._id}",json=user.model_dump(by_alias=True),)
+
+    elif not is_member: # DB에 저장된 사용자가 아니라면
+        user.joined_at = last_login
+        user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True),)
+
 
 if "openai_api_key" not in st.session_state:
     os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
@@ -70,22 +119,5 @@ if "user_name" not in st.session_state:
 
 if "temperature" not in st.session_state:
     st.session_state["temperature"] = 0
-
-if "user_email" not in st.session_state:
-    st.session_state["user_email"] = user_info["kakao_account"]["email"]
-    print("user_email : ", st.session_state["user_email"])
-
-if "nickname" not in st.session_state:
-    st.session_state["nickname"] = user_info["properties"]["nickname"]
-    print("nickname : ", st.session_state["nickname"])
-
-if "access_token" not in st.session_state:
-    st.session_state["access_token"] = user_info["access_token"]
-    print("access_token : ", st.session_state["access_token"])
-
-if "user_id" not in st.session_state:
-    st.session_state["user_id"] = user_info["kakao_account"]["email"]
-    print("user_id : ", st.session_state["user_id"])
-
 
 switch_page(NEXT_PAGE)

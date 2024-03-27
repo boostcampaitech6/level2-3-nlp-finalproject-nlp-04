@@ -1,5 +1,7 @@
 import base64
 import json
+import os
+import sys
 from time import time
 
 import jwt
@@ -9,7 +11,8 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicNumbers
 
-from config import REST_API_KEY
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from config import CLIENT_ID
 
 
 # OIDC를 위해 공개키 가져오기
@@ -68,7 +71,7 @@ def verify_token(token):
     # 토큰 유효성 검사
     if issuer != "https://kauth.kakao.com": # JWT 발급자 체크
         return False, "Issuer mismatch"
-    if audience != REST_API_KEY:            # JWT 대상자 체크
+    if audience != CLIENT_ID:            # JWT 대상자 체크
         return False, "Audience mismatch"   
     if expiration_time < current_time:      # JWT 만료 시간 체크
         return False, "Token expired"

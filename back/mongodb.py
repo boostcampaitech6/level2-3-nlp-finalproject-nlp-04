@@ -1,13 +1,14 @@
 import logging
 import os
-from datetime import datetime
 from typing import List, Optional
 
-from bson import ObjectId
-from fastapi import APIRouter, FastAPI, HTTPException, Query
+import streamlit as st
+from fastapi import APIRouter, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
-from pymongo import ASCENDING, MongoClient, ReturnDocument, errors
+from pymongo import ReturnDocument, errors
+
+from config import PORT
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -17,8 +18,6 @@ logging.basicConfig(level=logging.INFO,
 router = APIRouter()
 username = os.getenv("MONGO_USERNAME", "admin")
 password = os.getenv("MONGO_PASSWORD", "password")
-print("username", username)
-print("password", password)
 
 # MongoDB connection URL
 MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
@@ -39,12 +38,13 @@ class User(BaseModel):
     name: str                                   # 이름
     access_token: str = None                    # OAuth2의 access_token
     id_token: str = None                        # OAuth2의 id_token(JWT)
-    expires_in: int = None  # 언제 사용할까요?   # 아직 사용하지 않음
-    last_login: Optional[datetime] = None       # 마지막 로그인 시간
-    joined: Optional[datetime] = None           # 가입 날짜
-    jd: Optional[List] = None                   # 입력한 채용공고 list
-    resume_file_ids: Optional[List] = None      # 입력한 이력서 list
+    expires_at: Optional[int] = None # 언제 사용할까요? # 아직 사용하지 않음
+    joined_at: Optional[int] = None             # 가입 날짜
+    last_login: Optional[int] = None            # 마지막 로그인 시간
+    jd: Optional[List] = []                     # 입력한 채용공고 list
+    resume_file_ids: Optional[List] = []        # 입력한 이력서 list
     available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧
+
 
 @router.get("/{email}/exists")
 async def check_email_exists(email: str):

@@ -1,7 +1,6 @@
 import logging
 import os
 
-import requests
 import streamlit as st
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
