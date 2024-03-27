@@ -4,7 +4,6 @@ import sys
 
 import streamlit as st
 from langchain.chains import LLMChain
-from langchain.chat_models import ChatOpenAI
 from langchain_community.chat_models import ChatOpenAI
 from PIL import Image
 from src.generate_question import (create_prompt_feedback,  # 추가

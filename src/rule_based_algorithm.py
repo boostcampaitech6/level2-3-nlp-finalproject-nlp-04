@@ -3,8 +3,6 @@ import os
 import random
 import re
 
-import pandas as pd
-
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(MY_PATH, "data")
 
