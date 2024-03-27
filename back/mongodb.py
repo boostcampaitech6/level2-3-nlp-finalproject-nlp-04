@@ -96,7 +96,7 @@ async def update_user(email: str, user: User):
     Raises:
         HTTPException: 사용자를 찾을 수 없을 때 발생하는 예외
     """
-    update_fields = {k: v for k, v in user.model_dump().items() if v is not None}
+    update_fields = {k: v for k, v in user.model_dump(by_alias=True).items() if v is not None}
     updated_user = await collection.find_one_and_update({"_id": email},
                                                         {"$set": update_fields},
                                                         return_document=ReturnDocument.AFTER,)
