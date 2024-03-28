@@ -79,7 +79,7 @@ if is_logged_in:
         expires_at=expires_at,
     )
 
-    is_member = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/exists")
+    is_member = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/exists").json()
 
     if is_member: # 이미 DB에 저장된 사용자라면
         user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True),)
