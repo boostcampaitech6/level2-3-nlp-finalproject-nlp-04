@@ -82,11 +82,11 @@ if is_logged_in:
     is_member = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/exists").json()
 
     if is_member: # 이미 DB에 저장된 사용자라면
-        user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True),)
+        user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
 
     elif not is_member: # DB에 저장된 사용자가 아니라면
         user.joined_at = last_login
-        user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True),)
+        user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True)).json()
 
 
 if "openai_api_key" not in st.session_state:
