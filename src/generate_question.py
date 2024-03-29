@@ -1,3 +1,4 @@
+import os
 import random
 import re
 
@@ -80,7 +81,6 @@ def load_user_resume(USER_RESUME_SAVE_DIR):
     """
     loader = PyPDFLoader(USER_RESUME_SAVE_DIR)
     pages = loader.load()
-    print(len(pages), print(pages[0].page_content[0:500]), pages[0].metadata)
 
     ### User Total 이력서 Import
     user_resume_lst = [n.page_content for n in pages]
@@ -243,6 +243,7 @@ def create_resume_vectordb(USER_RESUME_SAVE_DIR):
     vector_index = Chroma.from_documents(
         pages,  # Documents
         OpenAIEmbeddings(),
+        persist_directory=os.path.dirname(USER_RESUME_SAVE_DIR)
     )  # Text embedding model
     return vector_index
 

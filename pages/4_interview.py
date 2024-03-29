@@ -55,25 +55,25 @@ st.progress(st.session_state.cnt/len_questions, '모의면접 진행률')
 
 # 이전 대화 목록 출력
 for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+st.session_state.questions_interview = st.session_state.main_question
 
 ##################################### 여기서부터 모의 면접 시작 ############################################
-
 # 프로젝트 관련 질문 -> 대분류 질문 (일반 질문, plus == 0)
 if st.session_state.plus == 0:
-
     # 조건 1 : 만약 대질문의 질문이 아직 남아있면 질문 실행하기
-    if len(questions) > st.session_state.current_question_idx:
+    if len(st.session_state.questions_interview) > st.session_state.current_question_idx:
         with st.chat_message('assistant'):
-            st.markdown(questions[st.session_state.current_question_idx]) # 질문하기
+            st.markdown(st.session_state.questions_interview[st.session_state.current_question_idx]) # 질문하기
 
     # 사용자 답변 입력 받기
     if query := st.chat_input('답변을 입력해주세요. '):
-        st.session_state.messages.append({"role": "assistant", "content": questions[st.session_state.current_question_idx]})
+        st.session_state.messages.append({"role": "assistant", "content": st.session_state.questions_interview[st.session_state.current_question_idx]})
         
         # 질문이 남아 있다면 입력 받기
-        if len(questions) > st.session_state.current_question_idx:
+        if len(st.session_state.questions_interview) > st.session_state.current_question_idx:
             st.session_state.messages.append({"role": "user", "content": query})
             
             # 사용자 입력 채팅으로 출력하기
@@ -94,19 +94,18 @@ if st.session_state.plus == 0:
         
         # 프로젝트에 대한 꼬리질문 실행
         if st.session_state.plus == 1:
-
             # 꼬리질문 함수(load_chain) 실행
-            st.session_state.chain = load_chain(questions[st.session_state.current_question_idx])
+            st.session_state.chain = load_chain(st.session_state.questions_interview[st.session_state.current_question_idx])
 
             with st.chat_message('assistant'):
                 st.session_state.tail = st.session_state.chain.predict(input = query)
                 st.session_state.messages.append({"role": "assistant", "content": st.session_state.tail})
                 st.markdown(st.session_state.tail)
         #######################  만약 꼬리질문이 없다면? (이거 왜 있는건지 잘 모르겠습니당) -> 아마 데모 페이지의 잔재일수도?  
-        elif len(questions) > st.session_state.current_question_idx + 1:
+        elif len(st.session_state.questions_interview) > st.session_state.current_question_idx + 1:
             st.session_state.current_question_idx += 1
             with st.chat_message('assistant'):
-                st.markdown(questions[st.session_state.current_question_idx]) # 질문 뽑기
+                st.markdown(st.session_state.questions_interview[st.session_state.current_question_idx]) # 질문 뽑기
 
 # 프로젝트 질문 -> 소분류 질문 (꼬리질문, plus ==1)
 elif st.session_state.plus == 1:
@@ -131,6 +130,7 @@ elif st.session_state.plus == 1:
             st.session_state.messages.append({"role": "assistant", "content": st.session_state.tail})
             st.markdown(st.session_state.tail)
         st.session_state.messages.append({"role": "assistant", "content": plus_result})
+
     
     # 조건 2 : 꼬리질문 2번 했으면 다음 대분류 질문 실행
     if (st.session_state.count == 2):
@@ -140,24 +140,24 @@ elif st.session_state.plus == 1:
         st.success(":짠: 모든 꼬리질문에 대한 답변을 완료했습니다.")
 
         # 조건 3 : 만약 꼬리 질문이 끝나고 다음 대분류 질문이 있다면? -> 다음 대분류 질문 출력
-        if len(questions) > st.session_state.current_question_idx + 1:
+        if len(st.session_state.questions_interview) > st.session_state.current_question_idx + 1:
             with st.chat_message('assistant'):
                 st.session_state.current_question_idx += 1
-                st.markdown(questions[st.session_state.current_question_idx])
+                st.markdown(st.session_state.questions_interview[st.session_state.current_question_idx])
         else:   # 다음 대분류 질문이 없다면? -> 프로젝트 질문이 끝나고 기초 질문 출력
             st.session_state.finish = 1
             st.success(":짠: 다음으로 기초 기술 질문으로 넘어가겠습니다.")
             st.session_state.plus = 2
             with st.chat_message('assistant'):
-                st.markdown(basic_questions[st.session_state.basic_count]) # 질문 뽑기
-            st.session_state.messages.append({"role": "assistant", "content": basic_questions[st.session_state.basic_count]})
+                st.markdown(st.session_state.basic_questions[st.session_state.basic_count]) # 질문 뽑기
+            st.session_state.messages.append({"role": "assistant", "content": st.session_state.basic_questions[st.session_state.basic_count]})
 
 # 프로젝트 관련 질문이 끝나고 기초 질문 시작 ()
 elif st.session_state.finish == 1:
     # 기초 질문에 대한 사용자의 답변 입력
     if query := st.chat_input('답변을 입력해주세요. '):
         # 기초 질문이 남아 있다면 입력 받기
-        if len(basic_questions) > st.session_state.basic_count:
+        if len(st.session_state.basic_questions) > st.session_state.basic_count:
             st.session_state.messages.append({"role": "user", "content": query})
             
             # 사용자 입력을 채팅으로 출력하기
@@ -174,18 +174,17 @@ elif st.session_state.finish == 1:
             st.session_state.messages.append({"role": "assistant", "content": result})
             # st.session_state.current_question_idx += 1  # 이전 코드
             
-        if len(basic_questions) > st.session_state.basic_count+1:     # basic_count == index
-            st.session_state.messages.append({"role": "assistant", "content": basic_questions[st.session_state.basic_count+1]})  
+        if len(st.session_state.basic_questions) > st.session_state.basic_count+1:     # basic_count == index
+            st.session_state.messages.append({"role": "assistant", "content": st.session_state.basic_questions[st.session_state.basic_count+1]})  
             
     # 조건 1 : 기초 질문이 아직 남아있지 않다면 마지막 멘트 출력
-    if len(basic_questions) <= st.session_state.basic_count+1:     # basic_count == index
+    if len(st.session_state.basic_questions) <= st.session_state.basic_count+1:     # basic_count == index
         st.success(":짠: 모든 질문에 대한 답변을 완료했습니다.")
         # 결과 분석 페이지 가기
         if st.button("결과 보러 가기"):
             switch_page(NEXT_PAGE)
     else:
         st.session_state.basic_count += 1
-        if st.session_state.basic_count <= len(basic_questions):
+        if st.session_state.basic_count <= len(st.session_state.basic_questions):
             with st.chat_message('assistant'):
-                st.markdown(basic_questions[st.session_state.basic_count]) # 질문 뽑기
-        
+                st.markdown(st.session_state.basic_questions[st.session_state.basic_count]) # 질문 뽑기

@@ -22,7 +22,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
+#MODEL_NAME = "gpt-4-0125-preview"
 MODEL_NAME = "gpt-3.5-turbo-16k"
 NEXT_PAGE = "introduction"
 
@@ -44,7 +44,7 @@ st.markdown(
 )
 
 # questions
-questions = st.session_state.main_question
+st.session_state.questions_showhint = st.session_state.main_question
 # 사용자 인터페이스 생성
 
 st.title(f"{st.session_state.user_name}님의 기술면접 예상 질문입니다.")
@@ -54,7 +54,7 @@ prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_hi
 
 
 # 각 질문에 대해 번호를 매기고 토글 위젯 생성
-for i, question in enumerate(questions, start=1):
+for i, question in enumerate(st.session_state.questions_showhint, start=1):
 
     # 질문이 비어있거나 개행 문자만 포함된 경우 토글을 생성하지 않음
     if question.strip():
