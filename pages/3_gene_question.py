@@ -302,7 +302,8 @@ with progress_holder:
             print("### faiss_question ###")
             print(*faiss_question, sep='/n')
             ### 다음 세션으로 값 넘기기
-            st.session_state.main_question = questions + rule_questions + faiss_question
+            st.session_state.main_question = questions 
+            st.session_state.basic_question = rule_questions + faiss_question
             st.session_state.logger.info("end gene_question")
             time.sleep(3)
             ####
