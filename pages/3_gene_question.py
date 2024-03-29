@@ -160,9 +160,9 @@ with progress_holder:
             st.session_state.logger.info("resume process ")
             ### uploaded_file는 streamlit의 file_uploader에서 반환된 객체
             user_resume = st.session_state['user_email'] + 'uploaded_resume'
-            uploaded_file = st.session_state[user_resume]
+            uploaded_file_resume = st.session_state[user_resume]
             ### 저장
-            save_user_resume(USER_RESUME_SAVE_DIR, uploaded_file)
+            save_user_resume(USER_RESUME_SAVE_DIR, uploaded_file_resume)
             st.session_state.logger.info("save resume")
             ### 불러오기
             user_resume = load_user_resume(USER_RESUME_SAVE_DIR)
@@ -172,9 +172,9 @@ with progress_holder:
             st.session_state.logger.info("JD precess")
             ### uploaded_txt 로 uploaded_JD 에서 JD 를 받아옵니다
             user_jd = st.session_state['user_email'] + 'uploaded_JD'
-            uploaded_file = st.session_state[user_jd]
+            uploaded_file_jd = st.session_state[user_jd]
             ### 저장 USER_JD_SAVE_DIR 경로에 uploaded_file 내용을 적어 저장합니다.
-            save_user_JD(USER_JD_SAVE_DIR, uploaded_file)
+            save_user_JD(USER_JD_SAVE_DIR, uploaded_file_jd)
             st.session_state.logger.info("save JD")
             ### 불러오기
             user_JD = load_user_JD(USER_JD_SAVE_DIR)
@@ -183,9 +183,9 @@ with progress_holder:
             ### JD 사용하여 JD 추출용 프롬프트 만들기
             st.session_state.logger.info("prompt JD start")
 
-            prompt_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_JD_template.txt"))
+            prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_JD_template.txt"))
 
-            prompt_JD = create_prompt_with_jd(prompt_template)
+            prompt_JD = create_prompt_with_jd(prompt_template_jd)
             # prompt_JD 생성완료
             st.session_state.logger.info("create prompt JD object")
 
@@ -214,10 +214,10 @@ with progress_holder:
             # prompt_qa_template #######################################
 
             st.session_state.logger.info("prompt resume start")
-            prompt_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_resume_template.txt"))
+            prompt_template_resume = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_resume_template.txt"))
 
             st.session_state.logger.info("create prompt resume template")
-            prompt_resume = create_prompt_with_resume(prompt_template)
+            prompt_resume = create_prompt_with_resume(prompt_template_resume)
 
             st.session_state.logger.info("create prompt_resume")
             vector_index = create_resume_vectordb(USER_RESUME_SAVE_DIR)  # 이력서 vectordb를 생성해줍니다.

@@ -22,7 +22,7 @@ if "logger" not in st.session_state:
     config = DevConfig
     _logger.configure(**config.config)
     st.session_state["logger"] = _logger # session_state에 ["logger"] 라는 키값을 추가하여 사용
-    st.session_state["save_dir"] = config.SAVE_DIR
+    st.session_state["save_dir"] = os.path.join(config.SAVE_DIR+st.session_state['user_email'])
 
 st.set_page_config(
     page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
