@@ -235,13 +235,13 @@ with progress_holder:
 
             st.session_state.chain_type_kwargs = {"prompt": st.session_state.prompt_resume}
 
-            qa_chain = RetrievalQA.from_chain_type(llm=llm2,
+            st.session_state.qa_chain = RetrievalQA.from_chain_type(llm=llm2,
                                                    chain_type="stuff",
                                                    retriever=st.session_state.vector_index.as_retriever(),
                                                    chain_type_kwargs=st.session_state.chain_type_kwargs,
                                                    verbose=True,)
 
-            st.session_state.resume = qa_chain.run("기술면접에 나올만한 프로젝트 내용은?")
+            st.session_state.resume = st.session_state.qa_chain.run("기술면접에 나올만한 프로젝트 내용은?")
             print("prompt_resume @@@@@@@@", st.session_state.prompt_resume)
             st.session_state.logger.info(" prompt_resume running complit")
             print("사용자", st.session_state.user_email, "의 resume : \n", st.session_state.resume)
