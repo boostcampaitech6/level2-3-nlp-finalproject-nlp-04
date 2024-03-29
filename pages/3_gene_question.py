@@ -246,11 +246,7 @@ with progress_holder:
             st.session_state.logger.info(" prompt_resume running complit")
             print("사용자", st.session_state.user_email, "의 resume : \n", st.session_state.resume)
 
-            # ChromaDB 비워주기
-            for collection in st.session_state.vector_index._client.list_collections():
-                ids = collection.get()['ids']
-                print('REMOVE %s document(s) from %s collection' % (str(len(ids)), collection.name))
-                if len(ids): collection.delete(ids)
+            st.session_state.vector_index.delete_collection()
 
             lock.release()
 
