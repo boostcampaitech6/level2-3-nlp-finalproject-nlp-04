@@ -1,5 +1,6 @@
 __import__("pysqlite3")
 import sys
+import threading
 
 sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
@@ -112,6 +113,7 @@ st.markdown(f"""<style>
 
 ## set variables
 MODEL_NAME = "gpt-3.5-turbo-16k"
+#MODEL_NAME = "gpt-4-0125-preview"
 
 ## set save dir
 USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_resume.pdf")
@@ -212,6 +214,8 @@ with progress_holder:
 
             # STEP 2. step 1 에서 생성된 job_description 를 qa prompt template 에 넣고, GPT 에 질의하여 예상 질문을 뽑습니다.
             # prompt_qa_template #######################################
+            lock = threading.Lock()
+            lock.acquire()
 
             st.session_state.logger.info("prompt resume start")
             prompt_template_resume = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_resume_template.txt"))
@@ -242,6 +246,14 @@ with progress_holder:
             st.session_state.logger.info(" prompt_resume running complit")
             print("사용자", st.session_state.user_email, "의 resume : \n", st.session_state.resume)
 
+            # ChromaDB 비워주기
+            for collection in st.session_state.vector_index._client.list_collections():
+                ids = collection.get()['ids']
+                print('REMOVE %s document(s) from %s collection' % (str(len(ids)), collection.name))
+                if len(ids): collection.delete(ids)
+
+            lock.release()
+
             ## step3 :
             st.session_state.logger.info("prompt question start")
             prompt_template_question = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_question_template.txt"))
@@ -266,12 +278,16 @@ with progress_holder:
             ### 결과 텍스트 저장
             # '\n\n'을 사용하여 질문 분리 후 바로 unpacking
 
+            lock.acquire()
+            
             # 각 항목을 분리하여 리스트에 저장
             st.session_state.questions = re.split(r"\n\d+\.\s*", st.session_state.main_question.strip())
             # 첫 번째 빈 항목 제거
             st.session_state.questions = [question for question in st.session_state.questions if question]
 
             st.session_state.logger.info(f"save question result")
+
+            lock.release()
 
             ### User pdf파일 삭제
             try:

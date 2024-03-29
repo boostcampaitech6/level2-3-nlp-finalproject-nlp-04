@@ -22,7 +22,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
+#MODEL_NAME = "gpt-4-0125-preview"
 MODEL_NAME = "gpt-3.5-turbo-16k"
 NEXT_PAGE = "introduction"
 
