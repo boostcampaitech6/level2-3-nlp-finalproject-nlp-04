@@ -306,9 +306,12 @@ with progress_holder:
             print("### faiss_question ###")
             print(*(st.session_state.faiss_question), sep='/n')
             ### 다음 세션으로 값 넘기기
+
             st.session_state.main_question = st.session_state.questions + st.session_state.rule_questions + st.session_state.faiss_question
+            st.session_state.basic_question = st.session_state.rule_questions + st.session_state.faiss_question
             st.session_state.logger.info("end gene_question")
-            time.sleep(3)
+            
+            time.sleep(2)
             ####
             
             if st.session_state.cur_task == 'gene_question':
