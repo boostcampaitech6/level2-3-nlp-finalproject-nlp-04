@@ -58,7 +58,8 @@ st.markdown(f"""
 
 # local_css("css/1_user.css")
 st.markdown(
-            f"""<style>
+            f"""
+            <style>
                 @keyframes fadeInDown {{
                     0% {{
                         opacity: 0;
@@ -70,7 +71,7 @@ st.markdown(
                         }}
                 }}
                 .main {{
-                    background-image: url("data:image/png;base64,{MAIN_IMG}");
+                    background-color: #F8E0F6; /* 배경색 */
                     background-size:cover;
                     padding:0px;
                 }}
@@ -137,8 +138,8 @@ st.markdown(
                     font-family : 'Nanumsquare';
                     animation: fadeInDown 1s;
                     padding-left : 8rem;
-                    padding-bottom : 1rem;
-                    color : white;
+                    padding-bottom : 2rem;
+                    color : black;
                 }}
                 #real_ad {{
                     padding-left : 8rem;
@@ -198,7 +199,7 @@ st.markdown(
                 }}
                 [class="row-widget stButton"] button>div:hover{{
                     transform : scale(1.1);
-                    background : #2D5AF0;
+                    background : #D451B2;
                     transition : .5s;
                 }}
                 [class="row-widget stButton"] button>div>p {{
@@ -212,70 +213,6 @@ st.markdown(
                     justify-content : space-around;
                     flex-direction: row;
                     flex-wrap : wrap;
-                }}
-                /* 샘플이력서 이름 구간 */
-                [data-testid="stVerticalBlock"] > div:nth-child(9){{
-                    gap:0;
-                }}
-                [class="row-widget stDownloadButton"] {{
-                    display : inline-flex;
-                    justify-content : flex-start;
-                    margin-left : 0;
-                    margin-right : 0;
-                    flex-shrink : 1;
-                }}
-                [class="row-widget stDownloadButton"] button{{
-                    padding : 0;
-                    border : none;
-                    max-width : 100%;
-                    flex-grow : 0;
-                    align-items: center;
-                }}
-                [class="row-widget stDownloadButton"] button>div:hover{{
-                    font-weight : 700;
-                    transform : scale(1.1);
-                    transition : .5s;
-                }}
-                [class="row-widget stDownloadButton"] button:active{{
-                    background-color : transparent;
-                }}
-                [class="row-widget stDownloadButton"] button>div>p {{
-                    font-size : 15px;
-                    font-family : 'Nanumsquare';
-                    text-align : left;
-                }}
-                .interviewer_icon{{
-                    display : flex;
-                    flex-direction : row;
-                    justify-content : space-between;
-                }}
-                #persona {{
-                    display : flex;
-                    justify-content : center;
-                    align-content : center;
-                    flex-direction : column;
-                }}
-                #persona figcaption {{
-                    font-family : 'Nanumsquare';
-                    font-size : 14px;
-                    color : #989898;
-                    text-align : center;
-                }}
-                #persona img {{
-                    align-self : center;
-                    max-width : 100%;
-                    height : auto;
-                    flex-shrink : 1;
-                    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-                    margin : 0;
-                }}
-                #persona p {{
-                    margin-bottom : -1rem;
-                    text-align : center;
-                    font-style: normal;
-                    font-size : 17px;
-                    font-weight : 500;
-                    font-family : 'Nanumsquare';
                 }}
                 /* 결과 샘플 */
                 [data-testid="stHorizontalBlock"] > div:nth-child(2) > div > div> div:nth-child(4) > div {{
@@ -361,7 +298,7 @@ with input_form:
     
     user_jd = st.session_state['user_email'] + "uploaded_JD"
     st.session_state[user_jd] = save_uploaded_jd_as_filepath( # text, path, filename="uploaded_jd.txt" 형태
-                                                                st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD),
+                                                                st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD,height=300),
                                                                 SAVE_JD_FILE_DIR
                                                                 ) # 파일 경로에 저장됩니다.
     #st.session_state.uploaded_JD = uploaded_JD
