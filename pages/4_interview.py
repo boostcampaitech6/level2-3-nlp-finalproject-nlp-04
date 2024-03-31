@@ -178,8 +178,8 @@ elif st.session_state.finish == 1:
     if len(st.session_state.basic_question) <= st.session_state.basic_count+1:     # basic_count == index
         st.success(":짠: 모든 질문에 대한 답변을 완료했습니다. 고생 많으셨습니다.")
         # 결과 분석 페이지 가기
-        if st.button("결과 보러 가기"):
-            switch_page(NEXT_PAGE)
+        if st.button("처음으로 가기"):
+            switch_page('USER')
     else:
         st.session_state.basic_count += 1
         if st.session_state.basic_count <= len(st.session_state.basic_question):
