@@ -49,8 +49,8 @@ st.session_state.questions_showhint = st.session_state.main_question
 
 st.title(f"{st.session_state.user_name}님의 기술면접 예상 질문입니다.")
 
-prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_feedback.txt"))
-prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_hint.txt"))
+st.session_state.prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_feedback.txt"))
+st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_hint.txt"))
 
 
 # 각 질문에 대해 번호를 매기고 토글 위젯 생성
@@ -78,7 +78,7 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
                     # 임시 메시지에 텍스트 표시
                     temp_message.text("답변이 생성되는 중입니다. 잠시 기다려주세요.")
 
-                    prompt_Feedback = create_prompt_feedback(prompt_template_fb)
+                    prompt_Feedback = create_prompt_feedback(st.session_state.prompt_template_fb)
                     # proprompt_Feedbackmpt_ 생성완료
 
                     st.session_state.logger.info("create prompt_Feedback object")
@@ -108,7 +108,7 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
                 ### FeedBack Pre-process @@@@@@@@@@@@@@@@@@@@@@@@@@
                 st.session_state.logger.info("Start hint precess")
 
-                prompt_Hint = create_prompt_hint(prompt_template_ht)
+                st.session_state.prompt_Hint = create_prompt_hint(st.session_state.prompt_template_ht)
                 # proprompt_Feedbackmpt_ 생성완료
 
                 st.session_state.logger.info("create prompt_Hint object")
@@ -120,17 +120,17 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
 
                 # 피드백 시작
 
-                chain_hint_1 = LLMChain(llm=llm, prompt=prompt_Hint)
+                st.session_state.chain_hint_1 = LLMChain(llm=llm, prompt=prompt_Hint)
 
                 st.session_state.logger.info("create chain_hint_1 object")
 
-                answer_hint = chain_hint_1.run({"question": question})
+                st.session_state.answer_hint = st.session_state.chain_hint_1.run({"question": question})
 
                 st.session_state.logger.info("chain_hint_1 complit")
 
                 # 임시 메시지 제거 및 힌트
 
-                st.text(answer_hint)
+                st.text(st.session_state.answer_hint)
 
 
 ## input_form
@@ -147,3 +147,13 @@ with start_button:
 
     if start_button.button("시작 화면으로 돌아가기"):
         switch_page("user")
+
+
+text_to_download = "\n\n".join(st.session_state.questions_showhint)
+# 다운로드 버튼 생성
+st.download_button(
+    label="예상 질문 다운로드",  # 버튼에 표시될 텍스트
+    data=text_to_download,  # 다운로드할 데이터
+    file_name="questions.txt",  # 생성될 파일의 이름
+    mime="text/plain",  # MIME 타입 지정
+)
