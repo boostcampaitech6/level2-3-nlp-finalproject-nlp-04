@@ -51,6 +51,11 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
+@app.route('/{_:path}')
+async def https_redirect(request: Request):
+    if request.url.scheme == "http":
+        return RedirectResponse(request.url.replace(scheme='https'))
+    
 # 첫 시작 페이지
 @app.get("/")
 def read_root():
@@ -63,6 +68,3 @@ class AccessToken(BaseModel):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=PORT)
-
-    # # HTTPS 연결용 - 구현 예정
-    # uvicorn.run(app, host=INSIDE_IP, port=PORT, ssl_keyfile=KEY_FILE, ssl_certfile=CERT_FILE)

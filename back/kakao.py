@@ -75,7 +75,7 @@ async def callback(code: str, state: Optional[str] = None, oauth_client=Depends(
     jwt = token_response["id_token"]
 
     return RedirectResponse(
-        url=f"http://{OUTSIDE_IP}:{STREAMLIT_PORT}/home/?user_id={jwt}&access_token={token_response['access_token']}"
+        url=f"https://hello-jobits.com/home/?user_id={jwt}&access_token={token_response['access_token']}"    # 도메인 이름으로 접속
     )
 
 
