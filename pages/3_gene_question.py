@@ -308,6 +308,7 @@ with progress_holder:
             ### 다음 세션으로 값 넘기기
 
             st.session_state.main_question = st.session_state.questions + st.session_state.rule_questions + st.session_state.faiss_question
+            st.session_state.project_question = st.session_state.questions
             st.session_state.basic_question = st.session_state.rule_questions + st.session_state.faiss_question
             st.session_state.logger.info("end gene_question")
             
