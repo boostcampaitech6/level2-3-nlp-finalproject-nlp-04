@@ -64,6 +64,22 @@ def list_extend_questions_based_on_keywords(data_dict, jd, position):
             if new_questions:
                 question_essential.extend(random.sample(new_questions, 2))
 
+    keyword_details = [k for k in data_dict.keys() if k not in [str(cls) for cls in keyword_groups]]
+    question_additional = []
+
+    for keys in keyword_groups:
+        # jd 기반 키워드 매칭으로, 매칭된 키워드와 관련된 질문을 추가합니다. 이후 필요한 만큼 질문을 추가합니다.
+        # JD에서 keywords 리스트의 항목을 검사하여 일치하는 첫 번째 항목을 data_key로 사용합니다.
+
+        data_key = next(
+            (keyword for keyword in keys if re.search(r"\b" + re.escape(keyword) + r"\b", jd, re.IGNORECASE)), None
+        )
+        if data_key:
+            # data_dict에서 data_key에 해당하는 질문 목록을 가져옵니다.
+            questions = data_dict.get(data_key, [])
+            question_additional.extend(random.sample(questions))
+
+    question_essential.extend(random.sample(question_additional, 10-len(question_essential)))
     len_question = len(question_essential)
     # 만약 룰베이스드로 선정된 질문이 10개 이하인경우, 부족한 수 만큼 cs 질문으로 채워줍니다
     if len_question < 10:
