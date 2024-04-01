@@ -177,9 +177,24 @@ elif st.session_state.finish == 1:
     # 조건 1 : 기초 질문이 아직 남아있지 않다면 마지막 멘트 출력
     if len(st.session_state.basic_question) <= st.session_state.basic_count+1:     # basic_count == index
         st.success(":짠: 모든 질문에 대한 답변을 완료했습니다. 고생 많으셨습니다.")
+         
+        st.session_state.interview_script = []
+        for msg in st.session_state.messages:
+            string = msg['role'] + ' : ' + msg['content']
+            st.session_state.interview_script.append(string)
+
+        st.session_state.interview_script_download = "\n\n".join(st.session_state.interview_script)
+        # 다운로드 버튼 생성
+        st.download_button(
+            label="모의 면접 대화내역 다운로드",  # 버튼에 표시될 텍스트
+            data=st.session_state.interview_script_download,  # 다운로드할 데이터
+            file_name="interview_history.txt",  # 생성될 파일의 이름
+            mime="text/plain",  # MIME 타입 지정
+        )
+
         # 결과 분석 페이지 가기
         if st.button("처음으로 가기"):
-            switch_page('USER')
+            switch_page('USER')           
     else:
         st.session_state.basic_count += 1
         if st.session_state.basic_count <= len(st.session_state.basic_question):
