@@ -46,73 +46,42 @@ LOGO_IMG = st.session_state.LOGO_IMG
 
 local_css(os.path.join(CSS_PATH, "background.css"))
 local_css(os.path.join(CSS_PATH, "2_generate_question.css"))
-st.markdown(f"""<style>
+
+import streamlit as st
+
+st.markdown(f"""
+            <style>
+                .main {{
+                    background-color: #F8E0F6; /* 배경색 */
+                    }}
                 /* 로딩이미지 */
                 .loading_space {{
-                display : flex;
-                justify-content : center;
-                margin-top : -3rem;
-            }}
-            .loading_space img{{
-                max-width : 70%;
-            }}
-            .loading_text {{
-                /* 광고 들어오면 공간 확보 */
-                padding-top : 4rem;
-                z-index : 99;
-            }}
-            .loading_text p{{
-                font-family : 'Nanumsquare';
-                color:#4C4F6D;
-                font-size:28px ;
-                line-height:1.5;
-                word-break:keep-all;
-                font-weight:700;
-                text-align:center;
-                z-index : 99;
-            }}
-            .dots-container {{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-                width: 100%;
-                padding-top : 2rem;
-                padding-bottom : 5rem;
-                z-index : 99;
-            }}
-
-            .dot {{
-                z-index : 99;
-                height: 20px;
-                width: 20px;
-                margin-right: 10px;
-                border-radius: 10px;
-                background-color: #b3d4fc;
-                animation: pulse 1.5s infinite ease-in-out;
-            }}
-            .dot:last-child {{
-                margin-right: 0;
-            }}
-
-            .dot:nth-child(1) {{
-                animation-delay: -0.3s;
-            }}
-
-            .dot:nth-child(2) {{
-                animation-delay: -0.1s;
-            }}
-
-            .dot:nth-child(3) {{
-                animation-delay: 0.1s;
-            }}
+                    display : flex;
+                    justify-content : center;
+                    padding-top : 4rem;
+                }}
+                .loading_space img{{
+                    max-width : 70%;
+                }}
+                .loading_text {{
+                    padding-top : 2rem;
+                    z-index : 99;
+                }}
+                .loading_text p{{
+                    font-family : 'Nanumsquare';
+                    color:#4C4F6D;
+                    font-size:28px ;
+                    line-height:1.5;
+                    word-break:keep-all;
+                    font-weight:700;
+                    text-align:center;
+                    z-index : 99;
+                }}
             </style>
-#           """,
-            unsafe_allow_html=True,)
+            """,unsafe_allow_html=True)
 
 ## set variables
 MODEL_NAME = "gpt-3.5-turbo-16k"
-#MODEL_NAME = "gpt-4-0125-preview"
 
 ## set save dir
 USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_resume.pdf")
@@ -125,21 +94,9 @@ BIG_QUESTION_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_q
 # 진행률
 progress_holder = st.empty()  # 작업에 따라 문구 바뀌는 곳
 loading_message = [
-    f" JOBits 가 '{st.session_state.user_name}'님의 이력서를 꼼꼼하게 읽고 있습니다. <br> 최대 3분까지 소요될 수 있습니다.",
-    f" JOBits 가 '{st.session_state.user_name}'님과의 면접을 준비하고 있습니다",
+    f" JOBits 가 '{st.session_state.user_name}'님의 면접 질문을 선정하고 있습니다🧐 <br> 2~3분 내외로 생성됩니다🤗 ",
+    f"'{st.session_state.user_name}'님이 면접장에 들어가고 있습니다🚶🏻‍♀️🚶🏻",
 ]
-
-# 로딩 그림(progress bar)
-st.markdown("""
-            <section class="dots-container">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            </section>
-            """,
-            unsafe_allow_html=True,)
 
 ## 면접&이력서 팁
 ## 공간이자 이미지가 들어가면 좋을 것 같은 곳
