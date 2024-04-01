@@ -134,21 +134,9 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
 
 button_clicked = st.button("시작 화면으로 돌아가기")
 
-## input_form
-input_form, start_button = st.columns([1, 2])  # 노션 컬럼처럼 열을 나눠서 할수있게 해주는것
-
-
-with start_button:
-    start_button.markdown(
-        f""" 
-                              <div class = 'main_message'> JOBits <br></div> 
-                              """,
-        unsafe_allow_html=True,
-    )
-
-    if start_button.button("시작 화면으로 돌아가기"):
-        switch_page("user")
-
+# 버튼이 클릭되면 해당 페이지로 전환하는 코드
+if button_clicked:
+    switch_page("user")
 
 text_to_download = "\n\n".join(st.session_state.questions_showhint)
 # 다운로드 버튼 생성
@@ -158,6 +146,4 @@ st.download_button(
     file_name="questions.txt",  # 생성될 파일의 이름
     mime="text/plain",  # MIME 타입 지정
 )
-# 버튼이 클릭되면 해당 페이지로 전환하는 코드
-if button_clicked:
-    switch_page("user")
+
