@@ -138,12 +138,12 @@ button_clicked = st.button("시작 화면으로 돌아가기")
 if button_clicked:
     switch_page("user")
 
-text_to_download = "\n\n".join(st.session_state.questions_showhint)
+st.session_state.question_history = "\n\n".join(st.session_state.questions_showhint)
 # 다운로드 버튼 생성
 st.download_button(
     label="예상 질문 다운로드",  # 버튼에 표시될 텍스트
-    data=text_to_download,  # 다운로드할 데이터
-    file_name="questions.txt",  # 생성될 파일의 이름
+    data=st.session_state.question_history,  # 다운로드할 데이터
+    file_name="questions_history.txt",  # 생성될 파일의 이름
     mime="text/plain",  # MIME 타입 지정
 )
 
