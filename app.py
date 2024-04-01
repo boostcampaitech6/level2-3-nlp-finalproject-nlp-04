@@ -23,22 +23,48 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-st.session_state["START_IMG"] = get_image_base64(os.path.join(IMG_PATH, "start_page.png"))
+st.session_state["START_IMG"] = get_image_base64(os.path.join(IMG_PATH, "start.png"))
 START_IMG = st.session_state.START_IMG
+
+#image = Image.open(os.path.join(IMG_PATH, "start.png"))
+
+st.markdown('<div class="center" ><img src="data:image/png;base64,'+ get_image_base64(os.path.join(IMG_PATH, "start.png"))+'" style="width: 90%; height: auto;"/></div>', unsafe_allow_html=True)
+
+st.markdown('<div class="center"><img src="data:image2/png;base64,'+ get_image_base64(os.path.join(IMG_PATH, "intro_message.png"))+'" style="width: 90%; height: auto;"/></div>', unsafe_allow_html=True)
 
 # 버튼들을 화면 오른쪽 아래에 배치하기 위해 CSS 스타일을 적용합니다.
 st.markdown(f"""
             <style>
+                @keyframes fadeInDown {{
+                    0% {{
+                        opacity: 0;
+                        transform: translate3d(0, -10%, 0);
+                        }}
+                    to {{
+                        opacity: 1;
+                        transform: translateZ(0);
+                        }}
+                }}
                 .main {{
-                    background-image: url("data:image/png;base64,{START_IMG}");
-                    background-size:100% 100%;
-                    padding:0px;
-                    background-attachment: fixed;  /* 배경화면 이미지를 화면에 고정합니다. */
+                    background-color: #F8E0F6; /* 배경색 */
+                    padding: 10px;
+                    background-attachment: fixed;
+                    display: flex;
+                    align-items: center; /* 세로 방향으로 중앙 정렬 */
+                    height: 100vh; /* 화면 전체 높이만큼 설정 */
+                }}
+                .button-container {{
+                    position: fixed; /* 화면에 고정시킴 */
+                    display: flex;
+                    align-items: center; /* 세로 방향으로 중앙 정렬 */
+                    width : 100%
+                    height: 0;
                 }}
                 [class="row-widget stButton"] button {{
                     border : none;
-                    padding-left : 8rem;
+                    padding-left : 25%;
                     background-color: transparent;
+                    animation: fadeInDown 5s;
                 }}
                 [class="row-widget stButton"] button:hover {{
                     background-color: transparent;
@@ -56,7 +82,7 @@ st.markdown(f"""
                 }}
                 [class="row-widget stButton"] button>div:hover{{
                     transform : scale(1.1);
-                    background : #2D5AF0;
+                    background : #D451B2;
                     transition : .5s;
                 }}
                 [class="row-widget stButton"] button>div>p {{
@@ -67,7 +93,7 @@ st.markdown(f"""
                     margin : auto;
                 }}
                 [class="row-widget stButton"] button:first-child {{
-                    bottom: 40px; /* 시작하기 버튼을 현재 위치에서 위로 20만큼 이동 */
+                    top : 50em; /* 시작하기 버튼을 현재 위치에서 위로 20만큼 이동 */
                 }}
             </style>
             """,
@@ -82,3 +108,4 @@ if st.button("LOGIN(KAKAO)"):
 if st.button("GUEST"):
     st.session_state["cur_user"] = "guest"  # 사용자 상태 설정
     switch_page("home")
+

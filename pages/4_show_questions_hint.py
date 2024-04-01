@@ -47,7 +47,7 @@ st.markdown(
 st.session_state.questions_showhint = st.session_state.main_question
 # 사용자 인터페이스 생성
 
-st.title(f"{st.session_state.user_name}님의 기술면접 예상 질문입니다.")
+st.title(f"{st.session_state.user_name}님의 기술면접 예상 질문입니다.🤗 ")
 
 st.session_state.prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_feedback.txt"))
 st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_hint.txt"))
@@ -132,6 +132,7 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
 
                 st.text(st.session_state.answer_hint)
 
+button_clicked = st.button("시작 화면으로 돌아가기")
 
 ## input_form
 input_form, start_button = st.columns([1, 2])  # 노션 컬럼처럼 열을 나눠서 할수있게 해주는것
@@ -157,3 +158,6 @@ st.download_button(
     file_name="questions.txt",  # 생성될 파일의 이름
     mime="text/plain",  # MIME 타입 지정
 )
+# 버튼이 클릭되면 해당 페이지로 전환하는 코드
+if button_clicked:
+    switch_page("user")
