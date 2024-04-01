@@ -1,4 +1,4 @@
-## **📝 Project** 소**개 |    [[ Youtube ]](https://www.youtube.com/watch?v=NfW3biIa3v4)**
+## **📝 Project** 소**개 |    [[ Youtube ]](https://www.youtube.com/watch?v=NfW3biIa3v4)**     [[ 시연 링크 ]](https://hello-jobits.com/)
 
 저희 안녕 JOBits 서비스는 IT 직군의 개발자 취업 준비생을 돕기 위해 탄생했습니다. 예상 면접 질문 생성, 모의면접 기능을 통해 실제 면접에 가까우면서 더 구체적인 질문을 얻을 수 있습니다. 또한 피드백과 함께 실제 면접에서 좀 더 개선된 답변을 할 수 있도록 방향을 제시합니다.
 
