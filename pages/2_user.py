@@ -17,8 +17,9 @@ from src.util import (check_essential, get_image_base64, local_css,
 
 st.session_state['FAV_IMAGE_PATH'] = os.path.join(IMG_PATH, "favicon.png")
 
-config = DevConfig
-st.session_state["save_dir"] = os.path.join(config.SAVE_DIR, st.session_state['user_email'])
+if st.session_state['user_email'] != 'GUEST':   
+    config = DevConfig
+    st.session_state["save_dir"] = os.path.join(config.SAVE_DIR, st.session_state['user_email'])
 
 if not os.path.exists(st.session_state["save_dir"]):
     os.makedirs(st.session_state["save_dir"])

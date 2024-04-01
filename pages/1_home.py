@@ -1,5 +1,6 @@
 import os
 import sys
+import uuid
 import requests
 
 import streamlit as st
@@ -46,7 +47,7 @@ if "user_id" in st.session_state and is_logged_in:
     user_info = get_info_from_kakao(st.session_state["access_token"])
 else:
     user_info = {"properties": {"nickname": "GUEST"}, "kakao_account": {"email": "GUEST"}, "access_token": "GUEST"}
-
+    st.session_state["save_dir"] = os.path.join(st.session_state['save_dir'], str(uuid.uuid4()))    # GUEST 사용자 폴더 분리
 
 if "user_email" not in st.session_state:
     st.session_state["user_email"] = user_info["kakao_account"]["email"]
