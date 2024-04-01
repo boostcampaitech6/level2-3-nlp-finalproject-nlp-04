@@ -268,8 +268,7 @@ with input_form:
                         """,
                         unsafe_allow_html=True,)
     
-    selected_job = input_form.selectbox("지원 직무", JOBS, label_visibility="collapsed", index=0, placeholder="검색")
-    st.session_state.selected_job = selected_job
+    st.session_state.selected_job = input_form.selectbox("지원 직무", JOBS, label_visibility="collapsed", index=0, placeholder="검색")
     st.session_state.logger.info(f"selected_job : {st.session_state.selected_job}")
 
     ### 이력서 폼

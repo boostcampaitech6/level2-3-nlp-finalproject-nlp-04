@@ -235,11 +235,11 @@ with progress_holder:
 
 
             ### User pdf파일 삭제
-            try:
-                os.remove(USER_RESUME_SAVE_DIR)
-            except Exception as e:
-                st.session_state.logger.info(f"User resume delete Error: \n{e}")
-                print(">>> User resume delete Error: \n{e}")
+            # try:
+            #     os.remove(USER_RESUME_SAVE_DIR)
+            # except Exception as e:
+            #     st.session_state.logger.info(f"User resume delete Error: \n{e}")
+            #     print(">>> User resume delete Error: \n{e}")
 
             st.session_state.big_q_progress = False  ### 대질문 생성 끝
 
@@ -249,10 +249,10 @@ with progress_holder:
             with open(os.path.join(DATA_DIR, "rulebased_data.json"), "r", encoding="utf-8") as f:
                 data_dict = json.load(f)
             
-            #########################################
-            ### position 하드코딩되어있음 수정 요망 ###
-            #########################################
-            st.session_state.rule_questions = list_extend_questions_based_on_keywords(data_dict, st.session_state.user_JD, "AI")
+ 
+            if  st.session_state.selected_job == "CV" or   st.session_state.selected_job == "NLP" or   st.session_state.selected_job == "RECSYS" or   st.session_state.selected_job == "MLE":
+                 st.session_state.selected_job = "AI"
+            st.session_state.rule_questions = list_extend_questions_based_on_keywords(data_dict, st.session_state.user_JD, st.session_state.selected_job)
             print("### rule_questions ###")
             print(*(st.session_state.rule_questions), sep='/n')
             
