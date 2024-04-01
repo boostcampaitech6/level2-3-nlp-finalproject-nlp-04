@@ -120,7 +120,7 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
 
                 # 피드백 시작
 
-                st.session_state.chain_hint_1 = LLMChain(llm=llm, prompt=prompt_Hint)
+                st.session_state.chain_hint_1 = LLMChain(llm=llm, prompt=st.session_state.prompt_Hint)
 
                 st.session_state.logger.info("create chain_hint_1 object")
 
