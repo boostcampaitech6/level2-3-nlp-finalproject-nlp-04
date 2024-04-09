@@ -51,11 +51,24 @@ if st.session_state.cnt >= st.session_state.len_questions:
     st.session_state.cnt = st.session_state.len_questions
 st.progress(st.session_state.cnt/st.session_state.len_questions, '모의면접 진행률')
 
+st.session_state.interview_script = []
+
 # 이전 대화 목록 출력
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
+    if msg['role'] == 'user':
+        role_name = 'You'
+    elif msg['role'] == 'assistant':
+        role_name = '자비스'
+    string = role_name + ' : ' + msg['content']
+    st.session_state.interview_script.append(string)
+    
+# 대화내역 파일로 저장
+st.session_state.interview_script_download = "\n\n".join(st.session_state.interview_script)
+with open(st.session_state['save_dir'] + "/interview_history.txt", "w") as file:
+    file.write(st.session_state.interview_script_download)   
 
 ##################################### 여기서부터 모의 면접 시작 ############################################
 # 프로젝트 관련 질문 -> 대분류 질문 (일반 질문, plus == 0)
@@ -178,12 +191,6 @@ elif st.session_state.finish == 1:
     if len(st.session_state.basic_question) <= st.session_state.basic_count+1:     # basic_count == index
         st.success(":짠: 모든 질문에 대한 답변을 완료했습니다. 고생 많으셨습니다.")
          
-        st.session_state.interview_script = []
-        for msg in st.session_state.messages:
-            string = msg['role'] + ' : ' + msg['content']
-            st.session_state.interview_script.append(string)
-
-        st.session_state.interview_script_download = "\n\n".join(st.session_state.interview_script)
         # 다운로드 버튼 생성
         st.download_button(
             label="모의 면접 대화내역 다운로드",  # 버튼에 표시될 텍스트
