@@ -139,6 +139,9 @@ if button_clicked:
     switch_page("user")
 
 st.session_state.question_history = "\n\n".join(st.session_state.questions_showhint)
+with open(st.session_state['save_dir'] + "/question_history.txt", "w") as file:
+    file.write(st.session_state.question_history)   # 생성된 질문을 파일로 저장
+
 # 다운로드 버튼 생성
 st.download_button(
     label="예상 질문 다운로드",  # 버튼에 표시될 텍스트
