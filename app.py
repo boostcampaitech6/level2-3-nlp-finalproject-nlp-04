@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-st.session_state["START_IMG"] = get_image_base64(os.path.join(IMG_PATH, "start.png"))
+st.session_state["START_IMG"] = get_image_base64(os.path.join(IMG_PATH, "start_jobits.png"))
 START_IMG = st.session_state.START_IMG
 
 #image = Image.open(os.path.join(IMG_PATH, "start.png"))
 
-st.markdown('<div class="center" ><img src="data:image/png;base64,'+ get_image_base64(os.path.join(IMG_PATH, "start.png"))+'" style="width: 90%; height: auto;"/></div>', unsafe_allow_html=True)
+st.markdown('<div class="center" ><img src="data:image/png;base64,'+ get_image_base64(os.path.join(IMG_PATH, "start_jobits.png"))+'" style="width: 100%; height: auto;"/></div>', unsafe_allow_html=True)
 
-st.markdown('<div class="center"><img src="data:image2/png;base64,'+ get_image_base64(os.path.join(IMG_PATH, "intro_message.png"))+'" style="width: 90%; height: auto;"/></div>', unsafe_allow_html=True)
+#st.markdown('<div class="center"><img src="data:image2/png;base64,'+ get_image_base64(os.path.join(IMG_PATH, "intro_message.png"))+'" style="width: 90%; height: auto;"/></div>', unsafe_allow_html=True)
 
 # 버튼들을 화면 오른쪽 아래에 배치하기 위해 CSS 스타일을 적용합니다.
 st.markdown(f"""
@@ -46,7 +46,7 @@ st.markdown(f"""
                         }}
                 }}
                 .main {{
-                    background-color: #F8E0F6; /* 배경색 */
+                    background-color: #FFFFFF; /* 배경색 */
                     padding: 10px;
                     background-attachment: fixed;
                     display: flex;
@@ -82,7 +82,7 @@ st.markdown(f"""
                 }}
                 [class="row-widget stButton"] button>div:hover{{
                     transform : scale(1.1);
-                    background : #D451B2;
+                    background : #5271FF;
                     transition : .5s;
                 }}
                 [class="row-widget stButton"] button>div>p {{

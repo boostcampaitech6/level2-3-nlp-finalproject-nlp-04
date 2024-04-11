@@ -50,12 +50,7 @@ LOGO_IMG = st.session_state.LOGO_IMG
 st.title("안녕하세요, " + st.session_state.nickname + "님!")  # 사용자 이름을 받아서 화면에 출력합니다.
 
 local_css(os.path.join(path, "front", "css", "background.css"))
-st.markdown(f"""
-            <a class="main-logo" href="/main" target="_self">
-            <img src="data:img\logo_char.jpg;base64,{LOGO_IMG}" width="240px"; 
-            height="70px";/></a>
-            """,
-            unsafe_allow_html=True,)
+
 
 # local_css("css/1_user.css")
 st.markdown(
@@ -72,7 +67,7 @@ st.markdown(
                         }}
                 }}
                 .main {{
-                    background-color: #F8E0F6; /* 배경색 */
+                    background-color: #99A7E4; /* 배경색 */
                     background-size:cover;
                     padding:0px;
                 }}
@@ -114,7 +109,7 @@ st.markdown(
                     border-color : #2D5AF0;
                 }}
                 .essential_menu{{
-                    color : red;
+                    color : #5271FF;
                 }}
                 .menu_name {{
                     font-size : 20px;
@@ -151,7 +146,7 @@ st.markdown(
                     display : flex;
                     flex-grow : 1;
                     justify-content : start;
-                    color : #989898;
+                    color : #1c1c1c;
                     font-family : 'Nanumsquare';
                 }}
                 .info_message {{
@@ -159,7 +154,7 @@ st.markdown(
                     flex-grow : 1;
                     justify
                     -content : end;
-                    color : white;
+                    color : #1c1c1c;
                     font-family : 'Nanumsquare'
                 }}
                 .check_message{{
@@ -200,13 +195,13 @@ st.markdown(
                 }}
                 [class="row-widget stButton"] button>div:hover{{
                     transform : scale(1.1);
-                    background : #D451B2;
+                    background : #5271FF;
                     transition : .5s;
                 }}
                 [class="row-widget stButton"] button>div>p {{
                     font-size : 40px;
                     font-weight: 700;
-                    color: #FFFFFF;
+                    color: #1c1c1c;
                     text-align: center;
                     margin : auto;
                 }}
@@ -254,28 +249,39 @@ st.session_state.big_q_progress = True
 input_form, start_button = st.columns([1, 2])  # 노션 컬럼처럼 열을 나눠서 할수있게 해주는것
 with input_form:
     input_form.markdown('''
-                        <div class="additional_message" style="font-size:13px; justify-content : center; font-weight : 1000; color: white;">※크롬 환경 및 라이트모드를 권장합니다※</div>
+                        <div class="additional_message" style="font-size:13px; justify-content : center; font-weight : 1000; color: black;">※크롬 환경 및 라이트모드를 권장합니다※</div>
                         ''',
                         unsafe_allow_html=True )
 
     st.session_state.user_name = st.session_state.nickname
     st.session_state.logger.info(f"user name : {st.session_state.user_name}")
 
-    ### 지원 직무 폼
+    # ### 지원 직무 폼
+    # input_form.markdown("""
+    #                     <div class="menu_name">지원 직무<span class="essential_menu">*</span>
+    #                     <!--<span style="font-size:14px; color: #5271FF; text-align:right;">직접 검색도 가능해요!</span>-->
+    #                     </div>
+    #                     """,
+    #                     unsafe_allow_html=True,)
     input_form.markdown("""
-                        <div class="menu_name">지원 직무<span class="essential_menu">*</span>
-                        <!--<span style="font-size:14px; color: white; text-align:right;">직접 검색도 가능해요!</span>-->
-                        </div>
-                        """,
-                        unsafe_allow_html=True,)
-    
+            <style>
+            /* 선택된 상태의 selectbox 테두리 색상 변경 */
+            .stSelectbox .css-2b097c-container:focus-within {
+                border: 2px solid #007bff; /* 파란색으로 변경 */
+            }
+            /* 기본 상태의 selectbox 테두리 색상 변경 */
+            .stSelectbox .css-2b097c-container {
+                border: 2px solid #007bff; /* 파란색으로 변경 */
+            }
+            </style>
+            """, unsafe_allow_html=True)
     st.session_state.selected_job = input_form.selectbox("지원 직무", JOBS, label_visibility="collapsed", index=0, placeholder="검색")
     st.session_state.logger.info(f"selected_job : {st.session_state.selected_job}")
 
     ### 이력서 폼
 
     input_form.markdown('''
-                        <div class="menu_name">이력서<span style="font-size:14px; color: white;">(200MB이하 PDF파일만 지원)</span><span class="essential_menu">*</span></div>
+                        <div class="menu_name">이력서<span style="font-size:14px; color: #5271FF;">(200MB이하 PDF파일만 지원)</span><span class="essential_menu">*</span></div>
                         ''', 
                         unsafe_allow_html=True)
     

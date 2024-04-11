@@ -52,7 +52,7 @@ import streamlit as st
 st.markdown(f"""
             <style>
                 .main {{
-                    background-color: #F8E0F6; /* 배경색 */
+                    background-color: #99A7E4; /* 배경색 */
                     }}
                 /* 로딩이미지 */
                 .loading_space {{
