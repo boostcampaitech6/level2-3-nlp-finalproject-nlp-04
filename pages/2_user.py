@@ -69,12 +69,12 @@ st.markdown(
                 .main {{
                     background-color: #99A7E4; /* 배경색 */
                     background-size:cover;
-                    padding:0px;
+                    margin:0px;
                 }}
                 .css-z5fcl4 {{ 
-                        padding-left : 10%;
-                        padding-right : 10%;
-                        padding-top : 2rem;
+                        margin-left : 10%;
+                        margin-right : 10%;
+                        margin-top : 2rem;
                         display : flex;  
                 }}
                 div.row-widget.stRadio > div{{
@@ -92,8 +92,8 @@ st.markdown(
                 /*
                 .st-dr, .st-dt, .st-du, .st-ed{{
                     margin : 0 auto;
-                    padding-right :0;
-                    padding-left:2px;
+                    margin-right :0;
+                    margin-left:2px;
                 }}
                 */
                 [data-baseweb="radio"] div {{
@@ -130,16 +130,16 @@ st.markdown(
                     font-size : 36px;
                     text-align : left;
                     font-weight : bold;
-                    padding-top : 14%;
+                    margin-top : 14%;
                     font-family : 'Nanumsquare';
                     animation: fadeInDown 1s;
-                    padding-left : 8rem;
-                    padding-bottom : 2rem;
+                    margin-left : 8rem;
+                    margin-bottom : 2rem;
                     color : black;
                 }}
                 #real_ad {{
-                    padding-left : 8rem;
-                    padding-bottom : 1rem;
+                    margin-left : 8rem;
+                    margin-bottom : 1rem;
                     box-sizing:content-box;
                 }}
                 .additional_message {{
@@ -164,8 +164,8 @@ st.markdown(
                     font-weight : 700;
                     color : red;
                     font-family : 'Nanumsquare';
-                    padding-left : 8rem;
-                    padding-right : 8rem;
+                    margin-left : 8rem;
+                    margin-right : 8rem;
                 }}
                 [class="row-widget stButton"] {{
                     display : flex;
@@ -176,7 +176,7 @@ st.markdown(
                 }}
                 [class="row-widget stButton"] button {{
                     border : none;
-                    padding-left : 8rem;
+                    margin-left : 8rem;
                     background-color: transparent;
                 }}
                 [class="row-widget stButton"] button:hover {{
@@ -212,12 +212,12 @@ st.markdown(
                 }}
                 /* 결과 샘플 */
                 [data-testid="stHorizontalBlock"] > div:nth-child(2) > div > div> div:nth-child(4) > div {{
-                    padding-left : 8rem;
+                    margin-left : 8rem;
                     max-width : 80%;
                     justify-content: flex-start;
                 }}
                 [data-testid="stExpander"] {{
-                    padding-left : 7rem;
+                    margin-left : 7rem;
                     max-width : 70%;
                 }}
                 [data-baseweb="accordion"] {{
@@ -248,40 +248,26 @@ st.session_state.big_q_progress = True
 ## input_form
 input_form, start_button = st.columns([1, 2])  # 노션 컬럼처럼 열을 나눠서 할수있게 해주는것
 with input_form:
-    input_form.markdown('''
-                        <div class="additional_message" style="font-size:13px; justify-content : center; font-weight : 1000; color: black;">※크롬 환경 및 라이트모드를 권장합니다※</div>
-                        ''',
-                        unsafe_allow_html=True )
+    
 
     st.session_state.user_name = st.session_state.nickname
     st.session_state.logger.info(f"user name : {st.session_state.user_name}")
 
-    # ### 지원 직무 폼
-    # input_form.markdown("""
-    #                     <div class="menu_name">지원 직무<span class="essential_menu">*</span>
-    #                     <!--<span style="font-size:14px; color: #5271FF; text-align:right;">직접 검색도 가능해요!</span>-->
-    #                     </div>
-    #                     """,
-    #                     unsafe_allow_html=True,)
+    ### 지원 직무 폼
     input_form.markdown("""
-            <style>
-            /* 선택된 상태의 selectbox 테두리 색상 변경 */
-            .stSelectbox .css-2b097c-container:focus-within {
-                border: 2px solid #007bff; /* 파란색으로 변경 */
-            }
-            /* 기본 상태의 selectbox 테두리 색상 변경 */
-            .stSelectbox .css-2b097c-container {
-                border: 2px solid #007bff; /* 파란색으로 변경 */
-            }
-            </style>
-            """, unsafe_allow_html=True)
+                        <div class="menu_name">지원 직무<span class="essential_menu">*</span>
+                        <!--<span style="font-size:14px; color: #5271FF; text-align:right;">직접 검색도 가능해요!</span>-->
+                        </div>
+                        """,
+                        unsafe_allow_html=True,)
+   
     st.session_state.selected_job = input_form.selectbox("지원 직무", JOBS, label_visibility="collapsed", index=0, placeholder="검색")
     st.session_state.logger.info(f"selected_job : {st.session_state.selected_job}")
 
     ### 이력서 폼
 
     input_form.markdown('''
-                        <div class="menu_name">이력서<span style="font-size:14px; color: #5271FF;">(200MB이하 PDF파일만 지원)</span><span class="essential_menu">*</span></div>
+                        <div class="menu_name">이력서<span style="font-size:14px; color: #5271FF;">(200MB이하 PDF파일만 지원) \n 입력하신 이력서는 저장되지 않습니다.</span><span class="essential_menu">*</span></div>
                         ''', 
                         unsafe_allow_html=True)
     
@@ -297,7 +283,7 @@ with input_form:
 
     ### JD 폼 ######################
     input_form.markdown('''
-                        <div class="menu_name">채용공고<span style="font-size:14px; color: white;">(1500자 이내로 작성해주세요)</span><span class="essential_menu">*</span></div>
+                        <div class="menu_name">채용공고<span style="font-size:14px; color: #5271FF;">(1500자 이내로 작성해주세요)</span><span class="essential_menu">*</span></div>
                         ''', 
                         unsafe_allow_html=True)
      # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
