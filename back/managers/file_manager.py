@@ -4,9 +4,10 @@ from datetime import datetime
 from typing import List, Optional
 
 from bson import ObjectId
-from gridfs import GridFSBucket, NoFile
-from pydantic import BaseModel, Field
-from pymongo import MongoClient, errors
+from gridfs import NoFile
+from pymongo import errors
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
+
 
 # 환경 변수로부터 MongoDB 설정 읽기
 username = os.getenv("MONGO_USERNAME", "admin")
@@ -14,24 +15,26 @@ password = os.getenv("MONGO_PASSWORD", "password")
 MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
 
 # MongoDB와 GridFS 설정
-loop = asyncio.get_event_loop()
-client = MongoClient(MONGO_URL)
+# loop = asyncio.get_event_loop()
+
+# async 설정
+client = AsyncIOMotorClient(MONGO_URL)
 db = client["database"]
 collection = db["users"]
-fs_bucket = GridFSBucket(db)
+fs_bucket = AsyncIOMotorGridFSBucket(db)
 
 
-def upload_resume(email: str, filename: str, file_data):
-    user = collection.find_one({"_id": email})
+async def upload_resume(email: str, filename: str, file_data):
+    user = await collection.find_one({"_id": email})
     print(user)
     if not user:
         return None
 
     # GridFSBucket을 사용하여 파일 업로드
-    file_id = fs_bucket.upload_from_stream(filename, file_data)
+    file_id = await fs_bucket.upload_from_stream(filename, file_data)
 
     # 사용자 문서에 파일 ID 추가
-    updated_info = collection.update_one(
+    updated_info = await collection.update_one(
         {"_id": email},
         {"$addToSet": {"resume_file_ids": file_id}}
     )
@@ -45,8 +48,8 @@ def upload_resume(email: str, filename: str, file_data):
     return str(file_id)
 
 
-def read_resume(email: str):
-    user = collection.find_one({"_id": email})
+async def read_resume(email: str):
+    user = await collection.find_one({"_id": email})
     if not user:
         print("User not found")
         return None
@@ -58,7 +61,7 @@ def read_resume(email: str):
     for file_id_str in file_ids:
         file_id = ObjectId(file_id_str)
         try:
-            grid_out = fs_bucket.open_download_stream(file_id)
+            grid_out = await fs_bucket.open_download_stream(file_id)
             content = grid_out.read()
             upload_date = grid_out.upload_date.strftime("%Y-%m-%d, %H:%M:%S")
             files_content.append({
@@ -82,15 +85,15 @@ def read_resume(email: str):
     return files_content
 
 
-def delete_resume(user_id: str, file_id: str):
+async def delete_resume(user_id: str, file_id: str):
     try:
         file_id_obj = ObjectId(file_id)
 
-        # GridFSBucket에서 파일 삭제
-        fs_bucket.delete(file_id_obj)
+        # 파일 삭제
+        await fs_bucket.delete(file_id_obj)
 
         # 사용자 컬렉션에서 파일 ID 제거
-        collection.update_one(
+        await collection.update_one(
             {'_id': user_id},
             {'$pull': {'resume_file_ids': file_id_obj}}
         )
@@ -100,37 +103,36 @@ def delete_resume(user_id: str, file_id: str):
         print(f"No file found with ID: {file_id}")
 
 
-if __name__ == "__main__":
-    class User(BaseModel):
-        email: str = Field(..., alias="_id")      # _id 필드를 email로 alias
-        name: str                                   # 이름
-        access_token: str = None                    # OAuth2의 access_token
-        id_token: str = None                        # OAuth2의 id_token(JWT)
-        expires_in: int = None  # 언제 사용할까요?   # 아직 사용하지 않음
-        last_login: Optional[datetime] = None       # 마지막 로그인 시간
-        joined: Optional[datetime] = None           # 가입 날짜
-        jd: Optional[List] = None                   # 입력한 채용공고 list
-        resume_file_ids: Optional[List] = []      # 입력한 이력서 list
-        available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧
-
-    
-    fake_user = User(_id="koo", name="희찬")
-
-    # 사용자 생성
+async def main():
     try:
-        collection.insert_one(fake_user.model_dump(by_alias=True))
+        await collection.insert_one(fake_user.model_dump(by_alias=True))
     except errors.DuplicateKeyError:
         print("User already exists")
 
-
     # 파일 저장
     with open('./back/test.txt', 'rb') as f:
-        file_id = upload_resume("koo", f.name.split('/')[-1], f)
+        file_id = await upload_resume("koo", f.name.split('/')[-1], f)
+        print(file_id)
     
     # 파일 읽기
-    user_files = read_resume("koo")
+    user_files = await read_resume("koo")
     # for file in user_files:
-        # print(file)
+    #     print(file)
 
     # 파일 삭제
-    delete_resume("koo", "6602f70ac35b92eeafa54458")
+    await delete_resume("koo", "0"*24)
+
+if __name__ == "__main__":
+    from account_models import User, History
+
+    fake_history = History(
+        jd="이력서 예시",
+        resume_file_ids="0"*24,
+        questions="질문 예시",
+        timestamp=int(datetime.now().timestamp())
+    )
+
+    fake_user = User(_id="koo", name="희찬")
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+    loop.close()
