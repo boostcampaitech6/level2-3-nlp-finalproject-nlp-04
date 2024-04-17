@@ -14,13 +14,14 @@ sys.path.append("./back")
 
 from config import *
 from back.kakao import router as kakao_router  # 카카오 로그인 라우터 불러오기
-from back.mongodb import router as mongo_router  # MongoDB 라우터 불러오기
-
+from back.user import router as user_router  # MongoDB 라우터 불러오기
+from back.history import router as hitory_router # 기록 관리 라우터 불러오기
 
 # redirect URI 자동 설정
 app = FastAPI(docs_url="/documentation", redoc_url=None)
 app.include_router(kakao_router, prefix="/kakao")
-app.include_router(mongo_router, prefix="/users")
+app.include_router(user_router, prefix="/user")
+app.include_router(hitory_router, prefix="/history")
 
 origins = [
     f"http://{INSIDE_IP}:{PORT}",
