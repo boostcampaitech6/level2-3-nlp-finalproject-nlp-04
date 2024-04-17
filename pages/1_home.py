@@ -16,7 +16,7 @@ from config import OPENAI_API_KEY, IMG_PATH, PORT
 
 from back.streamlit_control import get_info_from_kakao
 from back.user_authorization import verify_token
-from back.mongodb import User
+from back.managers.account_models import User, History
 
 NEXT_PAGE = "user"
 is_logged_in = False
@@ -80,14 +80,14 @@ if is_logged_in:
         expires_at=expires_at,
     )
 
-    is_member = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/exists").json()
+    is_member = requests.get(f"http://localhost:{PORT}/user/{st.session_state['user_email']}/exists").json()
 
     if is_member: # 이미 DB에 저장된 사용자라면
-        user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
+        user = requests.put(f"http://localhost:{PORT}/user/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
 
     elif not is_member: # DB에 저장된 사용자가 아니라면
         user.joined_at = last_login
-        user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True)).json()
+        user = requests.post(f"http://localhost:{PORT}/user/",json=user.model_dump(by_alias=True)).json()
 
 
 if "openai_api_key" not in st.session_state:
