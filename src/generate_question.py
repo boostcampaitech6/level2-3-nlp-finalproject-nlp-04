@@ -3,7 +3,7 @@ import random
 import re
 
 import openai
-from langchain.chains import LLMChain
+from langchain.chains.llm import LLMChain
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings.openai import OpenAIEmbeddings
 from langchain.prompts import PromptTemplate
