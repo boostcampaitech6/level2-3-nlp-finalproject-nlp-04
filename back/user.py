@@ -2,13 +2,13 @@ import logging
 import os
 from typing import List, Optional
 
+from bson import ObjectId
 import streamlit as st
 from fastapi import APIRouter, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, Field
 from pymongo import ReturnDocument, errors
 
-from config import PORT
+from back.database.models import User, History
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -31,20 +31,7 @@ collection = database["users"]
 #     print("This email already exists")  # 이미 존재하는 이메일인 경우 출력
 
 # await collection.create_index([("email", ASCENDING)], unique=True)
-
-
-class User(BaseModel):
-    email: str = Field(..., alias="_id")        # _id 필드를 email로 alias
-    name: str                                   # 이름
-    access_token: str = None                    # OAuth2의 access_token
-    id_token: str = None                        # OAuth2의 id_token(JWT)
-    expires_at: Optional[int] = None # 언제 사용할까요? # 아직 사용하지 않음
-    joined_at: Optional[int] = None             # 가입 날짜
-    last_login: Optional[int] = None            # 마지막 로그인 시간
-    jd: Optional[List] = []                     # 입력한 채용공고 list
-    resume_file_ids: Optional[List] = []        # 입력한 이력서 list
-    available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧
-
+ 
 
 @router.get("/{email}/exists")
 async def check_email_exists(email: str):
