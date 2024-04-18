@@ -1,10 +1,11 @@
-from typing import List, Optional
-from pydantic import BaseModel, Field
-from bson import ObjectId
+from typing import Any, List, Optional
+from pydantic import BaseModel, Field, field_validator
+from bson.objectid import ObjectId
+
 
 class History(BaseModel):
     jd: str = ''                                # 입력한 채용공고
-    resume_file_ids: Optional[ObjectId] = None  # 입력한 이력서
+    resume_file_ids: Optional[Any] = None  # 입력한 이력서
     questions: str = None                       # 생성된 질문
     timestamp: int = None                       # Unix time으로 저장
 

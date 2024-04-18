@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from typing import List, Optional
 
-from bson import ObjectId
+from bson.objectid import ObjectId
 from gridfs import NoFile
 from pymongo import errors
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket

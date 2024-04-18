@@ -2,7 +2,6 @@ import logging
 import os
 from typing import List, Optional
 
-from bson import ObjectId
 import streamlit as st
 from fastapi import APIRouter, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
