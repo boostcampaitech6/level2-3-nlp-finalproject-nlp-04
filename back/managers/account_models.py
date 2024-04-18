@@ -9,6 +9,14 @@ class History(BaseModel):
     questions: str = None                       # 생성된 질문
     timestamp: int = None                       # Unix time으로 저장
 
+    def to_dict(self):
+        return {
+            "jd": self.jd,
+            "resume_file_ids": self.resume_file_ids,
+            "questions": self.questions,
+            "timestamp": self.timestamp
+        }
+
 
 class User(BaseModel):
     email: str = Field(..., alias="_id")        # _id 필드를 email로 alias
@@ -18,5 +26,5 @@ class User(BaseModel):
     expires_at: Optional[int] = None # 언제 사용할까요? # 아직 사용하지 않음
     joined_at: Optional[int] = None             # 가입 날짜
     last_login: Optional[int] = None            # 마지막 로그인 시간
-    history: Optional[List[History]] = None
+    history: Optional[List[History]] = []       # 사용자의 이력
     available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧 # 사용하지 않음
