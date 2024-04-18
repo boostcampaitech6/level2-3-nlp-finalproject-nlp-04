@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ReturnDocument, errors
 
-from back.database.models import User, History
+from managers.account_models import User, History
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
