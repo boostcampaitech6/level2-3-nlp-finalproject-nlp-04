@@ -12,6 +12,7 @@ from pymongo import MongoClient, errors
 
 from managers.account_models import User, History
 from managers.file_manager import upload_resume, read_resume, delete_resume
+from managers.mongo_config import *
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -20,17 +21,7 @@ logging.basicConfig(level=logging.INFO,
 
 router = APIRouter()
 
-# 환경 변수로부터 MongoDB 설정 읽기
-username = os.getenv("MONGO_USERNAME", "admin")
-password = os.getenv("MONGO_PASSWORD", "password")
-MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
-
-# MongoDB와 GridFS 설정
-loop = asyncio.get_event_loop()
-client = MongoClient(MONGO_URL)
-db = client["database"]
-collection = db["users"]
-fs_bucket = GridFSBucket(db)
+fs_bucket = GridFSBucket(database)
 
 
 # 동기

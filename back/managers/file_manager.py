@@ -7,21 +7,7 @@ from bson.objectid import ObjectId
 from gridfs import NoFile
 from pymongo import errors
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
-
-
-# 환경 변수로부터 MongoDB 설정 읽기
-username = os.getenv("MONGO_USERNAME", "admin")
-password = os.getenv("MONGO_PASSWORD", "password")
-MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
-
-# MongoDB와 GridFS 설정
-# loop = asyncio.get_event_loop()
-
-# async 설정
-client = AsyncIOMotorClient(MONGO_URL)
-db = client["database"]
-collection = db["users"]
-fs_bucket = AsyncIOMotorGridFSBucket(db)
+from mongo_config import *
 
 
 async def upload_resume(email: str, filename: str, file_data):

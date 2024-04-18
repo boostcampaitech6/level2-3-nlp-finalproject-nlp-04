@@ -8,6 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ReturnDocument, errors
 
 from managers.account_models import User, History
+from managers.mongo_config import *
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -15,14 +16,6 @@ logging.basicConfig(level=logging.INFO,
                     filemode="w",)
 
 router = APIRouter()
-username = os.getenv("MONGO_USERNAME", "admin")
-password = os.getenv("MONGO_PASSWORD", "password")
-
-# MongoDB connection URL
-MONGO_URL = f"mongodb://{username}:{password}@localhost:27017/"
-client = AsyncIOMotorClient(MONGO_URL)
-database = client["database"]
-collection = database["users"]
 
 # try:
 #     collection.create_index("email", unique=True)  # 이메일 필드에 고유 인덱스 생성
