@@ -1,41 +1,36 @@
 import asyncio
-import os
 from datetime import datetime
-from typing import List, Optional
-import tracemalloc
 
-from bson.objectid import ObjectId
-from gridfs import NoFile
 from pymongo import errors
+
 from mongo_config import *
 from account_models import History, User
 from file_manager import upload_resume, read_resume, delete_resume
+from db_operators import find_user_by_email, append_to_field
 
-async def upload_history(email: str, jd: str, questions: str, filename: str, file_data):
-    user = await collection.find_one({"_id": email})
-    print(user)
-    if not user:
-        return None
-    
-    # 파일 업로드
-    file_id = await upload_resume(email, filename, file_data)
-    
-    print("file_id: ", file_id, type(file_id))
-    history = History(
+
+def create_history_instance(jd: str, file_id: str, questions: str) -> History:
+    return History(
         jd=jd,
         resume_file_ids=file_id,
         questions=questions,
         timestamp=int(datetime.now().timestamp())
     )
-    history_dict = history.to_dict()
-    # 사용자 문서에 파일 ID 추가
-    updated_info = await collection.update_one(
-        {"_id": email},
-        {"$addToSet": {"history": history_dict}}
-    )
- 
-    # 변경 사항 확인
-    if updated_info.modified_count == 1:
+
+
+async def upload_history(email: str, jd: str, questions: str, filename: str, file_data):
+    user = await find_user_by_email(email)
+    if not user:
+        return None
+    
+    # 파일 업로드
+    file_id = await upload_resume(email, filename, file_data)
+    history = create_history_instance(jd, file_id, questions)
+    
+    success = await append_to_field(email, "history", history)
+    
+    # 변경사항 확인
+    if success:
         print(f"Added history with ID: {file_id} to user {email}")
     else:
         print(f"No changes made for user {email}")

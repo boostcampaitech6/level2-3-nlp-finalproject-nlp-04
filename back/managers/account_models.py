@@ -1,6 +1,5 @@
 from typing import Any, List, Optional
-from pydantic import BaseModel, Field, field_validator
-from bson.objectid import ObjectId
+from pydantic import BaseModel, Field
 
 
 class History(BaseModel):
@@ -8,14 +7,6 @@ class History(BaseModel):
     resume_file_ids: Optional[Any] = None  # 입력한 이력서
     questions: str = None                       # 생성된 질문
     timestamp: int = None                       # Unix time으로 저장
-
-    def to_dict(self):
-        return {
-            "jd": self.jd,
-            "resume_file_ids": self.resume_file_ids,
-            "questions": self.questions,
-            "timestamp": self.timestamp
-        }
 
 
 class User(BaseModel):

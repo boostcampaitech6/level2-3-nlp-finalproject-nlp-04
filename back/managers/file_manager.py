@@ -6,36 +6,25 @@ from typing import List, Optional
 from bson.objectid import ObjectId
 from gridfs import NoFile
 from pymongo import errors
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
+
+from db_operators import find_user_by_email
 from mongo_config import *
 
 
 async def upload_resume(email: str, filename: str, file_data):
-    user = await collection.find_one({"_id": email})
-    print(user)
+    user = await find_user_by_email(email)
+
     if not user:
         return None
 
     # GridFSBucket을 사용하여 파일 업로드
     file_id = await fs_bucket.upload_from_stream(filename, file_data)
 
-    # # 사용자 문서에 파일 ID 추가
-    # updated_info = await collection.update_one(
-    #     {"_id": email},
-    #     {"$addToSet": {"resume_file_ids": file_id}}
-    # )
-
-    # # 변경 사항 확인
-    # if updated_info.modified_count == 1:
-    #     print(f"Added resume file with ID: {file_id} to user {email}")
-    # else:
-    #     print(f"No changes made for user {email}")
-
     return file_id
 
 
 async def read_resume(email: str):
-    user = await collection.find_one({"_id": email})
+    user = await find_user_by_email(email)
     if not user:
         print("User not found")
         return None
