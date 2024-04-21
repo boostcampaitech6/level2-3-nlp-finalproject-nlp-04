@@ -113,3 +113,7 @@
 - 그 결과, 전반적인 평가에서 저희 안녕자비스 팀의 생성 결과가 가장 좋은 평가를 받은 점을 확인할 수 있었습니다.
 ![image](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-04/assets/67735022/3ba26bbc-e92e-42b8-b303-6be12402da87)
 
+## 🤩**전시홀 캠퍼 반응**
+
+![image](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-04/assets/63552400/d8e15dd3-33f9-4136-8a79-6fbc7db1afa8)
+
