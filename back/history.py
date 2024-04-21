@@ -1,17 +1,9 @@
-import asyncio
-import os
 import logging
-from datetime import datetime
-from typing import List, Optional
 
-from bson import ObjectId
-from fastapi import APIRouter, HTTPException
-from gridfs import GridFSBucket, NoFile
-from pydantic import BaseModel, Field
-from pymongo import MongoClient, errors
+from fastapi import APIRouter
+from motor.motor_asyncio import AsyncIOMotorGridFSBucket
 
 from managers.account_models import User, History
-from managers.file_manager import upload_resume, read_resume, delete_resume
 from managers.mongo_config import *
 
 logging.basicConfig(level=logging.INFO,
@@ -21,7 +13,7 @@ logging.basicConfig(level=logging.INFO,
 
 router = APIRouter()
 
-fs_bucket = GridFSBucket(database)
+fs_bucket = AsyncIOMotorGridFSBucket(database)
 
 
 # 동기
