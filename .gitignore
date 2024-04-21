@@ -207,10 +207,5 @@ mongod.lock
 WiredTiger
 WiredTiger*
 
-# npm pakage
-package.json
-node_modules
-package-lock.json
-
-
-
+# package exception
+!requirements.txt
