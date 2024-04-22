@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ReturnDocument, errors
 
-from managers.account_models import User, History
+from managers.account_models import User, Record
 from managers.mongo_config import *
 from records import router as records_router # 기록 관리 라우터 불러오기
 

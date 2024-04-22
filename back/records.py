@@ -3,7 +3,7 @@ import logging
 from fastapi import APIRouter
 from motor.motor_asyncio import AsyncIOMotorGridFSBucket
 
-from managers.account_models import User, History
+from managers.account_models import User, Record
 from managers.mongo_config import *
 
 logging.basicConfig(level=logging.INFO,
@@ -16,7 +16,7 @@ router = APIRouter()
 fs_bucket = AsyncIOMotorGridFSBucket(database)
 
 
-# 동기
+
 # @router.post("/{user_id}", response_model=History)
 # async def create_history(user_id: str, history: History):
 #     try:
