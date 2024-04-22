@@ -27,7 +27,7 @@ async def upload_record(email: str, jd: str, questions: str, filename: str, file
     file_id = await upload_resume(email, filename, file_data)
     record = create_record_instance(jd, file_id, questions)
     
-    success = await append_to_field(email, "record", record)
+    success = await append_to_field(email, "records", record)
     
     # 변경사항 확인
     if success:
