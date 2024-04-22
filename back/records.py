@@ -3,7 +3,6 @@ import logging
 from typing import List
 
 from pymongo import errors
-from motor.motor_asyncio import AsyncIOMotorGridFSBucket
 from fastapi import (APIRouter, UploadFile, status, HTTPException, 
                      Header, Depends, Form, File)
 
