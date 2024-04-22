@@ -172,4 +172,4 @@ async def update_access_token(email: str, token: str):
     
     raise HTTPException(status_code=404, detail="User not found")
 
-router.include_router(records_router, prefix="/{user_id}/records")
+router.include_router(records_router, prefix="/records")
