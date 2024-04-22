@@ -272,11 +272,9 @@ with input_form:
                         unsafe_allow_html=True)
     
     user_resume = st.session_state['user_email'] + "uploaded_resume"
-    st.session_state[user_resume] = input_form.file_uploader("이력서",
-                                                   accept_multiple_files=False, 
-                                                   type = ['pdf'],
-                                                   label_visibility='collapsed')
+    st.session_state[user_resume] = input_form.file_uploader("이력서", accept_multiple_files=False, type = ['pdf'], label_visibility='collapsed')
     
+
     print("user에서 입력받은 이력서 파일 : ", st.session_state[user_resume])
     st.session_state.logger.info(f"upload resume -> Sucess")
     

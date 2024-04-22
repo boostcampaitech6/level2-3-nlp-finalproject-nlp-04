@@ -6,10 +6,10 @@ import re
 import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 import plotly.io as pio
-from langchain.prompts import PromptTemplate
-from langchain_community.callbacks import get_openai_callback
-from langchain.chains import LLMChain, SequentialChain
-
+from langchain.prompts.prompt import PromptTemplate
+from langchain_community.callbacks.manager import get_openai_callback
+from langchain.chains.llm import LLMChain
+from langchain.chains.sequential import SequentialChain
 
 
 def generate_llm_sub_chain(llm, template: str, output_key: str):

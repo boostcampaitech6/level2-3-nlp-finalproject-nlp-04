@@ -5,7 +5,6 @@ import streamlit as st
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 
-
 from back.streamlit_control import goto_login_page
 from config import IMG_PATH
 from src.util import get_image_base64

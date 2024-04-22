@@ -4,7 +4,7 @@ FAISS INDEX TAG 생성 시키는 코드 : 900개의 기술면접 질문 데이�
 '''
 
 import pandas as pd
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores.faiss import FAISS
 
 

@@ -1,7 +1,7 @@
-__import__("pysqlite3")
+# __import__("pysqlite3")
 import sys
 
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+# sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 import os
 import re
@@ -9,8 +9,9 @@ import time
 import json
 
 import streamlit as st
-from langchain.chains import LLMChain, RetrievalQA
-from langchain_community.chat_models import ChatOpenAI
+from langchain.chains.llm import LLMChain
+from langchain.chains.retrieval_qa.base import RetrievalQA
+from langchain_openai import ChatOpenAI
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 
@@ -85,11 +86,8 @@ MODEL_NAME = "gpt-3.5-turbo-16k"
 
 ## set save dir
 USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_resume.pdf")
-### 추가
 USER_JD_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_JD.txt")
-
 BIG_QUESTION_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_generated_big_question.txt")
-
 
 # 진행률
 progress_holder = st.empty()  # 작업에 따라 문구 바뀌는 곳
@@ -140,10 +138,9 @@ with progress_holder:
 
             ### JD 사용하여 JD 추출용 프롬프트 만들기
             st.session_state.logger.info("prompt JD start")
-
             prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_JD_template.txt"))
-
             st.session_state.prompt_JD = create_prompt_with_jd(prompt_template_jd)
+            
             # prompt_JD 생성완료
             st.session_state.logger.info("create prompt JD object")
 
@@ -161,11 +158,8 @@ with progress_holder:
             start = time.time()
             ###################
             st.session_state.chain_JD_1 = LLMChain(llm=llm, prompt=st.session_state.prompt_JD)
-
             st.session_state.logger.info("create chain_JD_1 object")
-
             st.session_state.job_description = st.session_state.chain_JD_1.run(st.session_state.user_JD)
-
             st.session_state.logger.info("chain_JD_1 complit")
 
             # STEP 2. step 1 에서 생성된 job_description 를 qa prompt template 에 넣고, GPT 에 질의하여 예상 질문을 뽑습니다.
@@ -210,9 +204,7 @@ with progress_holder:
             st.session_state.prompt_question = create_prompt_with_question(prompt_template_question)
 
             llm3 = ChatOpenAI(temperature=0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
-
             st.session_state.chain = LLMChain(llm=llm3, prompt=st.session_state.prompt_question)
-
             st.session_state.main_question = st.session_state.chain.run({"jd": st.session_state.job_description, "resume": st.session_state.resume})
             #################
             end = time.time()
@@ -230,7 +222,6 @@ with progress_holder:
             st.session_state.questions = re.split(r"\n\d+\.\s*", st.session_state.main_question.strip())
             # 첫 번째 빈 항목 제거
             st.session_state.questions = [question for question in st.session_state.questions if question]
-
             st.session_state.logger.info(f"save question result")
 
 
