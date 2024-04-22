@@ -17,5 +17,5 @@ class User(BaseModel):
     expires_at: Optional[int] = None # 언제 사용할까요? # 아직 사용하지 않음
     joined_at: Optional[int] = None             # 가입 날짜
     last_login: Optional[int] = None            # 마지막 로그인 시간
-    record: Optional[List[Record]] = []       # 사용자의 이력
+    records: Optional[List[Record]] = []       # 사용자의 이력
     available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧 # 사용하지 않음
