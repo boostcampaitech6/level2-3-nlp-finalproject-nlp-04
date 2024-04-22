@@ -16,7 +16,7 @@ from config import OPENAI_API_KEY, IMG_PATH, PORT
 
 from back.streamlit_control import get_info_from_kakao
 from back.user_authorization import verify_token
-from back.managers.account_models import User, History
+from back.managers.account_models import User, Record
 
 NEXT_PAGE = "user"
 is_logged_in = False

@@ -35,7 +35,7 @@ async def upload_record(email: str, jd: str, questions: str, filename: str, file
     else:
         print(f"No changes made for user {email}")
 
-    return str(file_id)
+    return record
 
 
 async def main():
