@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 class Record(BaseModel):
     jd: str = ''                                # 입력한 채용공고
-    resume_file_ids: Optional[Any] = None  # 입력한 이력서
+    resume_file_id: Optional[str] = None       # 입력한 이력서
     questions: str = None                       # 생성된 질문
     timestamp: int = None                       # Unix time으로 저장
 
@@ -17,5 +17,5 @@ class User(BaseModel):
     expires_at: Optional[int] = None # 언제 사용할까요? # 아직 사용하지 않음
     joined_at: Optional[int] = None             # 가입 날짜
     last_login: Optional[int] = None            # 마지막 로그인 시간
-    records: Optional[List[Record]] = []       # 사용자의 이력
+    records: Optional[List[Record]] = []        # 사용자의 이력
     available_credits: Optional[int] = 3        # 무료로 사용 가능한 크레딧 # 사용하지 않음

@@ -11,20 +11,20 @@ from managers.db_operators import find_user_by_email
 from managers.mongo_config import *
 
 
-async def upload_resume(email: str, filename: str, file_data):
-    user = await find_user_by_email(email)
+def upload_resume(email: str, filename: str, file_data):
+    user = find_user_by_email(email)
 
     if not user:
         return None
 
     # GridFSBucket을 사용하여 파일 업로드
-    file_id = await fs_bucket.upload_from_stream(filename, file_data)
+    file_id = fs_bucket.upload_from_stream(filename, file_data)
 
-    return file_id
+    return str(file_id)
 
 
-async def read_resume(email: str):
-    user = await find_user_by_email(email)
+def read_resume(email: str):
+    user = find_user_by_email(email)
     if not user:
         print("User not found")
         return None
@@ -35,13 +35,14 @@ async def read_resume(email: str):
 
     for file_id_str in file_ids:
         file_id = ObjectId(file_id_str)
+
         try:
-            grid_out = await fs_bucket.open_download_stream(file_id)
+            grid_out = fs_bucket.open_download_stream(file_id)
             content = grid_out.read()
             upload_date = grid_out.upload_date.strftime("%Y-%m-%d, %H:%M:%S")
             files_content.append({
                 'filename': grid_out.filename,
-                'file_id': str(file_id),
+                'file_id': file_id,
                 "upload_date": upload_date,
                 "content": content
             })
@@ -65,10 +66,10 @@ async def delete_resume(user_id: str, file_id: str):
         file_id_obj = ObjectId(file_id)
 
         # 파일 삭제
-        await fs_bucket.delete(file_id_obj)
+        fs_bucket.delete(file_id_obj)
 
         # 사용자 컬렉션에서 파일 ID 제거
-        await collection.update_one(
+        collection.update_one(
             {'_id': user_id},
             {'$pull': {'resume_file_ids': file_id_obj}}
         )
@@ -78,24 +79,24 @@ async def delete_resume(user_id: str, file_id: str):
         print(f"No file found with ID: {file_id}")
 
 
-async def main():
+def main():
     try:
-        await collection.insert_one(fake_user.model_dump(by_alias=True))
+        collection.insert_one(fake_user.model_dump(by_alias=True))
     except errors.DuplicateKeyError:
         print("User already exists")
 
     # 파일 저장
     with open('./back/test.txt', 'rb') as f:
-        file_id = await upload_resume("koo", f.name.split('/')[-1], f)
+        file_id = upload_resume("koo", f.name.split('/')[-1], f)
         print(file_id)
     
     # 파일 읽기
-    user_files = await read_resume("koo")
-    # for file in user_files:
-    #     print(file)
+    user_files = read_resume("koo")
+    for file in user_files:
+        print(file)
 
     # 파일 삭제
-    await delete_resume("koo", "0"*24)
+    delete_resume("koo", "0"*24)
 
 if __name__ == "__main__":
     from account_models import User, History
@@ -108,6 +109,4 @@ if __name__ == "__main__":
     )
 
     fake_user = User(_id="koo", name="희찬")
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-    loop.close()
+    main()

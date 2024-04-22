@@ -21,8 +21,6 @@ logging.basicConfig(level=logging.INFO,
 
 router = APIRouter()
 
-fs_bucket = AsyncIOMotorGridFSBucket(database)
-
 
 def get_authorization_token(authorization: str = Header(...)) -> str:
     scheme, _, param = authorization.partition(" ")
@@ -77,10 +75,10 @@ async def create_record(
     jd: str = Form(...), 
     questions: str = Form(...), 
     filename: str = Form(...), 
-    file_data: UploadFile = File(...),
-    token: str = Depends(get_authorization_token)):
+    file_data: UploadFile = File(...),) -> Record:
+    # token: str = Depends(get_authorization_token)):
     
-    verify_user(token, user_id) # 인증과 인가 실패하면 이 단계에서 HTTPException 발생
+    # verify_user(token, user_id) # 인증과 인가 실패하면 이 단계에서 HTTPException 발생
 
     try:
         # Find the user
@@ -89,7 +87,7 @@ async def create_record(
             raise HTTPException(status_code=404, detail="User not found")
 
         file_contents = await file_data.read()
-        record = await upload_record(user_id, jd, questions, filename, file_contents)
+        record = upload_record(user_id, jd, questions, filename, file_contents)
         await file_data.close()
         
         return record
@@ -99,9 +97,9 @@ async def create_record(
 
 
 @router.get("/{user_id}", response_model=List[Record])
-async def get_records(user_id: str, token: str = Depends(get_authorization_token)):
+async def get_records(user_id: str,): # token: str = Depends(get_authorization_token)):
     
-    verify_user(token, user_id) # 인증과 인가 실패하면 이 단계에서 HTTPException 발생
+    # verify_user(token, user_id) # 인증과 인가 실패하면 이 단계에서 HTTPException 발생
 
     try:
         records = collection.find_one({"_id": user_id})
@@ -139,4 +137,4 @@ async def get_records(user_id: str, token: str = Depends(get_authorization_token
 if __name__ == '__main__':
 
     fake_user = User(_id="koo", name="희찬")
-    fake_record = Record(jd="채용공고", resume_file_ids="0"*24, questions="질문", timestamp=1234567890)
+    fake_record = Record(jd="채용공고", resume_file_id="0"*24, questions="질문", timestamp=1234567890)
