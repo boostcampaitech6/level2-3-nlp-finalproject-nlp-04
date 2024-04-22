@@ -29,39 +29,32 @@ def read_resume(email: str):
         print("User not found")
         return None
 
-    valid_file_ids = []
     files_content = []
-    file_ids = user.get('resume_file_ids', [])
+    records = user.get('records', [])
 
-    for file_id_str in file_ids:
+    for record in records:
+        file_id_str = record['resume_file_id']
         file_id = ObjectId(file_id_str)
 
         try:
             grid_out = fs_bucket.open_download_stream(file_id)
             content = grid_out.read()
             upload_date = grid_out.upload_date.strftime("%Y-%m-%d, %H:%M:%S")
+            
             files_content.append({
                 'filename': grid_out.filename,
                 'file_id': file_id,
                 "upload_date": upload_date,
                 "content": content
             })
-            valid_file_ids.append(file_id_str)
+
         except NoFile:
             print(f"No file found in GridFS with _id: {file_id_str}")
-
-    # 사용자 문서에서 유효하지 않은 file_id 제거
-    if len(file_ids) != len(valid_file_ids):
-        collection.update_one(
-            {"_id": email},
-            {"$set": {"resume_file_ids": valid_file_ids}}
-        )
-        print(f"Updated user {email} with valid file IDs.")
 
     return files_content
 
 
-async def delete_resume(user_id: str, file_id: str):
+def delete_resume(user_id: str, file_id: str):
     try:
         file_id_obj = ObjectId(file_id)
 
@@ -80,16 +73,30 @@ async def delete_resume(user_id: str, file_id: str):
 
 
 def main():
+    from account_models import User, Record
+    
+    fake_record = Record(
+        jd="이력서 예시",
+        resume_file_id="0"*24,
+        questions="질문 예시",
+        timestamp=int(datetime.now().timestamp())
+    )
+
+    fake_user = User(_id="koo", name="희찬")
+    
     try:
         collection.insert_one(fake_user.model_dump(by_alias=True))
     except errors.DuplicateKeyError:
         print("User already exists")
-
-    # 파일 저장
-    with open('./back/test.txt', 'rb') as f:
-        file_id = upload_resume("koo", f.name.split('/')[-1], f)
-        print(file_id)
     
+    from records_manager import upload_record
+    # 파일 업로드
+    with open('back/test.txt', 'rb') as f:
+        file = f.read()
+        file_id = upload_resume("koo", "이력서 예시", file)
+        fake_record.resume_file_id = file_id
+        upload_record("koo", "jd", "questions", "filename", file)
+
     # 파일 읽기
     user_files = read_resume("koo")
     for file in user_files:
@@ -99,14 +106,4 @@ def main():
     delete_resume("koo", "0"*24)
 
 if __name__ == "__main__":
-    from account_models import User, History
-
-    fake_history = History(
-        jd="이력서 예시",
-        resume_file_ids="0"*24,
-        questions="질문 예시",
-        timestamp=int(datetime.now().timestamp())
-    )
-
-    fake_user = User(_id="koo", name="희찬")
     main()

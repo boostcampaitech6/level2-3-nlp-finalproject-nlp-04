@@ -39,7 +39,7 @@ def upload_record(email: str, jd: str, questions: str, filename: str, file_data)
     return record
 
 
-async def main():
+def main():
     fake_user = User(_id="koo", name="희찬")
     try:
         collection.insert_one(fake_user.model_dump(by_alias=True))
@@ -47,11 +47,8 @@ async def main():
         print("User already exists")
 
     with open('./back/test.txt', 'rb') as f:
-        await upload_record(email="koo", jd="이력서 예시", questions="질문 예시", filename="이력서 내용", file_data=f)
+        upload_record(email="koo", jd="이력서 예시", questions="질문 예시", filename="이력서 내용", file_data=f)
 
 
 if __name__ == "__main__":
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-    loop.close()
+    main()
