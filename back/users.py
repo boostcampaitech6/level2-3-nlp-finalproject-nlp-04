@@ -37,7 +37,7 @@ async def check_email_exists(email: str):
     Returns:
         bool: 이메일이 데이터베이스에 존재하는 경우 True를 반환하고, 그렇지 않은 경우 False를 반환합니다.
     """
-    user = await collection.find_one({"_id": email})
+    user = collection.find_one({"_id": email})
     return user is not None
 
 
@@ -54,7 +54,7 @@ async def create_user(user: User):
     """
     # user.emial = email
     try:
-        await collection.insert_one(user.model_dump(by_alias=True))
+        collection.insert_one(user.model_dump(by_alias=True))
         # user._id = str(result.inserted_id)
     except errors.DuplicateKeyError:
         raise HTTPException(status_code=409, detail="User already exists")
@@ -77,9 +77,9 @@ async def update_user(email: str, user: User):
         HTTPException: 사용자를 찾을 수 없을 때 발생하는 예외
     """
     update_fields = {k: v for k, v in user.model_dump(by_alias=True).items() if v is not None}
-    updated_user = await collection.find_one_and_update({"_id": email},
-                                                        {"$set": update_fields},
-                                                        return_document=ReturnDocument.AFTER,)
+    updated_user = collection.find_one_and_update({"_id": email},
+                                                  {"$set": update_fields},
+                                                  return_document=ReturnDocument.AFTER,)
     
     if updated_user:
         return User(**updated_user)
