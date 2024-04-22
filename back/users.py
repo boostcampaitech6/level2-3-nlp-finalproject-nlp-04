@@ -9,6 +9,7 @@ from pymongo import ReturnDocument, errors
 
 from managers.account_models import User, History
 from managers.mongo_config import *
+from records import router as records_router # 기록 관리 라우터 불러오기
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -170,3 +171,5 @@ async def update_access_token(email: str, token: str):
         return User(**updated_user)
     
     raise HTTPException(status_code=404, detail="User not found")
+
+router.include_router(records_router, prefix="/{user_id}/records")
