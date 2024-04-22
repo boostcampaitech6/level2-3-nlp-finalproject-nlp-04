@@ -3,10 +3,10 @@ from datetime import datetime
 
 from pymongo import errors
 
-from mongo_config import *
-from account_models import Record, User
-from file_manager import upload_resume, read_resume, delete_resume
-from db_operators import find_user_by_email, append_to_field
+from managers.mongo_config import *
+from managers.account_models import Record, User
+from managers.file_manager import upload_resume, read_resume, delete_resume
+from managers.db_operators import find_user_by_email, append_to_field
 
 
 def create_record_instance(jd: str, file_id: str, questions: str) -> Record:

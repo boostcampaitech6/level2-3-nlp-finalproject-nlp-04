@@ -1,5 +1,6 @@
 from pymongo import errors
-from mongo_config import collection
+
+from managers.mongo_config import collection
 
 
 async def find_user_by_email(email: str):

@@ -7,8 +7,8 @@ from bson.objectid import ObjectId
 from gridfs import NoFile
 from pymongo import errors
 
-from db_operators import find_user_by_email
-from mongo_config import *
+from managers.db_operators import find_user_by_email
+from managers.mongo_config import *
 
 
 async def upload_resume(email: str, filename: str, file_data):
