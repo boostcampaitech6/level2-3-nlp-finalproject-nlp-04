@@ -53,7 +53,7 @@ def get_authorization_token(authorization: str = Header(...)) -> str:
     return param
 
 
-async def login_required(
+async def authenticate_user(
     oauth_client: OAuthClient = Depends(get_oauth_client),
     access_token: str = Depends(get_authorization_token),
 ):
@@ -103,7 +103,7 @@ async def callback(
 #     return {"logout": _res.json()}
 
 
-@router.get("/user", dependencies=[Depends(login_required)])
+@router.get("/user", dependencies=[Depends(authenticate_user)])
 async def get_user(
     oauth_client=Depends(get_oauth_client),
     access_token: str = Depends(get_authorization_token),

@@ -80,4 +80,4 @@ fs_bucket = AsyncIOMotorGridFSBucket(database)
 if __name__ == '__main__':
 
     fake_user = User(_id="koo", name="희찬")
-    fake_history = History(jd="채용공고", resume_file_ids="0"*24, questions="질문", timestamp=1234567890)
+    fake_history = Record(jd="채용공고", resume_file_ids="0"*24, questions="질문", timestamp=1234567890)
