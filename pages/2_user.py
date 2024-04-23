@@ -233,8 +233,7 @@ st.markdown(
 ## emoji for interviewer icon
 
 ## custom message
-
-info_message = "※ 본 테스트 서비스는 사용자 분들의 개인정보를 절대 수집하지 않습니다."
+info_message = ""
 main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
 
 
@@ -267,7 +266,7 @@ with input_form:
     ### 이력서 폼
 
     input_form.markdown('''
-                        <div class="menu_name">이력서<span style="font-size:14px; color: #5271FF;">(200MB이하 PDF파일만 지원) \n 입력하신 이력서는 저장되지 않습니다.</span><span class="essential_menu">*</span></div>
+                        <div class="menu_name">이력서<span style="font-size:14px; color: #5271FF;">(200MB이하 PDF파일만 지원)</span><span class="essential_menu">*</span></div>
                         ''', 
                         unsafe_allow_html=True)
     
@@ -298,9 +297,6 @@ with input_form:
     st.session_state.temperature = 0.2
     st.session_state.logger.info(f"interview style (temperature) : {st.session_state.temperature}")
     
-    ##############################################
-    ### custom message 개인정보 수집 관련 메시지 ###
-    ##############################################
     # input_form.markdown(f'''<div class='info_message'> {info_message} </div> ''', unsafe_allow_html=True)
     
     ## start_button

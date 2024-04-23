@@ -68,14 +68,14 @@ def verify_user(token: str, user_id: str) -> bool:
     return True
 
 
-@router.post("/{user_id}", response_model=Record)
+@router.post("/{user_id}")
 async def create_record(
     user_id: str, 
     jd: str = Form(...), 
     questions: str = Form(...), 
     filename: str = Form(...), 
-    file_data: UploadFile = File(...),) -> Record:
-    # token: str = Depends(get_authorization_token)):
+    file_data: UploadFile = File(...),):
+    # token: str = Depends(get_authorization_token)) -> Record.model_dump_json:
     
     # verify_user(token, user_id) # 인증과 인가 실패하면 이 단계에서 HTTPException 발생
 
@@ -92,7 +92,8 @@ async def create_record(
         return record
 
     except errors.PyMongoError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.get("/{user_id}", response_model=List[Record])
