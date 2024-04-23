@@ -1,9 +1,9 @@
 import time
+from typing import List, Dict
 
-import openai
+from openai.types.chat import ChatCompletion
 
-
-def make_initial_args(main_question, user_name):
+def make_initial_args(main_question: Dict, user_name: str):
     """
     초기 상태 및 인자를 설정하는 함수입니다.
 
@@ -41,7 +41,7 @@ def make_initial_args(main_question, user_name):
     return initial_questions, whole_counts, initial_args_lst
 
 
-def ggori_chat_with_gpt3(message, conversation_history, conversation_count, max_conversation_count):
+def ggori_chat_with_gpt3(message: str, conversation_history: List, conversation_count: int, max_conversation_count: int):
     """
     사용자와 GPT-3 모델 사이의 대화를 처리하는 함수입니다.
 
@@ -60,7 +60,7 @@ def ggori_chat_with_gpt3(message, conversation_history, conversation_count, max_
     if conversation_count <= max_conversation_count:
         conversation_history.append({"role": "user", "content": message})  # 입력한 User의 message 입력
 
-        response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=conversation_history)
+        response = ChatCompletion.created(model="gpt-3.5-turbo", messages=conversation_history)
 
         conversation_history.append(
             {"role": "assistant", "content": response["choices"][0]["message"]["content"]}
@@ -95,7 +95,7 @@ def del_pattern(x: dict, pattern_lst: list):
     return x
 
 
-def preprocessing_conversation_history(conversation_history):
+def preprocessing_conversation_history(conversation_history: List):
     """
     대화 기록에서 특정 패턴을 삭제하는 전처리 함수입니다.
 

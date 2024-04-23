@@ -10,7 +10,7 @@ import time
 import streamlit as st
 from langchain.chains.llm import LLMChain
 from langchain.chains.retrieval_qa.base import RetrievalQA
-from langchain.chat_models.openai import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from PIL import Image
 from src.generate_question import create_prompt_with_jd  # 추가
 from src.generate_question import (create_prompt_with_resume,

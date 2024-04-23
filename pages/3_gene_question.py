@@ -1,16 +1,18 @@
-__import__("pysqlite3")
+# __import__("pysqlite3")
 import sys
 
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+# sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 import os
 import re
 import time
 import json
+import requests
 
 import streamlit as st
-from langchain.chains import LLMChain, RetrievalQA
-from langchain_community.chat_models import ChatOpenAI
+from langchain.chains.llm import LLMChain
+from langchain.chains.retrieval_qa.base import RetrievalQA
+from langchain_openai import ChatOpenAI
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 
@@ -24,7 +26,7 @@ from src.generate_question import (create_prompt_with_question,
 from src.rule_based import list_extend_questions_based_on_keywords
 from src.util import local_css, read_prompt_from_txt
 from src.semantic_search import faiss_inference, reranker
-from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH, CSS_PATH
+from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH, CSS_PATH, PORT
 
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
@@ -85,11 +87,8 @@ MODEL_NAME = "gpt-3.5-turbo-16k"
 
 ## set save dir
 USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_resume.pdf")
-### 추가
 USER_JD_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_JD.txt")
-
 BIG_QUESTION_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_generated_big_question.txt")
-
 
 # 진행률
 progress_holder = st.empty()  # 작업에 따라 문구 바뀌는 곳
@@ -119,6 +118,10 @@ with progress_holder:
             ### uploaded_file는 streamlit의 file_uploader에서 반환된 객체
             user_resume = st.session_state['user_email'] + 'uploaded_resume'
             st.session_state.uploaded_file_resume = st.session_state[user_resume]
+            print("user_resume", user_resume)
+            print("type(user_resume)", type(user_resume))
+            print("uploaded_file_resume", st.session_state.uploaded_file_resume)
+            print("type(uploaded_file_resume)", type(st.session_state.uploaded_file_resume))       
             ### 저장
             save_user_resume(USER_RESUME_SAVE_DIR, st.session_state.uploaded_file_resume)
             st.session_state.logger.info("save resume")
@@ -140,10 +143,9 @@ with progress_holder:
 
             ### JD 사용하여 JD 추출용 프롬프트 만들기
             st.session_state.logger.info("prompt JD start")
-
             prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_JD_template.txt"))
-
             st.session_state.prompt_JD = create_prompt_with_jd(prompt_template_jd)
+            
             # prompt_JD 생성완료
             st.session_state.logger.info("create prompt JD object")
 
@@ -161,11 +163,8 @@ with progress_holder:
             start = time.time()
             ###################
             st.session_state.chain_JD_1 = LLMChain(llm=llm, prompt=st.session_state.prompt_JD)
-
             st.session_state.logger.info("create chain_JD_1 object")
-
             st.session_state.job_description = st.session_state.chain_JD_1.run(st.session_state.user_JD)
-
             st.session_state.logger.info("chain_JD_1 complit")
 
             # STEP 2. step 1 에서 생성된 job_description 를 qa prompt template 에 넣고, GPT 에 질의하여 예상 질문을 뽑습니다.
@@ -190,10 +189,10 @@ with progress_holder:
             st.session_state.chain_type_kwargs = {"prompt": st.session_state.prompt_resume}
 
             st.session_state.qa_chain = RetrievalQA.from_chain_type(llm=llm2,
-                                                   chain_type="stuff",
-                                                   retriever=st.session_state.vector_index.as_retriever(),
-                                                   chain_type_kwargs=st.session_state.chain_type_kwargs,
-                                                   verbose=True,)
+                                                                    chain_type="stuff",
+                                                                    retriever=st.session_state.vector_index.as_retriever(),
+                                                                    chain_type_kwargs=st.session_state.chain_type_kwargs,
+                                                                    verbose=True,)
 
             st.session_state.resume = st.session_state.qa_chain.run("기술면접에 나올만한 프로젝트 내용은?")
             print("prompt_resume @@@@@@@@", st.session_state.prompt_resume)
@@ -210,9 +209,7 @@ with progress_holder:
             st.session_state.prompt_question = create_prompt_with_question(prompt_template_question)
 
             llm3 = ChatOpenAI(temperature=0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
-
             st.session_state.chain = LLMChain(llm=llm3, prompt=st.session_state.prompt_question)
-
             st.session_state.main_question = st.session_state.chain.run({"jd": st.session_state.job_description, "resume": st.session_state.resume})
             #################
             end = time.time()
@@ -230,7 +227,6 @@ with progress_holder:
             st.session_state.questions = re.split(r"\n\d+\.\s*", st.session_state.main_question.strip())
             # 첫 번째 빈 항목 제거
             st.session_state.questions = [question for question in st.session_state.questions if question]
-
             st.session_state.logger.info(f"save question result")
 
 
@@ -265,13 +261,50 @@ with progress_holder:
             ### 다음 세션으로 값 넘기기
 
             st.session_state.main_question = st.session_state.questions + st.session_state.rule_questions + st.session_state.faiss_question
+            print("### main_question ###")
+            print("type(main_question)", type(st.session_state.main_question))
+            print("main_question", st.session_state.main_question)
             st.session_state.project_question = st.session_state.questions
+            print("### project_question ###")
+            print("type(project_question)", type(st.session_state.project_question))
+            print("project_question", st.session_state.project_question)
             st.session_state.basic_question = st.session_state.rule_questions + st.session_state.faiss_question
+            print("### basic_question ###")
+            print("type(basic_question)", type(st.session_state.basic_question))
+            print("basic_question", st.session_state.basic_question)
             st.session_state.logger.info("end gene_question")
             
             time.sleep(2)
             ####
+            from requests_toolbelt.multipart.encoder import MultipartEncoder
+            # 기록 저장 요청 보내기
+            # 사용할 변수들 정의
+            url = f"http://localhost:{PORT}/users/records/{st.session_state.user_email}"
+            jd = st.session_state.user_JD
+            filename = st.session_state.uploaded_file_resume.name
+            file_path = USER_RESUME_SAVE_DIR
             
+            headers = {
+                "accept": "application/json",
+            }
+            data = {
+                'jd': jd,
+                'questions': "\n".join(st.session_state.main_question),
+                'filename': filename,
+            }
+            files = {
+                'file_data': (filename, open(USER_RESUME_SAVE_DIR, "rb"), 'application/pdf')
+            }
+           
+            response = requests.post(url, headers=headers, data=data, files=files)
+            import json
+            # 응답을 딕셔너리로 변환
+            response_data = json.loads(response.text)
+
+            # 응답 출력
+            print(response.status_code)
+            print(response_data)
+
             if st.session_state.cur_task == 'gene_question':
                 switch_page('show_questions_hint')
             elif st.session_state.cur_task == 'interview':

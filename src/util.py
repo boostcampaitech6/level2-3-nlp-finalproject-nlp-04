@@ -1,7 +1,4 @@
-__import__("pysqlite3")
 import sys
-
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 import base64
 import os
@@ -9,11 +6,11 @@ from io import BytesIO
 
 import pandas as pd
 import streamlit as st
-from langchain.chains import ConversationChain
-from langchain_community.chat_models import ChatOpenAI
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain.memory import ConversationBufferWindowMemory
-from langchain.prompts import PromptTemplate
+from langchain.chains.conversation.base import ConversationChain
+from langchain_openai import ChatOpenAI
+from langchain_openai.embeddings import OpenAIEmbeddings
+from langchain.memory.buffer_window import ConversationBufferWindowMemory
+from langchain.prompts.prompt import PromptTemplate
 from PIL import Image
 
 sys.path.append("./")

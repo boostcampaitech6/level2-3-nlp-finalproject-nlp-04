@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# macOS
+.DS_Store
+
 # Distribution / packaging
 .Python
 build/
@@ -207,10 +210,5 @@ mongod.lock
 WiredTiger
 WiredTiger*
 
-# npm pakage
-package.json
-node_modules
-package-lock.json
-
-
-
+# package exception
+!requirements.txt

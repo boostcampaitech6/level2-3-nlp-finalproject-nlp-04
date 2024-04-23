@@ -16,10 +16,11 @@ from config import OPENAI_API_KEY, IMG_PATH, PORT
 
 from back.streamlit_control import get_info_from_kakao
 from back.user_authorization import verify_token
-from back.mongodb import User
+from back.managers.account_models import User, Record
 
 NEXT_PAGE = "user"
 is_logged_in = False
+last_login = 0
 
 if "logger" not in st.session_state:
     # logru_logger(**config.config)
@@ -65,7 +66,7 @@ if "user_id" not in st.session_state:
     st.session_state["user_id"] = user_info["kakao_account"]["email"]
     print("user_id : ", st.session_state["user_id"])
 
-
+print("is_logged_in : ", is_logged_in)
 if is_logged_in:
     # DB에 저장할 변수 설정
     last_login = token_payload["auth_time"]
@@ -80,14 +81,22 @@ if is_logged_in:
         expires_at=expires_at,
     )
 
-    is_member = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/exists").json()
+if not is_logged_in:
+    user = User(
+        _id="GUEST",
+        name="GUEST",
+        access_token="GUEST",
+        id_token="GUEST",
+    )
 
-    if is_member: # 이미 DB에 저장된 사용자라면
-        user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
+is_member = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/exists").json()
 
-    elif not is_member: # DB에 저장된 사용자가 아니라면
-        user.joined_at = last_login
-        user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True)).json()
+if is_member: # 이미 DB에 저장된 사용자라면
+    user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
+
+elif not is_member: # DB에 저장된 사용자가 아니라면
+    user.joined_at = last_login
+    user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True)).json()
 
 
 if "openai_api_key" not in st.session_state:

@@ -3,13 +3,14 @@ import os
 import sys
 
 import streamlit as st
-from langchain.chains import LLMChain
-from langchain_community.chat_models import ChatOpenAI
+from langchain.chains.llm import LLMChain
+from langchain_openai import ChatOpenAI
 from PIL import Image
+from streamlit_extras.switch_page_button import switch_page
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from src.generate_question import (create_prompt_feedback,  # 추가
                                    create_prompt_hint)
-from streamlit_extras.switch_page_button import switch_page
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from src.util import read_prompt_from_txt
 from config import DATA_DIR, IMG_PATH, OPENAI_API_KEY
 

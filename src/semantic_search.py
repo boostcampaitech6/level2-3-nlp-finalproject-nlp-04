@@ -3,8 +3,8 @@ import sys
 import re
 
 import cohere
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores.faiss import FAISS
+from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores.faiss import FAISS
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from config import COHERE_API_KEY  # COHERE_API_KEY 불러오기

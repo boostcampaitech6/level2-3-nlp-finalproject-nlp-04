@@ -5,10 +5,10 @@ import re
 import openai
 from langchain.chains.llm import LLMChain
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.embeddings.openai import OpenAIEmbeddings
-from langchain.prompts import PromptTemplate
-from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.vectorstores.chroma import Chroma
+from langchain_openai import OpenAIEmbeddings
+from langchain.prompts.prompt import PromptTemplate
+from langchain_text_splitters.character import CharacterTextSplitter
+from langchain_chroma.vectorstores import Chroma
 
 
 def generate_llm_sub_chain(llm, template, output_key: str):
