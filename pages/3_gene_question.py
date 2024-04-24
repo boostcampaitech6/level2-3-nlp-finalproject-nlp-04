@@ -118,10 +118,6 @@ with progress_holder:
             ### uploaded_file는 streamlit의 file_uploader에서 반환된 객체
             user_resume = st.session_state['user_email'] + 'uploaded_resume'
             st.session_state.uploaded_file_resume = st.session_state[user_resume]
-            print("user_resume", user_resume)
-            print("type(user_resume)", type(user_resume))
-            print("uploaded_file_resume", st.session_state.uploaded_file_resume)
-            print("type(uploaded_file_resume)", type(st.session_state.uploaded_file_resume))       
             ### 저장
             save_user_resume(USER_RESUME_SAVE_DIR, st.session_state.uploaded_file_resume)
             st.session_state.logger.info("save resume")
@@ -164,7 +160,7 @@ with progress_holder:
             ###################
             st.session_state.chain_JD_1 = LLMChain(llm=llm, prompt=st.session_state.prompt_JD)
             st.session_state.logger.info("create chain_JD_1 object")
-            st.session_state.job_description = st.session_state.chain_JD_1.run(st.session_state.user_JD)
+            st.session_state.job_description = st.session_state.chain_JD_1.invoke(st.session_state.user_JD)['text']
             st.session_state.logger.info("chain_JD_1 complit")
 
             # STEP 2. step 1 에서 생성된 job_description 를 qa prompt template 에 넣고, GPT 에 질의하여 예상 질문을 뽑습니다.
@@ -194,7 +190,8 @@ with progress_holder:
                                                                     chain_type_kwargs=st.session_state.chain_type_kwargs,
                                                                     verbose=True,)
 
-            st.session_state.resume = st.session_state.qa_chain.run("기술면접에 나올만한 프로젝트 내용은?")
+            st.session_state.resume = st.session_state.qa_chain.invoke("기술면접에 나올만한 프로젝트 내용은?")['result']
+
             print("prompt_resume @@@@@@@@", st.session_state.prompt_resume)
             st.session_state.logger.info(" prompt_resume running complit")
             print("사용자", st.session_state.user_email, "의 resume : \n", st.session_state.resume)
@@ -210,7 +207,7 @@ with progress_holder:
 
             llm3 = ChatOpenAI(temperature=0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
             st.session_state.chain = LLMChain(llm=llm3, prompt=st.session_state.prompt_question)
-            st.session_state.main_question = st.session_state.chain.run({"jd": st.session_state.job_description, "resume": st.session_state.resume})
+            st.session_state.main_question = st.session_state.chain.invoke({"jd": st.session_state.job_description, "resume": st.session_state.resume})['text']
             #################
             end = time.time()
             st.session_state.logger.info(
@@ -261,17 +258,8 @@ with progress_holder:
             ### 다음 세션으로 값 넘기기
 
             st.session_state.main_question = st.session_state.questions + st.session_state.rule_questions + st.session_state.faiss_question
-            print("### main_question ###")
-            print("type(main_question)", type(st.session_state.main_question))
-            print("main_question", st.session_state.main_question)
             st.session_state.project_question = st.session_state.questions
-            print("### project_question ###")
-            print("type(project_question)", type(st.session_state.project_question))
-            print("project_question", st.session_state.project_question)
             st.session_state.basic_question = st.session_state.rule_questions + st.session_state.faiss_question
-            print("### basic_question ###")
-            print("type(basic_question)", type(st.session_state.basic_question))
-            print("basic_question", st.session_state.basic_question)
             st.session_state.logger.info("end gene_question")
             
             time.sleep(2)
@@ -297,13 +285,10 @@ with progress_holder:
             }
            
             response = requests.post(url, headers=headers, data=data, files=files)
-            import json
-            # 응답을 딕셔너리로 변환
-            response_data = json.loads(response.text)
 
-            # 응답 출력
-            print(response.status_code)
-            print(response_data)
+            # 응답 확인용 코드
+            # import json
+            # response_data = json.loads(response.text)
 
             if st.session_state.cur_task == 'gene_question':
                 switch_page('show_questions_hint')
