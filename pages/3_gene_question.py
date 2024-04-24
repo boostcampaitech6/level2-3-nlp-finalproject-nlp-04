@@ -223,10 +223,10 @@ with progress_holder:
             ### 결과 텍스트 저장
             # '\n\n'을 사용하여 질문 분리 후 바로 unpacking
             
-            # 리스트로 분리되지 않은 main_question 을 질문별로 분리하여 리스트에 저장합니다.  
+            # 각 항목을 분리하여 리스트에 저장
             st.session_state.questions = re.split(r"\n\d+\.\s*", st.session_state.main_question.strip())
             # 첫 번째 빈 항목 제거
-            st.session_state.main_question = [question for question in st.session_state.questions if question]
+            st.session_state.questions = [question for question in st.session_state.questions if question]
             st.session_state.logger.info(f"save question result")
 
 
@@ -240,41 +240,38 @@ with progress_holder:
             st.session_state.big_q_progress = False  ### 대질문 생성 끝
 
         else:
-            ####### 주석처리된 부분은 룰베이스드 + 리트리버 부분입니다. 이제 LLM을 이용한 프로젝트 질문 6개만 생성됩니다
-            
             selected_job = st.session_state.selected_job
             # rule-based question
-            # with open(os.path.join(DATA_DIR, "rulebased_data.json"), "r", encoding="utf-8") as f:
-            #     data_dict = json.load(f)
+            with open(os.path.join(DATA_DIR, "rulebased_data.json"), "r", encoding="utf-8") as f:
+                data_dict = json.load(f)
             
+ 
+            if  st.session_state.selected_job == "CV" or   st.session_state.selected_job == "NLP" or   st.session_state.selected_job == "RECSYS" or   st.session_state.selected_job == "MLE":
+                 st.session_state.selected_job = "AI"
+            st.session_state.rule_questions = list_extend_questions_based_on_keywords(data_dict, st.session_state.user_JD, st.session_state.selected_job)
+            print("### rule_questions ###")
+            print(*(st.session_state.rule_questions), sep='/n')
             
-            # if  st.session_state.selected_job == "CV" or   st.session_state.selected_job == "NLP" or   st.session_state.selected_job == "RECSYS" or   st.session_state.selected_job == "MLE":
-            #      st.session_state.selected_job = "AI"
-            # st.session_state.rule_questions = list_extend_questions_based_on_keywords(data_dict, st.session_state.user_JD, st.session_state.selected_job)
-            # print("### rule_questions ###")
-            # print(*(st.session_state.rule_questions), sep='/n')
-            
-            # # semantic search question generation
-            # st.session_state.faiss_result = faiss_inference(st.session_state.job_description)
-            # st.session_state.faiss_question = reranker(st.session_state.job_description, st.session_state.faiss_result)
-            # st.session_state.logger.info(f"save faiss question")
-            # print("### faiss_question ###")
-            # print(*(st.session_state.faiss_question), sep='/n')
-            # ### 다음 세션으로 값 넘기기
-            # ### main_question 에 
-            # st.session_state.main_question = st.session_state.questions + st.session_state.rule_questions + st.session_state.faiss_question
-            # print("### main_question ###")
-            # print("type(main_question)", type(st.session_state.main_question))
-            # print("main_question", st.session_state.main_question)
-            # st.session_state.project_question = st.session_state.questions
-            # print("### project_question ###")
-            # print("type(project_question)", type(st.session_state.project_question))
-            # print("project_question", st.session_state.project_question)
-            #st.session_state.basic_question = st.session_state.rule_questions + st.session_state.faiss_question
-            
-            # print("### basic_question ###")
-            # print("type(basic_question)", type(st.session_state.basic_question))
-            # print("basic_question", st.session_state.basic_question)
+            # semantic search question generation
+            st.session_state.faiss_result = faiss_inference(st.session_state.job_description)
+            st.session_state.faiss_question = reranker(st.session_state.job_description, st.session_state.faiss_result)
+            st.session_state.logger.info(f"save faiss question")
+            print("### faiss_question ###")
+            print(*(st.session_state.faiss_question), sep='/n')
+            ### 다음 세션으로 값 넘기기
+
+            st.session_state.main_question = st.session_state.questions + st.session_state.rule_questions + st.session_state.faiss_question
+            print("### main_question ###")
+            print("type(main_question)", type(st.session_state.main_question))
+            print("main_question", st.session_state.main_question)
+            st.session_state.project_question = st.session_state.questions
+            print("### project_question ###")
+            print("type(project_question)", type(st.session_state.project_question))
+            print("project_question", st.session_state.project_question)
+            st.session_state.basic_question = st.session_state.rule_questions + st.session_state.faiss_question
+            print("### basic_question ###")
+            print("type(basic_question)", type(st.session_state.basic_question))
+            print("basic_question", st.session_state.basic_question)
             st.session_state.logger.info("end gene_question")
             
             time.sleep(2)

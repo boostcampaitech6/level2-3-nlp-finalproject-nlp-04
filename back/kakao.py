@@ -79,14 +79,14 @@ async def callback(code: str, state: Optional[str] = None, oauth_client=Depends(
     )
 
 
-# @router.get("/refresh")
-# async def callback(
-#     oauth_client=Depends(get_oauth_client),
-#     refresh_token: str = Depends(get_authorization_token),
-# ):
-#     token_response = await oauth_client.refresh_access_token(refresh_token=refresh_token)
+@router.get("/refresh")
+async def callback(
+    oauth_client=Depends(get_oauth_client),
+    refresh_token: str = Depends(get_authorization_token),
+):
+    token_response = await oauth_client.refresh_access_token(refresh_token=refresh_token)
 
-#     return {"response": token_response}
+    return {"response": token_response}
 
 
 # @router.get("/logout")
