@@ -29,7 +29,9 @@ distro==1.9.0
 dnspython==2.6.1
 entrypoints==0.4
 exceptiongroup==1.2.0
-faiss-gpu==1.7.2
+# 환경에 따라
+#faiss-gpu==1.7.2
+#faiss-cpu
 Faker==24.9.0
 fastapi==0.110.1
 fastavro==1.9.4
