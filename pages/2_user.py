@@ -42,6 +42,7 @@ EXAMPLE_JD = read_prompt_from_txt(os.path.join(DATA_DIR, "JD_example.txt") )
 # .info 는 logger 즉 logru 라이브러리의 logger의 메서드입니다.
 
 NEXT_PAGE = "gene_question"
+NEXT_PAGE_NORESUME = "gene_question_no_resume"
 
 #### style css ####
 MAIN_IMG = st.session_state.MAIN_IMG
@@ -272,9 +273,9 @@ with input_form:
     
     user_resume = st.session_state['user_email'] + "uploaded_resume"
     st.session_state[user_resume] = input_form.file_uploader("이력서", accept_multiple_files=False, type = ['pdf'], label_visibility='collapsed')
-    
+    # 이력서 없이 시작하기 옵션을 추가합니다. skip_resume: bool
+    st.session_state.skip_resume = st.checkbox("이력서 없이 시작하기")
 
-    print("user에서 입력받은 이력서 파일 : ", st.session_state[user_resume])
     st.session_state.logger.info(f"upload resume -> Sucess")
     
 
@@ -284,38 +285,46 @@ with input_form:
                         ''', 
                         unsafe_allow_html=True)
      # 사용자에게 텍스트 입력을 요청하는 텍스트 영역 생성
+    st.session_state.jd_text = st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD,height=300)
     
     user_jd = st.session_state['user_email'] + "uploaded_JD"
     st.session_state[user_jd] = save_uploaded_jd_as_filepath( # text, path, filename="uploaded_jd.txt" 형태
-                                                                st.text_area("채용 공고", max_chars=1500,value=EXAMPLE_JD,height=300),
+                                                                st.session_state.jd_text,
                                                                 SAVE_JD_FILE_DIR
                                                                 ) # 파일 경로에 저장됩니다.
-    #st.session_state.uploaded_JD = uploaded_JD
 
+    
+    
     st.session_state.logger.info(f"upload JD -> Sucess")
 
     st.session_state.temperature = 0.2
     st.session_state.logger.info(f"interview style (temperature) : {st.session_state.temperature}")
-    
-    # input_form.markdown(f'''<div class='info_message'> {info_message} </div> ''', unsafe_allow_html=True)
     
     ## start_button
     with start_button:
         start_button.markdown(f""" <div class = 'main_message'> {main_message}<br></div> """,
                               unsafe_allow_html=True,)
         ### 필요사항체크
-        check_list, josa = check_essential()
+        check_list, josa= check_essential(user_resume,st.session_state.skip_resume,st.session_state.jd_text)
+        print("@@@@@@@@@@@@@@@@@@@@@@@@",user_jd)
+        
+        
         st.session_state.logger.info(f"check_essential")
         ### 필요사항 따라 버튼 클릭시 안내 문구 생성
         if start_button.button("예상 질문 확인하기"):
-            ### 유저 고유 폴더 생성
             if check_list:
                 start_button.markdown(f"""<p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>""",
                                       unsafe_allow_html=True,)
+            
             else:
-                st.session_state.cur_task = "gene_question"  # 예상 질문 생성하기 수행
-                switch_page(NEXT_PAGE)
-                st.session_state.logger.info(f"check_essential | Pass")
+                if st.session_state.skip_resume :
+                    st.session_state.cur_task = "gene_question"  # 예상 질문 생성하기 수행
+                    switch_page(NEXT_PAGE_NORESUME)
+                    
+                else:
+                    st.session_state.cur_task = "gene_question"  # 예상 질문 생성하기 수행
+                    switch_page(NEXT_PAGE)
+                    st.session_state.logger.info(f"check_essential | Pass")
 
         if start_button.button("모의면접 시작하기"):
             ### 유저 고유 폴더 생성
@@ -323,9 +332,15 @@ with input_form:
                 start_button.markdown(f"""<p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>""",
                                       unsafe_allow_html=True,)
             else:
-                st.session_state.cur_task = "interview"  # 모의면접 수행
-                switch_page(NEXT_PAGE)
-                st.session_state.logger.info(f"check_essential | Pass")
+                
+                if st.session_state.skip_resume :
+                    st.session_state.cur_task = "interview"  # 예상 질문 생성하기 수행
+                    switch_page(NEXT_PAGE_NORESUME)
+                    
+                else:
+                    st.session_state.cur_task = "interview"  # 모의면접 수행
+                    switch_page(NEXT_PAGE)
+                    st.session_state.logger.info(f"check_essential | Pass")
 
     # 광고 공간
     start_button.markdown(f"""
