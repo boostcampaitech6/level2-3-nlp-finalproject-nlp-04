@@ -127,8 +127,9 @@ def set_index(logo_image_path):
 def check_essential():
     """
     이름, 지원 직무, 이력서가 있어야 합니다!
-    면접관은 기본 세팅값이 있어서 괜찮!
+    만약 이력서 없이 시작하기 값(st.session_state.skip_resume)이 체크되어있다면 제외합니다.
     """
+
     check_result = []
     josa = ""
     if not st.session_state.user_name:
@@ -137,11 +138,18 @@ def check_essential():
     if st.session_state.selected_job == "검색 또는 선택":
         check_result.append("지원 직무")
         josa += "가"
-    if not st.session_state[st.session_state['user_email'] + 'uploaded_resume']:
+    if not st.session_state[st.session_state['user_email'] + 'uploaded_resume'] and not st.session_state.skip_resume:
+        '''
+        이력서가 없고, skip_resume 가 체크되지 않은 경우에만 경고 문구가 뜹니다
+        '''
         check_result.append("이력서")
         josa += "가"
-    # 추가된 코드 @@@@@@@@@@@@@@@@@@
+
+            
+    # 
     if not st.session_state[st.session_state['user_email'] + 'uploaded_JD']:
+        n = len(st.session_state[st.session_state['user_email'] + 'uploaded_JD'])
+        print(n,"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         check_result.append("채용 공고")
         josa += "가"
     return check_result, josa
