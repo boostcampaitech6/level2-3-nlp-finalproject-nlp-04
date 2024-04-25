@@ -265,3 +265,21 @@ def create_prompt_with_question(prompt_template):
     # JD 내용을 템플릿의 {jd} 부분에 삽입합니다.
     prompt_question = prompt
     return prompt_question
+
+def create_prompt_with_no_resume(prompt_template):
+    """
+    3_chain에서 마지막 단계에서 사용되는 함수, chain1,2에서 요약된 jd와 resume을 이용해
+    기술 면접 질문을 생성해줍니다.
+    :param jd: 채용공고 내용
+    :type jd: str
+    :param template: 채용공고 내용을 포함시킬 템플릿
+    :type template: str
+
+    :return: 완성된 프롬프트
+    :rtype: str
+    """
+
+    prompt = PromptTemplate(template=prompt_template, input_variables=["jd"])
+    # JD 내용을 템플릿의 {jd} 부분에 삽입합니다.
+    prompt_question = prompt
+    return prompt_question
