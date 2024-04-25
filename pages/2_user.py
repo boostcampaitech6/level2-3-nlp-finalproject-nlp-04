@@ -272,7 +272,8 @@ with input_form:
     
     user_resume = st.session_state['user_email'] + "uploaded_resume"
     st.session_state[user_resume] = input_form.file_uploader("이력서", accept_multiple_files=False, type = ['pdf'], label_visibility='collapsed')
-    
+    # 이력서 없이 시작하기 옵션을 추가합니다. skip_resume: bool
+    st.session_state.skip_resume = st.checkbox("이력서 없이 시작하기")
 
     print("user에서 입력받은 이력서 파일 : ", st.session_state[user_resume])
     st.session_state.logger.info(f"upload resume -> Sucess")
@@ -304,14 +305,17 @@ with input_form:
         start_button.markdown(f""" <div class = 'main_message'> {main_message}<br></div> """,
                               unsafe_allow_html=True,)
         ### 필요사항체크
-        check_list, josa = check_essential()
+        check_list, josa= check_essential()
+        
+        
+        
         st.session_state.logger.info(f"check_essential")
         ### 필요사항 따라 버튼 클릭시 안내 문구 생성
         if start_button.button("예상 질문 확인하기"):
-            ### 유저 고유 폴더 생성
             if check_list:
                 start_button.markdown(f"""<p class = 'check_message'>{', '.join(check_list)}{josa[-1]} 필요해요! </p>""",
                                       unsafe_allow_html=True,)
+            
             else:
                 st.session_state.cur_task = "gene_question"  # 예상 질문 생성하기 수행
                 switch_page(NEXT_PAGE)
