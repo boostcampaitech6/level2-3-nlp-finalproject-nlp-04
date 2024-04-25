@@ -275,7 +275,6 @@ with input_form:
     # 이력서 없이 시작하기 옵션을 추가합니다. skip_resume: bool
     st.session_state.skip_resume = st.checkbox("이력서 없이 시작하기")
 
-    print("user에서 입력받은 이력서 파일 : ", st.session_state[user_resume])
     st.session_state.logger.info(f"upload resume -> Sucess")
     
 
