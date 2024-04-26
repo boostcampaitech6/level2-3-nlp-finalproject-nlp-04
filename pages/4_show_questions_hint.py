@@ -108,6 +108,11 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
 
                 ### FeedBack Pre-process @@@@@@@@@@@@@@@@@@@@@@@@@@
                 st.session_state.logger.info("Start hint precess")
+                
+                # 버튼 클릭 시 임시 메시지 객체 생성
+                temp_message_hint = st.empty()
+                    # 임시 메시지에 텍스트 표시
+                temp_message_hint.text("힌트가 생성되는 중입니다. 잠시 기다려주세요.")
 
                 st.session_state.prompt_Hint = create_prompt_hint(st.session_state.prompt_template_ht)
                 # proprompt_Feedbackmpt_ 생성완료
