@@ -22,9 +22,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-NEXT_PAGE = "user"
+NEXT_PAGE = "home"
 
-#### style css ####
+if "is_logged_in" not in st.session_state:
+    st.session_state.is_logged_in = False
 
 st.title("개인정보 처리방침")  # 사용자 이름을 받아서 화면에 출력합니다.
 
@@ -72,10 +73,9 @@ if not st.session_state.is_logged_in:
 
 if st.button("동의합니다."):
     st.session_state.is_privacy_policy_agreed = True
-    
     if st.session_state.is_logged_in: # 카카오 로그인 사용자인 경우 동의 여부 저장
-        user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
-    
+        user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()   
     switch_page(NEXT_PAGE)
+
 if st.button("동의하지 않습니다."):
     st.error("동의하지 않으셨습니다. 동의가 필요합니다.")
