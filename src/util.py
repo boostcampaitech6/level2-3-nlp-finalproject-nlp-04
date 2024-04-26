@@ -135,9 +135,7 @@ def check_essential(user_resume,skip_resume,jd_text):
     if not st.session_state.user_name:
         check_result.append("이름")
         josa += "이"
-    if st.session_state.selected_job == "검색 또는 선택":
-        check_result.append("지원 직무")
-        josa += "가"
+        
     if not user_resume and not skip_resume:
         '''
         이력서가 없고, skip_resume 가 체크되지 않은 경우에만 경고 문구가 뜹니다

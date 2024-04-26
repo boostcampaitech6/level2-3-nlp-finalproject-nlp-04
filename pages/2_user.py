@@ -251,17 +251,6 @@ with input_form:
     st.session_state.user_name = st.session_state.nickname
     st.session_state.logger.info(f"user name : {st.session_state.user_name}")
 
-    ### 지원 직무 폼
-    input_form.markdown("""
-                        <div class="menu_name">지원 직무<span class="essential_menu">*</span>
-                        <!--<span style="font-size:14px; color: #5271FF; text-align:right;">직접 검색도 가능해요!</span>-->
-                        </div>
-                        """,
-                        unsafe_allow_html=True,)
-   
-    st.session_state.selected_job = input_form.selectbox("지원 직무", JOBS, label_visibility="collapsed", index=0, placeholder="검색")
-    st.session_state.logger.info(f"selected_job : {st.session_state.selected_job}")
-
     ### 이력서 폼
 
     input_form.markdown('''
