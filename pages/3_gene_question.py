@@ -43,8 +43,7 @@ NEXT_PAGE = "show_questions_hint"
 MY_PATH = os.path.dirname(os.path.dirname(__file__))
 
 #### style css ####
-MAIN_IMG = st.session_state.MAIN_IMG
-LOGO_IMG = st.session_state.LOGO_IMG
+
 
 local_css(os.path.join(CSS_PATH, "background.css"))
 local_css(os.path.join(CSS_PATH, "2_generate_question.css"))

@@ -69,26 +69,14 @@ if "openai_api_key" not in st.session_state:
     os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
     st.session_state.openai_api_key = OPENAI_API_KEY
 
-if "MAIN_IMG" not in st.session_state:
-    st.session_state["MAIN_IMG"] = get_image_base64(os.path.join(IMG_PATH, "main_back.png"))
-
-if "LOGO_IMG" not in st.session_state:
-    st.session_state["LOGO_IMG"] = get_image_base64(os.path.join(IMG_PATH, "logo_square.png"))
-
 if "FAV_IMAGE_PATH" not in st.session_state:
     st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
-
-if "LOGO_IMAGE_PATH" not in st.session_state:
-    st.session_state["LOGO_IMAGE_PATH"] = os.path.join(IMG_PATH, "logo_square.png")
 
 if "LOADING_GIF1" not in st.session_state:
     st.session_state["LOADING_GIF1"] = read_gif(os.path.join(IMG_PATH, "loading_interview_1.gif"))
 
 if "LOADING_GIF2" not in st.session_state:
     st.session_state["LOADING_GIF2"] = read_gif(os.path.join(IMG_PATH, "loading_interview_2.gif"))
-
-if "USER_ICON" not in st.session_state:
-    st.session_state["USER_ICON"] = Image.open(os.path.join(IMG_PATH, "user_icon.png"))
 
 if "temperature" not in st.session_state:
     st.session_state["temperature"] = 0
