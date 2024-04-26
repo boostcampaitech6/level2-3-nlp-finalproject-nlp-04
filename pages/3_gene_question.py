@@ -231,9 +231,6 @@ with progress_holder:
     # except Exception as e:
     #     st.session_state.logger.info(f"User resume delete Error: \n{e}")
     #     print(">>> User resume delete Error: \n{e}")
-
-    st.session_state.big_q_progress = False  ### 대질문 생성 끝
-
     
     progress_holder.markdown(f"""
                                 <div class="loading_text">

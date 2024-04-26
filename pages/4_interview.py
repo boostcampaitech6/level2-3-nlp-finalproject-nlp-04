@@ -42,7 +42,7 @@ st.set_page_config(
 st.title('Hello-JobIts 모의면접 🤖 (지원자 : ' +  st.session_state['nickname']+')')
         
 # 질문이 너무 많은 경우 최대 3개만 질문하기
-st.session_state.interview_questions = st.session_state.project_question[:max(3, len(st.session_state.project_question))]
+st.session_state.interview_questions = st.session_state.main_question[:max(3, len(st.session_state.main_question))]
 st.session_state.len_questions = len(st.session_state.interview_questions)
 
 # 상태 바
