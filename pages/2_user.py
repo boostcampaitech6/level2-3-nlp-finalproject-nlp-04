@@ -45,8 +45,6 @@ NEXT_PAGE = "gene_question"
 NEXT_PAGE_NORESUME = "gene_question_no_resume"
 
 #### style css ####
-MAIN_IMG = st.session_state.MAIN_IMG
-LOGO_IMG = st.session_state.LOGO_IMG
 
 st.title("안녕하세요, " + st.session_state.nickname + "님!")  # 사용자 이름을 받아서 화면에 출력합니다.
 
