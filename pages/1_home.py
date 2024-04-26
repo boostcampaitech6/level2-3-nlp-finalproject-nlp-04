@@ -131,7 +131,7 @@ if not st.session_state.is_member: # DB에 저장된 사용자가 아니라면 D
     user.joined_at = st.session_state.last_login
     user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True)).json()
 
-elif st.session_state.is_member: # 이미 DB에 저장된 사용자라면 개인 정보 동의 여부 확인
+elif st.session_state.is_member and st.session_state.is_logged_in: # 이미 DB에 저장된 사용자라면 개인 정보 동의 여부 확인, 게스트는 예외
     st.session_state.is_privacy_policy_agreed = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/privacy_policy").json()
     user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
 
