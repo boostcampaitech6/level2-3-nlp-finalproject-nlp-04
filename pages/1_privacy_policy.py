@@ -28,7 +28,7 @@ NEXT_PAGE = "user"
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
-st.title("안녕하세요, " + st.session_state.nickname + "님!")  # 사용자 이름을 받아서 화면에 출력합니다.
+st.title("개인정보 처리방침")  # 사용자 이름을 받아서 화면에 출력합니다.
 
 local_css(os.path.join(path, "front", "css", "background.css"))
 privacy_policy = """
