@@ -99,61 +99,13 @@ st.markdown(f"""
             unsafe_allow_html=True,
             )
 
-# 개인정보 처리방침 내용
-privacy_policy = """
-「개인정보 보호법」 제15조 및 제22조에 따라 아래와 같은 내용으로 본인의 개인정보를 수집‧이용하는데 동의합니다.
-
-
-
-• 수집∙이용 목적
-
-: 개발자 모의면접 서비스 제공을 위한 유저 식별, 예상 질문 생성, 모의면접 진행 등의 서비스에 이용
-
-• 수집ㆍ이용할 개인정보의 내용
-
-: 이름, 이메일, 이력서
-
-• 보유 및 이용 기간
-
-: 수집‧이용 동의일로부터 6개월 이내
-
-※ 귀하는 이에 동의를 거부할 수 있습니다.
-
-다만 동의가 없을 경우 본 서비스 사용이 불가합니다."""
-
-# 스트림릿으로 개인정보 처리방침 내용을 보여줌
-st.text_area("개인정보 처리방침", privacy_policy, height=300)
-
-# 동의 여부를 라디오 버튼으로 선택
-consent = st.radio("위 개인정보 처리방침에 동의하십니까?", ('동의', '동의하지 않음'))
-st.session_state.agreement = consent
-
-
-
-
-# # 사용자가 선택한 값에 따라 다르게 행동
-# if st.button("제출"):
-#     if consent == '동의':
-#         st.success("이용 약관에 동의하셨습니다. 감사합니다!")
-#     else:
-#         st.error("이용 약관에 동의하지 않으셨습니다. 동의가 필요합니다.")
-        
-check_list = st.session_state.agreement
 
 if st.button("LOGIN(KAKAO)"):
-    if check_list != '동의':
-        st.error("동의하지 않으셨습니다. 동의가 필요합니다.")
-    else:
-        st.session_state["cur_user"] = "kakao"  # 사용자 상태 설정
-        goto_login_page()
-        
-    
+    st.session_state["cur_user"] = "kakao"  # 사용자 상태 설정
+    goto_login_page()
 
 # 비회원 버튼
 if st.button("GUEST"):
-    if check_list != '동의':
-        st.error("동의하지 않으셨습니다. 동의가 필요합니다.")
-    else:
-        st.session_state["cur_user"] = "guest"  # 사용자 상태 설정
-        switch_page("home")
+    st.session_state["cur_user"] = "guest"  # 사용자 상태 설정
+    switch_page("privacy_policy")
 

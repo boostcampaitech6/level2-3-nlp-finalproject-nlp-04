@@ -212,3 +212,6 @@ WiredTiger*
 
 # package exception
 !requirements.txt
+
+# privacy policy
+!privacy_policy.txt

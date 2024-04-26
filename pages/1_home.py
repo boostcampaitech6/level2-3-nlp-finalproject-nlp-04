@@ -18,9 +18,8 @@ from back.streamlit_control import get_info_from_kakao
 from back.user_authorization import verify_token
 from back.managers.account_models import User, Record
 
-NEXT_PAGE = "user"
-is_logged_in = False
-last_login = 0
+NEXT_PAGE = "privacy_policy"
+st.session_state.is_logged_in = False
 
 if "logger" not in st.session_state:
     # logru_logger(**config.config)
@@ -41,10 +40,10 @@ if user_id is not None:
     st.session_state["access_token"] = token
 
     # 토큰 검증, 토큰 페이로드 디코딩
-    is_logged_in, token_payload = verify_token(st.session_state["user_id"])
+    st.session_state.is_logged_in, st.session_state.token_payload = verify_token(st.session_state["user_id"])
 
 # 로그인 상태에 따라 사용자 정보 설정
-if "user_id" in st.session_state and is_logged_in:
+if "user_id" in st.session_state and st.session_state.is_logged_in:
     user_info = get_info_from_kakao(st.session_state["access_token"])
 else:
     user_info = {"properties": {"nickname": "GUEST"}, "kakao_account": {"email": "GUEST"}, "access_token": "GUEST"}
@@ -65,39 +64,6 @@ if "access_token" not in st.session_state:
 if "user_id" not in st.session_state:
     st.session_state["user_id"] = user_info["kakao_account"]["email"]
     print("user_id : ", st.session_state["user_id"])
-
-print("is_logged_in : ", is_logged_in)
-if is_logged_in:
-    # DB에 저장할 변수 설정
-    last_login = token_payload["auth_time"]
-    expires_at = token_payload["exp"]
-
-    user = User(
-        _id=st.session_state["user_email"],
-        name=st.session_state["nickname"],
-        access_token=st.session_state["access_token"],
-        id_token=st.session_state["user_id"],
-        last_login=last_login,
-        expires_at=expires_at,
-    )
-
-if not is_logged_in:
-    user = User(
-        _id="GUEST",
-        name="GUEST",
-        access_token="GUEST",
-        id_token="GUEST",
-    )
-
-is_member = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/exists").json()
-
-if is_member: # 이미 DB에 저장된 사용자라면
-    user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
-
-elif not is_member: # DB에 저장된 사용자가 아니라면
-    user.joined_at = last_login
-    user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True)).json()
-
 
 if "openai_api_key" not in st.session_state:
     os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
@@ -124,10 +90,52 @@ if "LOADING_GIF2" not in st.session_state:
 if "USER_ICON" not in st.session_state:
     st.session_state["USER_ICON"] = Image.open(os.path.join(IMG_PATH, "user_icon.png"))
 
-if "user_name" not in st.session_state:
-    st.session_state["user_name"] = "아무개"
-
 if "temperature" not in st.session_state:
     st.session_state["temperature"] = 0
+
+if "is_privacy_policy_agreed" not in st.session_state:
+    st.session_state["is_privacy_policy_agreed"] = False
+
+if "last_login" not in st.session_state:
+    st.session_state["last_login"] = None
+
+if "expires_at" not in st.session_state:
+    st.session_state["expires_at"] = None
+
+print("is_logged_in : ", st.session_state.is_logged_in)
+if st.session_state.is_logged_in:
+    # DB에 저장할 변수 설정
+    st.session_state.last_login = st.session_state.token_payload["auth_time"]
+    st.session_state.expires_at = st.session_state.token_payload["exp"]
+
+    user = User(
+        _id=st.session_state["user_email"],
+        name=st.session_state["nickname"],
+        access_token=st.session_state["access_token"],
+        id_token=st.session_state["user_id"],
+        last_login=st.session_state.last_login,
+        expires_at=st.session_state.expires_at,
+    )
+
+if not st.session_state.is_logged_in:
+    user = User(
+        _id="GUEST",
+        name="GUEST",
+        access_token="GUEST",
+        id_token="GUEST",
+    )
+
+st.session_state.is_member = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/exists").json()
+
+if not st.session_state.is_member: # DB에 저장된 사용자가 아니라면 DB에 저장
+    user.joined_at = st.session_state.last_login
+    user = requests.post(f"http://localhost:{PORT}/users/",json=user.model_dump(by_alias=True)).json()
+
+elif st.session_state.is_member: # 이미 DB에 저장된 사용자라면 개인 정보 동의 여부 확인
+    st.session_state.is_privacy_policy_agreed = requests.get(f"http://localhost:{PORT}/users/{st.session_state['user_email']}/privacy_policy").json()
+    user = requests.put(f"http://localhost:{PORT}/users/{st.session_state['user_email']}",json=user.model_dump(by_alias=True)).json()
+
+if st.session_state.is_privacy_policy_agreed: # 개인 정보 동의를 했다면 다음 페이지로 넘어가기
+    NEXT_PAGE = "user"
 
 switch_page(NEXT_PAGE)

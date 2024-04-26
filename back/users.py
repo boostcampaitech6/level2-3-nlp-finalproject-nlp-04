@@ -24,7 +24,22 @@ router = APIRouter()
 #     print("This email already exists")  # 이미 존재하는 이메일인 경우 출력
 
 # await collection.create_index([("email", ASCENDING)], unique=True)
- 
+
+@router.get("/{email}/privacy_policy")
+async def is_privacy_policy(email: str) -> bool:
+    """
+    사용자의 개인정보 처리방침 동의 여부를 반환하는 함수입니다.
+
+    Parameters:
+        email (str): 사용자 이메일
+
+    Returns:
+        bool: 개인정보 처리방침에 동의한 경우 True를 반환하고, 그렇지 않은 경우 False를 반환합니다.
+    """
+    user = collection.find_one({"_id": email}, {"is_privacy_policy_agreed": 1})
+    if user:
+        return user.get("is_privacy_policy_agreed", False)
+    raise HTTPException(status_code=404, detail="User not found")
 
 @router.get("/{email}/exists")
 async def check_email_exists(email: str):
