@@ -102,7 +102,6 @@ if "last_login" not in st.session_state:
 if "expires_at" not in st.session_state:
     st.session_state["expires_at"] = None
 
-print("is_logged_in : ", st.session_state.is_logged_in)
 if st.session_state.is_logged_in:
     # DB에 저장할 변수 설정
     st.session_state.last_login = st.session_state.token_payload["auth_time"]
@@ -115,6 +114,7 @@ if st.session_state.is_logged_in:
         id_token=st.session_state["user_id"],
         last_login=st.session_state.last_login,
         expires_at=st.session_state.expires_at,
+        is_privacy_policy_agreed=st.session_state.is_privacy_policy_agreed,
     )
 
 if not st.session_state.is_logged_in:
