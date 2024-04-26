@@ -305,7 +305,7 @@ with input_form:
         start_button.markdown(f""" <div class = 'main_message'> {main_message}<br></div> """,
                               unsafe_allow_html=True,)
         ### 필요사항체크
-        check_list, josa= check_essential(user_resume,st.session_state.skip_resume,st.session_state.jd_text)        
+        check_list, josa= check_essential(st.session_state[user_resume],st.session_state.skip_resume,st.session_state.jd_text)        
         
         st.session_state.logger.info(f"check_essential")
         ### 필요사항 따라 버튼 클릭시 안내 문구 생성
