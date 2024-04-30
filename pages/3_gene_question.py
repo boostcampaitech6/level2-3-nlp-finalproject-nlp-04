@@ -238,10 +238,10 @@ with progress_holder:
                                 unsafe_allow_html=True,
                                 )
     # 질문 생성 # 
-
+    '''
     selected_job = st.session_state.selected_job
     # rule-based question
-    '''
+    
     with open(os.path.join(DATA_DIR, "rulebased_data.json"), "r", encoding="utf-8") as f:
         data_dict = json.load(f)
     

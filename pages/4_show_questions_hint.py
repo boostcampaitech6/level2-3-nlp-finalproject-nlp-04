@@ -57,86 +57,83 @@ st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR
 # 각 질문에 대해 번호를 매기고 토글 위젯 생성
 for i, question in enumerate(st.session_state.questions_showhint, start=1):
 
-    # 질문이 비어있거나 개행 문자만 포함된 경우 토글을 생성하지 않음
-    if question.strip():
+    # 토글 위젯 생성
+    with st.expander(f"{question}", expanded=False):
 
-        # 토글 위젯 생성
-        with st.expander(f"{question}", expanded=False):
+        st.caption("질문에 대한 답변을 500자 이내로 작성해 주세요")
+        # 텍스트 입력 박스
+        user_answer = st.text_area("답변:", key=f"input_{i}", max_chars=500)
 
-            st.caption("질문에 대한 답변을 500자 이내로 작성해 주세요")
-            # 텍스트 입력 박스
-            user_answer = st.text_area("답변:", key=f"input_{i}", max_chars=500)
+        # ###답변하기 버튼 이후 피드백 @@@@@@@@@@@@@@@@@2
+        if st.button("답변하기", key=f"button_{i}"):
 
-            # ###답변하기 버튼 이후 피드백 @@@@@@@@@@@@@@@@@2
-            if st.button("답변하기", key=f"button_{i}"):
-
-                if not user_answer.strip():
-                    st.error("답변을 입력해 주세요.")
-                else:
-                    # 버튼 클릭 시 임시 메시지 객체 생성
-                    temp_message = st.empty()
-
-                    # 임시 메시지에 텍스트 표시
-                    temp_message.text("답변이 생성되는 중입니다. 잠시 기다려주세요.")
-
-                    prompt_Feedback = create_prompt_feedback(st.session_state.prompt_template_fb)
-                    # proprompt_Feedbackmpt_ 생성완료
-
-                    st.session_state.logger.info("create prompt_Feedback object")
-
-                    ### 모델 세팅 그대로
-                    llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
-
-                    st.session_state.logger.info("create llm object")
-
-                    # 피드백 시작
-
-                    chain_feedback_2 = LLMChain(llm=llm, prompt=prompt_Feedback)
-
-                    st.session_state.logger.info("create chain_feedback_2 object")
-
-                    answer_feedback = chain_feedback_2.run({"question": question, "answer": user_answer})
-
-                    st.session_state.logger.info("answer_feedback complit")
-
-                    # 임시 메시지 제거 및 최종 답변 표시
-                    temp_message.empty()
-                    st.text(answer_feedback)
-
-            # ###답변하기 버튼 이후 피드백 @@@@@@@@@@@@@@@@@2
-            if st.button("힌트받기", key=f"button_ht_{i}"):
-
-                ### FeedBack Pre-process @@@@@@@@@@@@@@@@@@@@@@@@@@
-                st.session_state.logger.info("Start hint precess")
-                
+            if not user_answer.strip():
+                st.error("답변을 입력해 주세요.")
+            else:
                 # 버튼 클릭 시 임시 메시지 객체 생성
-                temp_message_hint = st.empty()
-                    # 임시 메시지에 텍스트 표시
-                temp_message_hint.text("힌트가 생성되는 중입니다. 잠시 기다려주세요.")
+                temp_message = st.empty()
 
-                st.session_state.prompt_Hint = create_prompt_hint(st.session_state.prompt_template_ht)
+                # 임시 메시지에 텍스트 표시
+                temp_message.text("답변이 생성되는 중입니다. 잠시 기다려주세요.")
+
+                prompt_Feedback = create_prompt_feedback(st.session_state.prompt_template_fb)
                 # proprompt_Feedbackmpt_ 생성완료
 
-                st.session_state.logger.info("create prompt_Hint object")
+                st.session_state.logger.info("create prompt_Feedback object")
 
-                ### 모델 세팅
+                ### 모델 세팅 그대로
                 llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
 
                 st.session_state.logger.info("create llm object")
 
                 # 피드백 시작
 
-                st.session_state.chain_hint_1 = LLMChain(llm=llm, prompt=st.session_state.prompt_Hint)
+                chain_feedback_2 = LLMChain(llm=llm, prompt=prompt_Feedback)
 
-                st.session_state.logger.info("create chain_hint_1 object")
+                st.session_state.logger.info("create chain_feedback_2 object")
 
-                st.session_state.answer_hint = st.session_state.chain_hint_1.run({"question": question})
+                answer_feedback = chain_feedback_2.run({"question": question, "answer": user_answer})
 
-                st.session_state.logger.info("chain_hint_1 complit")
+                st.session_state.logger.info("answer_feedback complit")
 
-                # 임시 메시지 제거 및 힌트
+                # 임시 메시지 제거 및 최종 답변 표시
+                temp_message.empty()
+                st.text(answer_feedback)
 
-                st.text(st.session_state.answer_hint)
+        # ###답변하기 버튼 이후 피드백 @@@@@@@@@@@@@@@@@2
+        if st.button("힌트받기", key=f"button_ht_{i}"):
+
+            ### FeedBack Pre-process @@@@@@@@@@@@@@@@@@@@@@@@@@
+            st.session_state.logger.info("Start hint precess")
+            
+            # 버튼 클릭 시 임시 메시지 객체 생성
+            temp_message_hint = st.empty()
+                # 임시 메시지에 텍스트 표시
+            temp_message_hint.text("힌트가 생성되는 중입니다. 잠시 기다려주세요.")
+
+            st.session_state.prompt_Hint = create_prompt_hint(st.session_state.prompt_template_ht)
+            # proprompt_Feedbackmpt_ 생성완료
+
+            st.session_state.logger.info("create prompt_Hint object")
+
+            ### 모델 세팅
+            llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
+
+            st.session_state.logger.info("create llm object")
+
+            # 피드백 시작
+
+            st.session_state.chain_hint_1 = LLMChain(llm=llm, prompt=st.session_state.prompt_Hint)
+
+            st.session_state.logger.info("create chain_hint_1 object")
+
+            st.session_state.answer_hint = st.session_state.chain_hint_1.run({"question": question})
+
+            st.session_state.logger.info("chain_hint_1 complit")
+
+            # 임시 메시지 제거 및 힌트
+
+            st.text(st.session_state.answer_hint)
 
 button_clicked = st.button("시작 화면으로 돌아가기")
 
