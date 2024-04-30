@@ -116,4 +116,3 @@
 ## 🤩**전시홀 캠퍼 반응**
 
 ![image](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-04/assets/63552400/d8e15dd3-33f9-4136-8a79-6fbc7db1afa8)
-
