@@ -237,20 +237,21 @@ with progress_holder:
                                 <p>{loading_message[1]}</p></div>""",
                                 unsafe_allow_html=True,
                                 )
-    # 질문 생성 # 
-    '''
-    selected_job = st.session_state.selected_job
-    # rule-based question
+    # # 질문 생성 # 
+    #
+    # selected_job = st.session_state.selected_job
+    # # rule-based question
     
-    with open(os.path.join(DATA_DIR, "rulebased_data.json"), "r", encoding="utf-8") as f:
-        data_dict = json.load(f)
+    # with open(os.path.join(DATA_DIR, "rulebased_data.json"), "r", encoding="utf-8") as f:
+    #     data_dict = json.load(f)
     
 
-    if  st.session_state.selected_job == "CV" or   st.session_state.selected_job == "NLP" or   st.session_state.selected_job == "RECSYS" or   st.session_state.selected_job == "MLE":
-            st.session_state.selected_job = "AI"
-    st.session_state.rule_questions = list_extend_questions_based_on_keywords(data_dict, st.session_state.user_JD, st.session_state.selected_job)
-    print("### rule_questions ###")
-    print(*(st.session_state.rule_questions), sep='/n')
+    # if  st.session_state.selected_job == "CV" or   st.session_state.selected_job == "NLP" or   st.session_state.selected_job == "RECSYS" or   st.session_state.selected_job == "MLE":
+    #         st.session_state.selected_job = "AI"
+    # st.session_state.rule_questions = list_extend_questions_based_on_keywords(data_dict, st.session_state.user_JD, st.session_state.selected_job)
+    # print("### rule_questions ###")
+    # print(*(st.session_state.rule_questions), sep='/n')
+    #
     
     # semantic search question generation
     st.session_state.faiss_result = faiss_inference(st.session_state.job_description)
@@ -260,10 +261,7 @@ with progress_holder:
     print(*(st.session_state.faiss_question), sep='/n')
     ### 다음 세션으로 값 넘기기
 
-    st.session_state.main_question = st.session_state.questions + st.session_state.rule_questions + st.session_state.faiss_question
-    st.session_state.project_question = st.session_state.questions
-    st.session_state.basic_question = st.session_state.rule_questions + st.session_state.faiss_question
-    '''
+    st.session_state.main_question += st.session_state.faiss_question
     st.session_state.logger.info("end gene_question")
     
     time.sleep(2)
