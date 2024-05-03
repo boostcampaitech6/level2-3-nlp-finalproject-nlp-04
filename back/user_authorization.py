@@ -132,7 +132,7 @@ def check_login(id_token: str):
 # 토큰 검증
 if __name__ == "__main__":
     # 토큰 발급(세션 테스트용)
-    id_token = "eyJraWQiOiI5ZjI1MmRhZGQ1ZjIzM2Y5M2QyZmE1MjhkMTJmZWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzOTQwYTU4NTA5YjE5OGI2ZTNjMGFjYjEwNDhhMDQ1YyIsInN1YiI6IjMzODAxOTQ5NzEiLCJhdXRoX3RpbWUiOjE3MTA0Nzc0MzMsImlzcyI6Imh0dHBzOi8va2F1dGgua2FrYW8uY29tIiwibmlja25hbWUiOiLquYDrr7zshJ0iLCJleHAiOjE3MTA0OTkwMzMsImlhdCI6MTcxMDQ3NzQzMywiZW1haWwiOiJwb2tfYnVrb2tAbmF2ZXIuY29tIn0.l1SKzyMc-U-uINZzTlxrfXIJNRhvNjfYUiyEp8f10bhBvZXTkOPKu6VrXOm0B3KpQYUMz6jrs3b8TQ_o7lJnsj2wo7OIgJzxSimfJxyLIRj0RC5riHMg2O7nO7Q7O1m5IYnyMF-mLrxnmMLrps5ED2qp4EnjCpmP3ZOwa126XWL9DeCetuDomgxrTbO7AcfaKOspQ8QYEV5t4NlUXzcBLVK8DkjT4CPI-unPLHlFkwVtLJXy-f1ghKFQLGInmkt_234f9YTdoKGNCrrUCG69XbuxIMJsUujDFOoWfH31P_XUYBoge4YBe6Tu2I6SU1oPOL4q69k7o6AqTzPY1nlsyQ"
+    id_token = "id_token"
     """
     Header: algorithm, token type
     {
