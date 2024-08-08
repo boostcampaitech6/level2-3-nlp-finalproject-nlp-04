@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from src.generate_question import (create_prompt_feedback,  # 추가
                                    create_prompt_hint)
 from src.util import read_prompt_from_txt
-from config import DATA_DIR, IMG_PATH, OPENAI_API_KEY
+from config import DATA_DIR, IMG_PATH, OPENAI_API_KEY, MODEL_NAME
 
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
@@ -23,8 +23,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-#MODEL_NAME = "gpt-4-0125-preview"
-MODEL_NAME = "gpt-3.5-turbo-16k"
 NEXT_PAGE = "introduction"
 
 st.session_state.logger.info("start show_questions page")

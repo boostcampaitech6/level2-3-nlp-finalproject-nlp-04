@@ -20,7 +20,7 @@ from src.generate_question import (create_prompt_with_resume,
 from streamlit_extras.switch_page_button import switch_page
 from util import local_css, read_prompt_from_txt
 
-from config import OPENAI_API_KEY  # OPENAI_API_KEY 불러오기
+from config import OPENAI_API_KEY, MODEL_NAME
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
@@ -109,9 +109,6 @@ st.markdown(f"""
 #             """,
             unsafe_allow_html=True,)
 
-## set variables
-MODEL_NAME = "gpt-3.5-turbo-16k"
-
 ## set save dir
 USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_resume.pdf")
 ### 추가
@@ -191,9 +188,7 @@ with progress_holder:
             st.session_state.logger.info("create prompt JD object")
 
             ### 모델 세팅 그대로
-            llm = ChatOpenAI(
-                temperature=st.session_state.temperature, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY
-            )
+            llm = ChatOpenAI(temperature=st.session_state.temperature, model_name=MODEL_NAME)
 
             st.session_state.logger.info("create llm object")
 

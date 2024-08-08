@@ -26,7 +26,7 @@ from src.generate_question import (create_prompt_with_question,
 from src.rule_based import list_extend_questions_based_on_keywords
 from src.util import local_css, read_prompt_from_txt
 from src.semantic_search import faiss_inference, reranker
-from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH, CSS_PATH, PORT
+from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH, CSS_PATH, PORT, MODEL_NAME
 
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
@@ -80,8 +80,6 @@ st.markdown(f"""
             </style>
             """,unsafe_allow_html=True)
 
-## set variables
-MODEL_NAME = "gpt-3.5-turbo-16k"
 
 ## set save dir
 USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_resume.pdf")

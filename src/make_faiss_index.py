@@ -12,7 +12,7 @@ from langchain_community.vectorstores.faiss import FAISS
 data = pd.read_csv('hellojobits_tag.csv')
 data = data.iloc[:,0].tolist()
 
-model_name = "sentence-transformers/distiluse-base-multilingual-cased-v2"
+model_name = "jhgan/ko-sroberta-multitask"
 model_kwargs = {'device': 'cuda'}
 encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
 model_norm = HuggingFaceEmbeddings(
