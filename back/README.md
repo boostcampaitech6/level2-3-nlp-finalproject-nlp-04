@@ -50,7 +50,7 @@ docker pull mongo
 docker run --name [컨테이너이름] -d \
 -e MONGO_INITDB_ROOT_USERNAME=admin \
 -e MONGO_INITDB_ROOT_PASSWORD=[비밀번호] \
--v [로컬의 데이터 저장소]:[컨테이너 내의 데이터 저장소] \
+-v [로컬의 데이터 저장소]:/data/db \
 -p 127.0.0.1:27017:27017 mongo
 
 docker ps -a # 이거로 실행 여부 확인
