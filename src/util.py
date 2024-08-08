@@ -12,10 +12,10 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain.memory.buffer_window import ConversationBufferWindowMemory
 from langchain.prompts.prompt import PromptTemplate
 from PIL import Image
+from dotenv import load_dotenv  
 
 sys.path.append("./")
-from config import OPENAI_API_KEY
-
+load_dotenv() # OPENAI_API_KEY 불러오기
 
 def load_css_as_string(file_name):
     with open(file_name, "r") as f:
