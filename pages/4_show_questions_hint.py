@@ -48,8 +48,8 @@ st.session_state.questions_showhint = st.session_state.main_question
 
 st.title(f"{st.session_state.user_name}님의 기술면접 예상 질문입니다.🤗 ")
 
-st.session_state.prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_feedback.txt"))
-st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_hint.txt"))
+st.session_state.prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_feedback.txt"))
+st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_hint.txt"))
 
 
 # 각 질문에 대해 번호를 매기고 토글 위젯 생성

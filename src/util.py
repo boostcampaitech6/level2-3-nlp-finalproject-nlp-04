@@ -214,7 +214,7 @@ def load_chain(question):
 
     # Load OpenAI chat model
     llm = ChatOpenAI(temperature=0)
-    template = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "tail_question_template.txt"))
+    template = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "tail_question_template.txt"))
 
     # Create memory 'chat_history'
     memory = ConversationBufferWindowMemory(human_prefix="면접자 답변", ai_prefix="answer")

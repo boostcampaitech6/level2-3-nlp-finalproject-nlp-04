@@ -137,7 +137,7 @@ with progress_holder:
 
     ### JD 사용하여 JD 추출용 프롬프트 만들기
     st.session_state.logger.info("prompt JD start")
-    prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_JD_template.txt"))
+    prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_JD_template.txt"))
     st.session_state.prompt_JD = create_prompt_with_jd(prompt_template_jd)
     
     # prompt_JD 생성완료
@@ -163,7 +163,7 @@ with progress_holder:
     # prompt_qa_template #######################################
 
     st.session_state.logger.info("prompt resume start")
-    prompt_template_resume = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_resume_template.txt"))
+    prompt_template_resume = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_resume_template.txt"))
 
     st.session_state.logger.info("create prompt resume template")
     st.session_state.prompt_resume = create_prompt_with_resume(prompt_template_resume)
@@ -192,7 +192,7 @@ with progress_holder:
 
     ## step3 :
     st.session_state.logger.info("prompt question start")
-    prompt_template_question = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_question_template.txt"))
+    prompt_template_question = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_question_template.txt"))
 
     st.session_state.logger.info("create prompt question template")
     st.session_state.prompt_question = create_prompt_with_question(prompt_template_question)

@@ -179,7 +179,7 @@ with progress_holder:
             ### JD 사용하여 JD 추출용 프롬프트 만들기
             st.session_state.logger.info("prompt JD start")
 
-            prompt_template = read_prompt_from_txt(PATH + "data", "test", "prompt_JD_template.txt")
+            prompt_template = read_prompt_from_txt(DATA_DIR, "prompts", "prompt_JD_template.txt")
 
             prompt_JD = create_prompt_with_jd(prompt_template)
             # prompt_JD 생성완료
