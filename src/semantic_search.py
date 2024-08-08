@@ -15,7 +15,7 @@ def faiss_inference(query):
     output으로는 (4 * 키워드 줄 개수 - 중복된 문장)개의 질문이 반환됩니다
     '''
     embeddings = HuggingFaceEmbeddings(
-            model_name = "BM-K/KoSimCSE-roberta-multitask",
+            model_name = "jhgan/ko-sroberta-multitask",
             model_kwargs = {'device': 'cuda'}
         )
     store_name="./FAISS_INDEX_TAG"

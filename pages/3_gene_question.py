@@ -26,7 +26,7 @@ from src.generate_question import (create_prompt_with_question,
 from src.rule_based import list_extend_questions_based_on_keywords
 from src.util import local_css, read_prompt_from_txt
 from src.semantic_search import faiss_inference, reranker
-from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH, CSS_PATH, PORT, MODEL_NAME
+from config import DATA_DIR, IMG_PATH, CSS_PATH, PORT, MODEL_NAME
 
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
@@ -144,9 +144,7 @@ with progress_holder:
     st.session_state.logger.info("create prompt JD object")
 
     ### 모델 세팅 그대로
-    llm = ChatOpenAI(temperature=st.session_state.temperature,
-                        model_name=MODEL_NAME,
-                        openai_api_key=OPENAI_API_KEY)
+    llm = ChatOpenAI(temperature=st.session_state.temperature, model_name=MODEL_NAME)
 
     st.session_state.logger.info("create llm object")
 
@@ -176,9 +174,7 @@ with progress_holder:
     st.session_state.logger.info("user_resume chunk OpenAIEmbeddings ")
 
     ### STEP 2 를 위한 새 모델 호출
-    llm2 = ChatOpenAI(temperature=0.0, 
-                        model_name=MODEL_NAME, 
-                        openai_api_key=OPENAI_API_KEY)
+    llm2 = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME)
 
     st.session_state.chain_type_kwargs = {"prompt": st.session_state.prompt_resume}
 
@@ -201,7 +197,7 @@ with progress_holder:
     st.session_state.logger.info("create prompt question template")
     st.session_state.prompt_question = create_prompt_with_question(prompt_template_question)
 
-    llm3 = ChatOpenAI(temperature=0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
+    llm3 = ChatOpenAI(temperature=0, model_name=MODEL_NAME)
     st.session_state.chain = LLMChain(llm=llm3, prompt=st.session_state.prompt_question)
     st.session_state.main_question = st.session_state.chain.invoke({"jd": st.session_state.job_description, "resume": st.session_state.resume})['text']
     #################

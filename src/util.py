@@ -201,9 +201,6 @@ def save_uploaded_jd_as_filepath(uploaded_jd, save_directory, filename="uploaded
     return file_path
 
 
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
-
-
 @st.cache_resource
 def load_chain(question):
     """

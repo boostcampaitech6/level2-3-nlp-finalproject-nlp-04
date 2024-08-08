@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from src.generate_question import (create_prompt_feedback,  # 추가
                                    create_prompt_hint)
 from src.util import read_prompt_from_txt
-from config import DATA_DIR, IMG_PATH, OPENAI_API_KEY, MODEL_NAME
+from config import DATA_DIR, IMG_PATH, MODEL_NAME
 
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
@@ -80,7 +80,7 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
                 st.session_state.logger.info("create prompt_Feedback object")
 
                 ### 모델 세팅 그대로
-                llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
+                llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME)
 
                 st.session_state.logger.info("create llm object")
 
@@ -115,7 +115,7 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
             st.session_state.logger.info("create prompt_Hint object")
 
             ### 모델 세팅
-            llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
+            llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME)
 
             st.session_state.logger.info("create llm object")
 

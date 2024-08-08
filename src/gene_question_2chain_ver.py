@@ -20,10 +20,10 @@ from src.generate_question import (create_prompt_with_resume,
 from streamlit_extras.switch_page_button import switch_page
 from util import local_css, read_prompt_from_txt
 
-from config import OPENAI_API_KEY, MODEL_NAME
+from config import MODEL_NAME, PATH
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images/favicon.png")
+st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images", "favicon.png")
 st.set_page_config(
     page_title="Hello Jobits",  # 브라우저탭에 뜰 제목
     page_icon=Image.open(
@@ -36,14 +36,12 @@ st.set_page_config(
 st.session_state.logger.info("start")
 NEXT_PAGE = "show_questions_hint"
 
-MY_PATH = os.path.dirname(os.path.dirname(__file__))
-
 #### style css ####
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
-local_css(MY_PATH + "/css/background.css")
-local_css(MY_PATH + "/css/2_generate_question.css")
+local_css(PATH + "/css/background.css")
+local_css(PATH + "/css/2_generate_question.css")
 st.markdown(f"""
             <style>
                 /* 로딩이미지 */
@@ -181,7 +179,7 @@ with progress_holder:
             ### JD 사용하여 JD 추출용 프롬프트 만들기
             st.session_state.logger.info("prompt JD start")
 
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_JD_template.txt")
+            prompt_template = read_prompt_from_txt(PATH + "data", "test", "prompt_JD_template.txt")
 
             prompt_JD = create_prompt_with_jd(prompt_template)
             # prompt_JD 생성완료
@@ -211,7 +209,7 @@ with progress_holder:
 
             st.session_state.logger.info("prompt QA start")
 
-            prompt_template = read_prompt_from_txt(MY_PATH + "/data/test/prompt_qa_template")
+            prompt_template = read_prompt_from_txt(PATH + "/data/test/prompt_qa_template")
 
             st.session_state.logger.info("create prompt QA template")
 
@@ -225,7 +223,7 @@ with progress_holder:
 
             ### STEP 2 를 위한 새 모델 호출
 
-            llm2 = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
+            llm2 = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME)
 
             chain_type_kwargs = {"prompt": prompt_qa}
 
