@@ -12,7 +12,7 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain.memory.buffer_window import ConversationBufferWindowMemory
 from langchain.prompts.prompt import PromptTemplate
 from PIL import Image
-from dotenv import load_dotenv  
+from config import DATA_DIR
 
 sys.path.append("./")
 load_dotenv() # OPENAI_API_KEY 불러오기
@@ -214,9 +214,7 @@ def load_chain(question):
 
     # Load OpenAI chat model
     llm = ChatOpenAI(temperature=0)
-    template = read_prompt_from_txt(
-        os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "test", "tail_question_template.txt")
-    )
+    template = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "tail_question_template.txt"))
 
     # Create memory 'chat_history'
     memory = ConversationBufferWindowMemory(human_prefix="면접자 답변", ai_prefix="answer")

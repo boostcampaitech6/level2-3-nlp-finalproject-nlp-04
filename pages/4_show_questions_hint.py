@@ -48,8 +48,8 @@ st.session_state.questions_showhint = st.session_state.main_question
 
 st.title(f"{st.session_state.user_name}님의 기술면접 예상 질문입니다.🤗 ")
 
-st.session_state.prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_feedback.txt"))
-st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_hint.txt"))
+st.session_state.prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_feedback.txt"))
+st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_hint.txt"))
 
 
 # 각 질문에 대해 번호를 매기고 토글 위젯 생성
@@ -140,7 +140,7 @@ if button_clicked:
     switch_page("user")
 
 st.session_state.question_history = "\n\n".join(st.session_state.questions_showhint)
-with open(st.session_state['save_dir'] + "/question_history.txt", "w") as file:
+with open(os.path.join(st.session_state['save_dir'], "question_history.txt"), "w") as file:
     file.write(st.session_state.question_history)   # 생성된 질문을 파일로 저장
 
 # 다운로드 버튼 생성

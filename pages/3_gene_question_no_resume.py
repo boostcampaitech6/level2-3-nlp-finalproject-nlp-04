@@ -128,7 +128,7 @@ with progress_holder:
 
     ### JD 사용하여 JD 추출용 프롬프트 만들기
     st.session_state.logger.info("prompt JD start")
-    prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_JD_template.txt"))
+    prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_JD_template.txt"))
     st.session_state.prompt_JD = create_prompt_with_jd(prompt_template_jd)
     
     # prompt_JD 생성완료
@@ -148,7 +148,7 @@ with progress_holder:
     
     ## step2 JD 만을 이용해 질문 6개를 생성합니다 :
     st.session_state.logger.info("prompt question start")
-    prompt_noResume_question_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_noResume_question_template.txt"))
+    prompt_noResume_question_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test", "prompt_noResume_question_template.txt"))
 
     st.session_state.logger.info("create no resume prompt question template")
     st.session_state.prompt_question = create_prompt_with_no_resume(prompt_noResume_question_template)
