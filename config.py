@@ -33,14 +33,8 @@ COHERE_API_KEY = cfg["COHERE_API_KEY"]
 INSIDE_IP = get_private_ip()
 OUTSIDE_IP = get_public_ip()
 
-REST_API_KEY = cfg["Kakaologin"]["REST_API_KEY"]
-REDIRECT_URI = f"http://{OUTSIDE_IP}:{cfg['PORT']}/auth"
-
-PORT = cfg["PORT"]
-STREAMLIT_PORT = cfg["STREAMLIT"]["PORT"]
-
-KEY_FILE = cfg["SSL"]["KEY_FILE"]
-CERT_FILE = cfg["SSL"]["CERT_FILE"]
+PORT = 8001
+STREAMLIT_PORT = 8501
 
 CLIENT_ID = cfg["CLIENT_ID"]
 CLIENT_SECRET = cfg["CLIENT_SECRET"]
