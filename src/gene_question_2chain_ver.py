@@ -20,7 +20,7 @@ from src.generate_question import (create_prompt_with_resume,
 from streamlit_extras.switch_page_button import switch_page
 from util import local_css, read_prompt_from_txt
 
-from config import MODEL_NAME, PATH
+from config import MODEL_NAME, CSS_PATH
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(DATA_DIR, "images", "favicon.png")
@@ -40,8 +40,8 @@ NEXT_PAGE = "show_questions_hint"
 MAIN_IMG = st.session_state.MAIN_IMG
 LOGO_IMG = st.session_state.LOGO_IMG
 
-local_css(PATH + "/css/background.css")
-local_css(PATH + "/css/2_generate_question.css")
+local_css(os.path.join(CSS_PATH, "background.css"))
+local_css(os.path.join(CSS_PATH, "2_generate_question.css"))
 st.markdown(f"""
             <style>
                 /* 로딩이미지 */
