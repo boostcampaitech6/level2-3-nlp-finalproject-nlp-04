@@ -13,6 +13,7 @@ from langchain.memory.buffer_window import ConversationBufferWindowMemory
 from langchain.prompts.prompt import PromptTemplate
 from PIL import Image
 from config import DATA_DIR
+from dotenv import load_env()
 
 sys.path.append("./")
 load_dotenv() # OPENAI_API_KEY 불러오기
