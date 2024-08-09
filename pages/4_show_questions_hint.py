@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from src.generate_question import (create_prompt_feedback,  # 추가
                                    create_prompt_hint)
 from src.util import read_prompt_from_txt
-from config import DATA_DIR, IMG_PATH, OPENAI_API_KEY
+from config import DATA_DIR, IMG_PATH, MODEL_NAME
 
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
@@ -23,8 +23,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-#MODEL_NAME = "gpt-4-0125-preview"
-MODEL_NAME = "gpt-3.5-turbo-16k"
 NEXT_PAGE = "introduction"
 
 st.session_state.logger.info("start show_questions page")
@@ -50,8 +48,8 @@ st.session_state.questions_showhint = st.session_state.main_question
 
 st.title(f"{st.session_state.user_name}님의 기술면접 예상 질문입니다.🤗 ")
 
-st.session_state.prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_feedback.txt"))
-st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_hint.txt"))
+st.session_state.prompt_template_fb = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_feedback.txt"))
+st.session_state.prompt_template_ht = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_hint.txt"))
 
 
 # 각 질문에 대해 번호를 매기고 토글 위젯 생성
@@ -82,7 +80,7 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
                 st.session_state.logger.info("create prompt_Feedback object")
 
                 ### 모델 세팅 그대로
-                llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
+                llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME)
 
                 st.session_state.logger.info("create llm object")
 
@@ -117,7 +115,7 @@ for i, question in enumerate(st.session_state.questions_showhint, start=1):
             st.session_state.logger.info("create prompt_Hint object")
 
             ### 모델 세팅
-            llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
+            llm = ChatOpenAI(temperature=0.0, model_name=MODEL_NAME)
 
             st.session_state.logger.info("create llm object")
 
@@ -142,7 +140,7 @@ if button_clicked:
     switch_page("user")
 
 st.session_state.question_history = "\n\n".join(st.session_state.questions_showhint)
-with open(st.session_state['save_dir'] + "/question_history.txt", "w") as file:
+with open(os.path.join(st.session_state['save_dir'], "question_history.txt"), "w") as file:
     file.write(st.session_state.question_history)   # 생성된 질문을 파일로 저장
 
 # 다운로드 버튼 생성

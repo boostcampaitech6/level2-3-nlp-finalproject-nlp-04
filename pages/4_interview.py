@@ -83,7 +83,7 @@ for msg in st.session_state.messages:
 
 # 대화내역 파일로 저장
 st.session_state.interview_script_download = "\n\n".join(st.session_state.interview_script)
-with open(st.session_state['save_dir'] + "/interview_history.txt", "w") as file:
+with open(os.path.join(st.session_state['save_dir'], "interview_history.txt"), "w") as file:
     file.write(st.session_state.interview_script_download)   
 
 ##################################### 여기서부터 모의 면접 시작 ############################################

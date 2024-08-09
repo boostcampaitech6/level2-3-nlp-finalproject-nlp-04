@@ -66,7 +66,6 @@ if "user_id" not in st.session_state:
     print("user_id : ", st.session_state["user_id"])
 
 if "openai_api_key" not in st.session_state:
-    os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
     st.session_state.openai_api_key = OPENAI_API_KEY
 
 if "FAV_IMAGE_PATH" not in st.session_state:
