@@ -8,7 +8,7 @@ from streamlit_extras.switch_page_button import switch_page
 sys.path.append("./")
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-from config import DATA_DIR, IMG_PATH, path
+from config import DATA_DIR, IMG_PATH, path, CSS_PATH
 from loguru import logger as _logger
 from src.logger import DevConfig
 from src.util import (check_essential, get_image_base64, local_css,
@@ -48,7 +48,7 @@ NEXT_PAGE_NORESUME = "gene_question_no_resume"
 
 st.title("안녕하세요, " + st.session_state.nickname + "님!")  # 사용자 이름을 받아서 화면에 출력합니다.
 
-local_css(os.path.join(path, "front", "css", "background.css"))
+local_css(os.path.join(CSS_PATH, "background.css"))
 
 
 # local_css("css/1_user.css")
@@ -237,7 +237,7 @@ main_message = "당신의 면접, <br>JOBits 로 준비해 보세요."
 
 
 ## read job info tb
-job_info, JOBS = read_job_info_tb(path + "/data/samples/job_info_tb.parquet")
+job_info, JOBS = read_job_info_tb(os.path.join(DATA_DIR,  "samples", "job_info_tb.parquet"))
 st.session_state.job_info = job_info
 st.session_state.logger.info("read job tb")
 st.session_state.logger.info(f"job info is ... {JOBS}")

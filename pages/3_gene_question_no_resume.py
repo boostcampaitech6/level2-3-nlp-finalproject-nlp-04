@@ -27,7 +27,7 @@ from src.generate_question import (create_prompt_with_question,
 from src.rule_based import list_extend_questions_based_on_keywords
 from src.util import local_css, read_prompt_from_txt
 from src.semantic_search import faiss_inference, reranker
-from config import OPENAI_API_KEY, DATA_DIR, IMG_PATH, CSS_PATH, PORT
+from config import DATA_DIR, IMG_PATH, CSS_PATH, MODEL_NAME
 
 st.session_state["FAV_IMAGE_PATH"] = os.path.join(IMG_PATH, "favicon.png")
 st.set_page_config(
@@ -81,8 +81,6 @@ st.markdown(f"""
             </style>
             """,unsafe_allow_html=True)
 
-## set variables
-MODEL_NAME = "gpt-3.5-turbo-16k"
 
 ## set save dir
 USER_RESUME_SAVE_DIR = os.path.join(st.session_state["save_dir"], "2_generate_question_user_resume.pdf")
@@ -130,16 +128,14 @@ with progress_holder:
 
     ### JD 사용하여 JD 추출용 프롬프트 만들기
     st.session_state.logger.info("prompt JD start")
-    prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_JD_template.txt"))
+    prompt_template_jd = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_JD_template.txt"))
     st.session_state.prompt_JD = create_prompt_with_jd(prompt_template_jd)
     
     # prompt_JD 생성완료
     st.session_state.logger.info("create prompt JD object")
 
     ### 모델 세팅 그대로
-    llm = ChatOpenAI(temperature=st.session_state.temperature,
-                    model_name=MODEL_NAME,
-                    openai_api_key=OPENAI_API_KEY)
+    llm = ChatOpenAI(temperature=st.session_state.temperature, model_name=MODEL_NAME,)
 
     st.session_state.logger.info("create llm object")
 
@@ -152,12 +148,12 @@ with progress_holder:
     
     ## step2 JD 만을 이용해 질문 6개를 생성합니다 :
     st.session_state.logger.info("prompt question start")
-    prompt_noResume_question_template = read_prompt_from_txt(os.path.join(DATA_DIR, "test/prompt_noResume_question_template.txt"))
+    prompt_noResume_question_template = read_prompt_from_txt(os.path.join(DATA_DIR, "prompts", "prompt_noResume_question_template.txt"))
 
     st.session_state.logger.info("create no resume prompt question template")
     st.session_state.prompt_question = create_prompt_with_no_resume(prompt_noResume_question_template)
 
-    llm3 = ChatOpenAI(temperature=0, model_name=MODEL_NAME, openai_api_key=OPENAI_API_KEY)
+    llm3 = ChatOpenAI(temperature=0, model_name=MODEL_NAME)
     st.session_state.chain = LLMChain(llm=llm3, prompt=st.session_state.prompt_question)
     st.session_state.main_question = st.session_state.chain.run({"jd": st.session_state.job_description})
     #################

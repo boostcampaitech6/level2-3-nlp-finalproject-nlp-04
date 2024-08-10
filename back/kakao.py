@@ -1,7 +1,7 @@
 import secrets
 from typing import Optional
 
-from config import CLIENT_ID, CLIENT_SECRET, OUTSIDE_IP, PORT, STREAMLIT_PORT
+from config import CLIENT_ID, CLIENT_SECRET, OUTSIDE_IP, PORT
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from fastapi.responses import RedirectResponse
 from fastapi_oauth_client import OAuthClient
