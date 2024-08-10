@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from gridfs import GridFSBucket
 from dotenv import load_env
 
-load_env(overide=True)
+load_env(override=True)
 
 # 환경 변수로부터 MongoDB 설정 읽기
 username = os.getenv("MONGO_USERNAME", "admin")
